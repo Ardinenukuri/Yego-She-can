@@ -19,6 +19,7 @@ export default {
                 purple: {
                     DEFAULT: '#635FC7',
                     hover: '#A8A4FF',
+                    yego: '#6A1B9A',
                 },
                 red: {
                     DEFAULT: '#EA5555',
