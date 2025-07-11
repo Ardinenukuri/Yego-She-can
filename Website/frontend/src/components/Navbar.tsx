@@ -13,52 +13,177 @@ export default function Navbar() {
     setHydrated(true)
   }, [])
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      if (showDropdown) {
+        setShowDropdown(false)
+      }
+    }
+
+    document.addEventListener('click', handleClickOutside)
+    return () => document.removeEventListener('click', handleClickOutside)
+  }, [showDropdown])
+
   return (
-    <nav className="bg-white shadow-md h-20 flex items-center sticky top-0 z-50">
-      <div className="w-full max-w-7xl mx-auto px-6 flex justify-between items-center">
-        <Link href="/" className="flex items-center space-x-2">
-          <Image src={logo} alt="Yego SheCan Logo" width={130} height={45} />
+    <nav style={{ 
+      backgroundColor: 'white', 
+      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)', 
+      height: '64px', 
+      position: 'sticky', 
+      top: 0, 
+      zIndex: 50,
+      display: 'flex',
+      alignItems: 'center',
+      width: '100%'
+    }}>
+      <div style={{
+        width: '100%',
+        maxWidth: '1280px',
+        margin: '0 auto',
+        padding: '0 24px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+      }}>
+        {/* Logo */}
+        <Link href="/" style={{ display: 'flex', alignItems: 'center' }}>
+          <Image 
+            src={logo} 
+            alt="Yego SheCan Logo" 
+            width={120} 
+            height={40}
+            style={{ height: '32px', width: 'auto' }}
+          />
         </Link>
 
-        <div className="hidden md:flex space-x-6 items-center text-sm font-medium">
+        {/* Navigation Links */}
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '32px' 
+        }}>
           <NavLink href="/">Home</NavLink>
-          <NavLink href="#about">About Us</NavLink>
+          <NavLink href="#about">About</NavLink>
 
-          <div className="relative">
+          {/* Services Dropdown */}
+          <div style={{ position: 'relative' }}>
             <button
-              className="text-purple-yego hover:text-purple-700 transition-colors"
-              onClick={() => setShowDropdown(!showDropdown)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                color: '#374151',
+                fontSize: '14px',
+                fontWeight: '500',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '8px 0'
+              }}
+              onClick={(e) => {
+                e.stopPropagation()
+                setShowDropdown(!showDropdown)
+              }}
+              onMouseEnter={() => setShowDropdown(true)}
             >
-              Services ⬇️
+              Services
+              <svg 
+                style={{
+                  marginLeft: '4px',
+                  height: '16px',
+                  width: '16px',
+                  transform: showDropdown ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.2s'
+                }}
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
             </button>
 
             {hydrated && showDropdown && (
-              <div className="absolute top-full mt-2 left-0 z-20 w-[270px] bg-white border border-gray-200 rounded-md shadow-xl p-4 space-y-3">
-                <div>
-                  <span className="text-xs text-gray-400 uppercase font-bold">Entrepreneurship Courses</span>
-                  <NavLink href="#online-courses">Online Courses</NavLink>
-                  <NavLink href="#certification">Timeline & Certification</NavLink>
-                  <NavLink href="#register">Register / Learn More</NavLink>
-                </div>
-                <div>
-                  <span className="text-xs text-gray-400 uppercase font-bold">Physical Programs</span>
-                  <NavLink href="#soap-training">Soap & Coffee Training</NavLink>
-                  <NavLink href="#program-details">Program Details</NavLink>
-                </div>
-                <div>
-                  <span className="text-xs text-gray-400 uppercase font-bold">E-commerce</span>
-                  <NavLink href="#buy-products">Buy Soaps & Coffee</NavLink>
-                  <NavLink href="#product-list">Product List</NavLink>
-                </div>
-                <div>
-
-                </div>
+              <div style={{
+                position: 'absolute',
+                top: '100%',
+                left: '0',
+                marginTop: '8px',
+                zIndex: 20,
+                width: '280px',
+                backgroundColor: 'white',
+                border: '1px solid #e5e7eb',
+                borderRadius: '8px',
+                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                padding: '16px'
+              }}
+              onMouseLeave={() => setShowDropdown(false)}
+            >
+              <div style={{ marginBottom: '16px' }}>
+                <h3 style={{ 
+                  fontSize: '12px', 
+                  color: '#6b7280', 
+                  textTransform: 'uppercase', 
+                  fontWeight: '600',
+                  marginBottom: '8px'
+                }}>
+                  Entrepreneurship Courses
+                </h3>
+                <DropdownLink href="#online-courses">Online Courses</DropdownLink>
+                <DropdownLink href="#certification">Timeline & Certification</DropdownLink>
+                <DropdownLink href="#register">Register / Learn More</DropdownLink>
               </div>
+              
+              <div style={{ marginBottom: '16px' }}>
+                <h3 style={{ 
+                  fontSize: '12px', 
+                  color: '#6b7280', 
+                  textTransform: 'uppercase', 
+                  fontWeight: '600',
+                  marginBottom: '8px'
+                }}>
+                  Physical Programs
+                </h3>
+                <DropdownLink href="#soap-training">Soap & Coffee Training</DropdownLink>
+                <DropdownLink href="#program-details">Program Details</DropdownLink>
+              </div>
+              
+              <div>
+                <h3 style={{ 
+                  fontSize: '12px', 
+                  color: '#6b7280', 
+                  textTransform: 'uppercase', 
+                  fontWeight: '600',
+                  marginBottom: '8px'
+                }}>
+                  E-commerce
+                </h3>
+                <DropdownLink href="#buy-products">Buy Soaps & Coffee</DropdownLink>
+                <DropdownLink href="#product-list">Product List</DropdownLink>
+              </div>
+            </div>
             )}
           </div>
+
           <NavLink href="/mentorship">Mentorship</NavLink>
           <NavLink href="/contact">Contact</NavLink>
-          <NavLink href="/login">Login</NavLink>
+          
+          {/* Login Button */}
+          <Link href="/login">
+            <span style={{
+              backgroundColor: 'purple',
+              color: 'white',
+              padding: '8px 16px',
+              borderRadius: '6px',
+              fontSize: '14px',
+              fontWeight: '500',
+              cursor: 'pointer',
+              display: 'inline-block',
+              textDecoration: 'none'
+            }}>
+              Login
+            </span>
+          </Link>
         </div>
       </div>
     </nav>
@@ -72,8 +197,34 @@ interface NavLinkProps {
 
 function NavLink({ href, children }: NavLinkProps) {
   return (
-    <Link href={href} passHref>
-      <span className="block text-purple-yego hover:text-purple-800 transition-colors cursor-pointer py-1">
+    <Link href={href}>
+      <span style={{
+        color: '#374151',
+        fontSize: '14px',
+        fontWeight: '500',
+        cursor: 'pointer',
+        textDecoration: 'none',
+        padding: '8px 0'
+      }}>
+        {children}
+      </span>
+    </Link>
+  )
+}
+
+function DropdownLink({ href, children }: NavLinkProps) {
+  return (
+    <Link href={href}>
+      <span style={{
+        display: 'block',
+        color: '#374151',
+        fontSize: '14px',
+        padding: '8px 12px',
+        borderRadius: '4px',
+        cursor: 'pointer',
+        textDecoration: 'none',
+        marginBottom: '4px'
+      }}>
         {children}
       </span>
     </Link>

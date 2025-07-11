@@ -1,5 +1,7 @@
+
+import Navbar from '@/components/Navbar'
 import './globals.css'
-import Navbar from '../components/Navbar'
+
 import type { ReactNode } from 'react'
 
 export const metadata = {
@@ -15,7 +17,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <body>
-        <Navbar />
+       <Navbar/>
         {children}
       </body>
     </html>
