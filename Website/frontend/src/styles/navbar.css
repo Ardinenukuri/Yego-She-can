@@ -1,11 +1,9 @@
-/* === GLOBAL RESET === */
 * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
 }
 
-/* === NAVBAR === */
 .navbar {
   background-color: #f8f6f5;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -18,7 +16,6 @@
   width: 100%;
 }
 
-/* === NAVBAR CONTAINER === */
 .navbar-container {
   width: 100%;
   max-width: 1280px;
@@ -29,7 +26,6 @@
   align-items: center;
 }
 
-/* === LOGO === */
 .logo-link {
   display: flex;
   align-items: center;
@@ -40,7 +36,6 @@
   width: auto;
 }
 
-/* === NAV LINKS === */
 .nav-links {
   display: flex;
   align-items: center;
@@ -73,7 +68,6 @@
   width: 100%;
 }
 
-/* === DROPDOWN MENU === */
 .dropdown-wrapper {
   position: relative;
 }
@@ -131,7 +125,6 @@
   padding: 16px;
 }
 
-/* === DROPDOWN SECTIONS === */
 .dropdown-section {
   margin-bottom: 16px;
 }
@@ -160,7 +153,6 @@
   background-color: #f3f4f6;
 }
 
-/* === LOGIN BUTTON === */
 .login-button {
   background-color: #6b21a8;
   color: white;

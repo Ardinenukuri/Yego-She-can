@@ -3,10 +3,7 @@
 import { useState, ChangeEvent, FormEvent } from 'react'
 import './login.css'
 
-type AuthMode = 'login' | 'signup'
-
 export default function LoginPage() {
-  const [mode, setMode] = useState<AuthMode>('login')
   const [form, setForm] = useState({ email: '', password: '' })
   const [error, setError] = useState<string | null>(null)
 
@@ -25,40 +22,22 @@ export default function LoginPage() {
 
     setError(null)
 
-    if (mode === 'login') {
-      console.log('Logging in:', form)
-      alert('Login successful! (placeholder)')
-    } else {
-      console.log('Signing up:', form)
-      alert('Signup successful! (placeholder)')
-    }
+    // Placeholder logic - Replace with actual API call
+    console.log('Logging in:', form)
+    alert('Login successful! (placeholder)')
 
-    setForm({ email: '', password: '' })
-  }
-
-  const toggleMode = () => {
-    setMode((prev) => (prev === 'login' ? 'signup' : 'login'))
-    setError(null)
     setForm({ email: '', password: '' })
   }
 
   return (
     <div className="login-container">
       <form className="login-form" onSubmit={handleSubmit}>
-        <h2 className="login-title">
-          {mode === 'login' ? 'Welcome Back' : 'Create Account'}
-        </h2>
-        <p className="login-subtitle">
-          {mode === 'login'
-            ? 'Login to your Yego SheCan account'
-            : 'Join the Yego SheCan community'}
-        </p>
+        <h2 className="login-title">Welcome Back</h2>
+        <p className="login-subtitle">Login to your Yego SheCan account</p>
 
         {error && <p className="login-error">{error}</p>}
 
-        <label htmlFor="email" className="login-label">
-          Email
-        </label>
+        <label htmlFor="email" className="login-label">Email</label>
         <input
           id="email"
           name="email"
@@ -69,9 +48,7 @@ export default function LoginPage() {
           required
         />
 
-        <label htmlFor="password" className="login-label">
-          Password
-        </label>
+        <label htmlFor="password" className="login-label">Password</label>
         <input
           id="password"
           name="password"
@@ -82,15 +59,11 @@ export default function LoginPage() {
           required
         />
 
-        <button type="submit" className="login-button">
-          {mode === 'login' ? 'Login' : 'Sign Up'}
-        </button>
+        <button type="submit" className="login-button">Login</button>
 
         <p className="login-footer">
-          {mode === 'login' ? "Don't have an account?" : 'Already have an account?'}{' '}
-          <button type="button" onClick={toggleMode} className="login-link">
-            {mode === 'login' ? 'Sign up' : 'Login'}
-          </button>
+          Don’t have an account?{' '}
+          <a href="/register" className="login-link">Sign up</a>
         </p>
       </form>
     </div>
