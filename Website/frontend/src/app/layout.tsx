@@ -1,25 +1,9 @@
-
-import Navbar from '@/components/Navbar'
 import './globals.css'
 
-import type { ReactNode } from 'react'
-
-export const metadata = {
-  title: 'Yego SheCan',
-  description: 'Empowering underserved women through entrepreneurship and e-learning.',
-}
-
-interface RootLayoutProps {
-  children: ReactNode
-}
-
-export default function RootLayout({ children }: RootLayoutProps) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>
-       <Navbar/>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   )
 }
