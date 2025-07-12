@@ -26,12 +26,18 @@ export default function Navbar() {
     <nav className="navbar">
       <div className="navbar-container">
         <Link href="/" className="logo-link">
-          <Image src={logo} alt="Yego SheCan Logo" width={120} height={40} className="logo-img" />
+          <Image
+            src={logo}
+            alt="Yego SheCan Logo"
+            width={120}
+            height={60}
+            style={{ height: '60px', width: 'auto', borderRadius: '50px' }}
+          />
         </Link>
 
         <div className="nav-links">
-          <NavLink href="/" className="nav-link">Home</NavLink>
-          <NavLink href="#about" className="nav-link">About</NavLink>
+          <NavLink href="/">Home</NavLink>
+          <NavLink href="#about">About</NavLink>
 
           <div className="dropdown-wrapper">
             <button
@@ -49,12 +55,20 @@ export default function Navbar() {
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
             </button>
 
             {hydrated && showDropdown && (
-              <div className="dropdown" onMouseLeave={() => setShowDropdown(false)}>
+              <div
+                className="dropdown"
+                onMouseLeave={() => setShowDropdown(false)}
+              >
                 <div className="dropdown-section">
                   <h3 className="dropdown-title">Entrepreneurship Courses</h3>
                   <DropdownLink href="#online-courses">Online Courses</DropdownLink>
@@ -77,10 +91,12 @@ export default function Navbar() {
             )}
           </div>
 
-          <NavLink href="/mentorship" className="nav-link">Mentorship</NavLink>
-          <NavLink href="/contact" className="nav-link">Contact</NavLink>
+          <NavLink href="/mentorship">Mentorship</NavLink>
+          <NavLink href="/contact">Contact</NavLink>
 
-          <Link href="/login" className="login-btn">Login</Link>
+          <Link href="/login">
+            <span className="login-button">Login</span>
+          </Link>
         </div>
       </div>
     </nav>
@@ -95,16 +111,16 @@ interface NavLinkProps {
 
 function NavLink({ href, children, className }: NavLinkProps) {
   return (
-    <Link href={href} className={className}>
-      {children}
+    <Link href={href}>
+      <span className={`nav-link ${className || ''}`}>{children}</span>
     </Link>
   )
 }
 
 function DropdownLink({ href, children }: NavLinkProps) {
   return (
-    <Link href={href} className="dropdown-link">
-      {children}
+    <Link href={href}>
+      <span className="dropdown-link">{children}</span>
     </Link>
   )
 }
