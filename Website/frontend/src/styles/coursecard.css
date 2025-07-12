@@ -1,0 +1,125 @@
+.courses-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
+  margin-top: 1.5rem;
+}
+
+.course-card {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.course-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.course-img-wrapper {
+  position: relative;
+  width: 50%;
+  height: 180px;
+  overflow: hidden;
+}
+
+.course-image {
+  width: 50%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bookmark-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: white;
+  border: none;
+  border-radius: 50%;
+  padding: 6px;
+  cursor: pointer;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+.course-card-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 1rem 0 1rem;
+}
+
+.course-level {
+  background: #ffe8eb;
+  color: #cc0f35;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.course-price {
+  color: #e11d48;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.course-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  padding: 0 1rem;
+  margin-top: 0.5rem;
+}
+
+.course-desc {
+  font-size: 0.95rem;
+  color: #555;
+  padding: 0 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.course-meta {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.85rem;
+  color: #444;
+  padding: 0 1rem;
+  margin-bottom: 1rem;
+}
+
+.course-meta svg {
+  vertical-align: middle;
+  margin-right: 0.3rem;
+}
+
+.course-learn {
+  padding: 0 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.course-learn ul {
+  padding-left: 1rem;
+  margin-top: 0.5rem;
+}
+
+.course-learn li {
+  font-size: 0.9rem;
+  color: #2e7d32;
+  margin-bottom: 0.3rem;
+}
+
+.course-btn {
+  margin: 0 1rem 1rem 1rem;
+  background-color: #e11d48;
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.course-btn:hover {
+  background-color: #c8103f;
+}
