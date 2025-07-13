@@ -1,4 +1,3 @@
-// app/course/page.tsx
 'use client'
 
 import React from 'react'

@@ -22,7 +22,6 @@ export default function LoginPage() {
 
     setError(null)
 
-    // Placeholder logic - Replace with actual API call
     console.log('Logging in:', form)
     alert('Login successful! (placeholder)')
 
