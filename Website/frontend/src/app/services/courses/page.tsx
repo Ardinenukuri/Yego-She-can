@@ -1,9 +1,8 @@
 import Link from "next/link";
 import "../../../styles/courses.css";
 import { spec } from "node:test/reporters";
-import { FiClock, FiBookOpen, FiAward, FiUsers } from "react-icons/fi"; // Feather Icons
+import { FiClock, FiBookOpen, FiAward, FiUsers } from "react-icons/fi"; 
 
-// import CourseCard from "../../../components/coursecard";
 export default function CoursesPage() {
   const courses = [
     {
