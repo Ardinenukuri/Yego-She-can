@@ -1,10 +1,11 @@
-// src/app/layout.tsx (Corrected Version)
-
 import './globals.css';
-import Navbar from '../components/Navbar'; // Your Navbar can stay
 import type { ReactNode } from 'react';
-import { AuthProvider } from '@/contexts/AuthContext'; // 1. Import AuthProvider
-import { Toaster } from 'react-hot-toast'; // 2. Import Toaster for notifications
+
+
+import ClientLayout from '@/components/ClientLayout';      
+import { AuthProvider } from '@/contexts/AuthContext';    
+import { Toaster } from 'react-hot-toast';                  
+
 
 export const metadata = {
   title: 'Yego SheCan',
@@ -19,11 +20,13 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <body>
-        {/* 3. Wrap everything inside the body with AuthProvider */}
+        
         <AuthProvider>
-          <Navbar /> 
-          <Toaster position="top-right" /> {/* Place Toaster here */}
-          {children}
+
+          <Toaster position="top-right" />
+          <main>
+            <ClientLayout>{children}</ClientLayout>
+          </main>
         </AuthProvider>
       </body>
     </html>

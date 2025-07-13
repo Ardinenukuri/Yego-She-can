@@ -1,19 +1,18 @@
-// next.config.mjs
+import { NextConfig } from 'next';
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  // --- ADD THIS 'images' CONFIGURATION BLOCK ---
+
+const nextConfig: NextConfig = { 
   images: {
     remotePatterns: [
       {
         protocol: 'http',
         hostname: 'localhost',
-        port: '5000', // Specify the port of your backend
-        pathname: '/uploads/**', // Allow any image from the 'uploads' folder
+        port: '5000',
+        pathname: '/uploads/**',
       },
     ],
   },
-  // -----------------------------------------
+  allowedDevOrigins: ['http://192.168.43.229:3000'],
 };
 
 export default nextConfig;
