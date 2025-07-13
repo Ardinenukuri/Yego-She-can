@@ -22,18 +22,18 @@
 .contact-content {
   display: flex;
   flex-wrap: wrap;
-  gap: 2rem;
+  gap: 5rem;
   max-width: 1280px;
   margin: 0 auto;
 }
 
 .contact-form-card,
 .contact-info-card {
-  background-color: white;
-  padding: 2rem;
+  background-color: rgba(255, 255, 255, 0.507);
+  padding: 3rem;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  flex: 1 1 480px;
+  flex: 1 1 300px;
 }
 
 .contact-form-card h3,
@@ -67,7 +67,7 @@
 .contact-form select,
 .contact-form textarea {
   width: 100%;
-  padding: 0.8rem;
+  padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 1rem;
@@ -79,7 +79,7 @@
   background-color: #7c34ab;
   color: white;
   border: none;
-  padding: 0.9rem 1.5rem;
+  padding: 0.5rem 1.5rem;
   font-size: 1rem;
   border-radius: 6px;
   cursor: pointer;

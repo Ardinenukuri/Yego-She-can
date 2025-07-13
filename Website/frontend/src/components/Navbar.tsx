@@ -37,7 +37,7 @@ export default function Navbar() {
 
         <div className="nav-links">
           <NavLink href="/">Home</NavLink>
-          <NavLink href="#about">About</NavLink>
+          <NavLink href="/about">About</NavLink>
 
           <div className="dropdown-wrapper">
             <button
@@ -71,21 +71,21 @@ export default function Navbar() {
               >
                 <div className="dropdown-section">
                   <h3 className="dropdown-title">Entrepreneurship Courses</h3>
-                  <DropdownLink href="#online-courses">Online Courses</DropdownLink>
-                  <DropdownLink href="#certification">Timeline & Certification</DropdownLink>
-                  <DropdownLink href="#register">Register / Learn More</DropdownLink>
+                  <DropdownLink href="/courses">Online Courses</DropdownLink>
+                  <DropdownLink href="certification">Timeline & Certification</DropdownLink>
+                  <DropdownLink href="register">Register / Learn More</DropdownLink>
                 </div>
 
                 <div className="dropdown-section">
                   <h3 className="dropdown-title">Physical Programs</h3>
-                  <DropdownLink href="#soap-training">Soap & Coffee Training</DropdownLink>
-                  <DropdownLink href="#program-details">Program Details</DropdownLink>
+                  <DropdownLink href="soap-training">Soap & Coffee Training</DropdownLink>
+                  <DropdownLink href="program-details">Program Details</DropdownLink>
                 </div>
 
                 <div className="dropdown-section">
                   <h3 className="dropdown-title">E-commerce</h3>
-                  <DropdownLink href="#buy-products">Buy Soaps & Coffee</DropdownLink>
-                  <DropdownLink href="#product-list">Product List</DropdownLink>
+                  <DropdownLink href="buy-products">Buy Soaps & Coffee</DropdownLink>
+                  <DropdownLink href="product-list">Product List</DropdownLink>
                 </div>
               </div>
             )}

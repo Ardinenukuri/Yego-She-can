@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
+import './course.css'
 
 const CoursePage = () => {
   const courses = [
@@ -11,14 +12,14 @@ const CoursePage = () => {
   ]
 
   return (
-    <main className="p-6">
-      <h1 className="text-3xl font-bold mb-4">Available Courses</h1>
-      <div className="grid gap-4 md:grid-cols-2">
+    <main className="course-page-wrapper">
+      <h1 className="course-heading">Available Courses</h1>
+      <div className="course-grid">
         {courses.map(course => (
-          <div key={course.id} className="border p-4 rounded shadow hover:shadow-lg transition">
-            <h2 className="text-xl font-semibold">{course.title}</h2>
-            <p className="text-gray-600 mb-2">{course.description}</p>
-            <Link href={`/course/${course.id}`} className="text-blue-600 hover:underline">
+          <div key={course.id} className="course-card">
+            <h2 className="course-title">{course.title}</h2>
+            <p className="course-desc">{course.description}</p>
+            <Link href={`/course/${course.id}`} className="course-link">
               View Details
             </Link>
           </div>
