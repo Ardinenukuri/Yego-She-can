@@ -1,99 +1,70 @@
-'use client';
+'use client'
 
-import { useState, ChangeEvent, FormEvent } from 'react';
+import { useState, ChangeEvent, FormEvent } from 'react'
+import './login.css'
 
-type AuthMode = 'login' | 'signup';
-
-type AuthFormData = {
-  email: string;
-  password: string;
-};
-
-const Login = () => {
-  const [mode, setMode] = useState<AuthMode>('login');
-  const [form, setForm] = useState<AuthFormData>({ email: '', password: '' });
-  const [error, setError] = useState<string | null>(null);
+export default function LoginPage() {
+  const [form, setForm] = useState({ email: '', password: '' })
+  const [error, setError] = useState<string | null>(null)
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
+    const { name, value } = e.target
+    setForm((prev) => ({ ...prev, [name]: value }))
+  }
 
   const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (!form.email || !form.password) {
-      setError('Please fill in all fields.');
-      return;
+      setError('Please fill in all fields.')
+      return
     }
 
-    setError(null);
+    setError(null)
 
-    if (mode === 'login') {
-      console.log('Logging in:', form);
-      // TODO: Call login API here
-      alert('Login successful! (placeholder)');
-    } else {
-      console.log('Signing up:', form);
-      // TODO: Call signup API here
-      alert('Signup successful! (placeholder)');
-    }
+    console.log('Logging in:', form)
+    alert('Login successful! (placeholder)')
 
-    setForm({ email: '', password: '' });
-  };
-
-  const toggleMode = () => {
-    setMode((prev) => (prev === 'login' ? 'signup' : 'login'));
-    setForm({ email: '', password: '' });
-    setError(null);
-  };
+    setForm({ email: '', password: '' })
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center mb-6">
-          {mode === 'login' ? 'Login to Your Account' : 'Create an Account'}
-        </h2>
+    <div className="login-container">
+      <form className="login-form" onSubmit={handleSubmit}>
+        <h2 className="login-title">Welcome Back</h2>
+        <p className="login-subtitle">Login to your Yego SheCan account</p>
 
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+        {error && <p className="login-error">{error}</p>}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="email"
-            name="email"
-            value={form.email}
-            onChange={handleChange}
-            placeholder="Email"
-            required
-            className="w-full p-3 border border-gray-300 rounded"
-          />
-          <input
-            type="password"
-            name="password"
-            value={form.password}
-            onChange={handleChange}
-            placeholder="Password"
-            required
-            className="w-full p-3 border border-gray-300 rounded"
-          />
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700"
-          >
-            {mode === 'login' ? 'Log In' : 'Sign Up'}
-          </button>
-        </form>
+        <label htmlFor="email" className="login-label">Email</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          className="login-input"
+          value={form.email}
+          onChange={handleChange}
+          required
+        />
 
-        <p className="text-center mt-4 text-sm text-gray-600">
-          {mode === 'login' ? "Don't have an account?" : 'Already have an account?'}{' '}
-          <button onClick={toggleMode} className="text-blue-600 hover:underline">
-            {mode === 'login' ? 'Sign up' : 'Log in'}
-          </button>
+        <label htmlFor="password" className="login-label">Password</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          className="login-input"
+          value={form.password}
+          onChange={handleChange}
+          required
+        />
+
+        <button type="submit" className="login-button">Login</button>
+
+        <p className="login-footer">
+          Don’t have an account?{' '}
+          <a href="/register" className="login-link">Sign up</a>
         </p>
-      </div>
+      </form>
     </div>
-  );
-};
-
-export default Login;
-
+  )
+}
