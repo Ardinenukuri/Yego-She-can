@@ -66,12 +66,12 @@ export default function Navbar() {
       <p className="dropdown-desc">Accounting, Sales, Marketing, Design Thinking</p>
     </Link>
 
-    <Link href="#soap-training" className="dropdown-item">
+    <Link href="/services/physical" className="dropdown-item">
       <strong className="dropdown-title">Physical Programs</strong>
       <p className="dropdown-desc">Soap & Coffee making workshops</p>
     </Link>
 
-    <Link href="#buy-products" className="dropdown-item">
+    <Link href="/services/entreprenuer" className="dropdown-item">
       <strong className="dropdown-title">E-commerce</strong>
       <p className="dropdown-desc">Buy soaps & coffee from our graduates</p>
     </Link>

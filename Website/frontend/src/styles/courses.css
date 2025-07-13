@@ -550,23 +550,6 @@ Key Features
   margin-bottom: 20px;
 }
 
-/* Contact Section */
-.contact-section {
-  padding: 60px 20px;
-  background: #1a1a1a;
-  color: white;
-  text-align: center;
-}
-
-.contact-section h2 {
-  font-size: 2rem;
-  margin-bottom: 15px;
-}
-
-.contact-section p {
-  margin-bottom: 10px;
-  color: #a0aec0;
-}
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
