@@ -89,7 +89,7 @@ export default function Footer() {
             <span className="footer-icon">
               <FaPhone />
             </span>{' '}
-            +250 793 213 119
+            +250 782 742 723
           </p>
           <p className="footer-contact-item">
             <span className="footer-icon">
