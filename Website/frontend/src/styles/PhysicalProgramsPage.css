@@ -1,0 +1,368 @@
+.page-wrapper {
+  background-color: white;
+  font-family: sans-serif;
+  color: #1f2937; /* Tailwind's gray-900 */
+}
+
+/* Hero Section */
+.heroSection {
+  padding: 5rem 1rem;
+  background: linear-gradient(to right, #fff1f2, #ffe4e6);
+  text-align: center;
+}
+
+.heroSection h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+
+.heroSection h1 span {
+  color: purple;
+}
+
+.heroSection p {
+  font-size: 1.25rem;
+  color: #4b5563;
+  margin-bottom: 2rem;
+  max-width: 50rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.heroButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+@media (min-width: 640px) {
+  .heroButtons {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+.primaryButton,
+.outlineButton {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+}
+
+.primaryButton {
+  background-color: purple;
+  color: white;
+  border: none;
+}
+
+.primaryButton:hover {
+  background-color: #be123c;
+}
+
+.outlineButton {
+  background-color: transparent;
+  border: 1px solid #e5e7eb;
+  color: #1f2937;
+}
+
+.outlineButton:hover {
+  background-color: #f3f4f6;
+}
+
+/* Section Headings */
+h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.hero-details {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hero-left img {
+  width: 100%;
+  max-width: 450px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.hero-right {
+  flex: 1;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.card {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.card-icon {
+  font-size: 1.8rem;
+  color: purple /* example primary color */
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.card-content p {
+  margin: 0;
+  color: #555;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.dark-card {
+  background: purple;
+  color: white;
+}
+
+.dark-card .card-icon {
+  color: #fff;
+}
+
+.dark-card .card-content p {
+  color: #e0e0ff;
+}
+
+
+/* Prerequisites Section */
+.prerequisitesContainer {
+  background-color: rgb(235, 235, 235);
+  padding: 2rem;
+  border-radius: 0.5rem;
+}
+
+.prerequisitesGrid {
+  display: grid;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .prerequisitesGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  color: #4b5563;
+  margin-bottom: 0.5rem;
+}
+
+.checkIcon {
+  color: #10b981;
+  margin-right: 0.5rem;
+}
+
+/* Program Cards */
+.programsSection {
+  padding: 4rem 1rem;
+  background-color: #f9fafb;
+}
+
+.programList {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.programCard {
+  display: grid;
+  grid-template-columns: 1fr;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+@media (min-width: 1024px) {
+  .programCard {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.imageContainer {
+  position: relative;
+}
+
+.imageContainer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.badge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background-color: purple;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  border-radius: 0.25rem;
+}
+
+.programDetails {
+  padding: 2rem;
+}
+
+.programDetails h3 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.programDetails p {
+  color: #4b5563;
+  margin-bottom: 1rem;
+}
+
+.programMeta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.metaIcon {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.25rem;
+}
+
+.skillsSection h4,
+.requirementsSection h4 {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.skillsSection li,
+.requirementsSection li {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+}
+
+.requirementIcon {
+  color: purple;
+  margin-right: 0.5rem;
+}
+
+.registerButton {
+  display: inline-block;
+  margin-top: 1.5rem;
+  background-color: purple;
+  color: white;
+  padding: 0.75rem;
+  text-align: center;
+  border-radius: 0.375rem;
+  text-decoration: none;
+}
+
+.registerButton:hover {
+  background-color: #be123c;
+}
+
+/* CTA Section */
+.ctaSection {
+  background-color: purple;
+  color: white;
+  padding: 4rem 1rem;
+  text-align: center;
+}
+
+.ctaSection h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+
+.ctaSection p {
+  font-size: 1.25rem;
+  opacity: 0.9;
+  margin-bottom: 2rem;
+}
+
+.ctaButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (min-width: 640px) {
+  .ctaButtons {
+    flex-direction: row;
+  }
+}
+
+.secondaryButton {
+  background-color: white;
+  color: purple;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.outlineLightButton {
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.outlineLightButton:hover {
+  background-color: white;
+  color: purple;
+}
