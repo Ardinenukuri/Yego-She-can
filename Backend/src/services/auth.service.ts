@@ -6,6 +6,7 @@ import crypto from 'crypto';
 import sendEmail from '../utils/email';
 import { UserRegistrationData } from '../types/user.types';
 import { RegisterBody } from '../schemas/auth.schema';
+import { CourseService } from './CourseService';
 
 export const AuthService = {
     register: async (userData: RegisterBody, req: Request) => {
@@ -77,7 +78,7 @@ export const AuthService = {
         }
         const user = rows[0];
 
-        // --- SECURITY CHECK ---
+        
   if (user.status === 'disabled') {
     throw new Error('Your account has been disabled. Please contact support.');
   }
@@ -286,64 +287,188 @@ export const AuthService = {
     },
 
     
+    
+    inviteMentor: async (email: string, courseId: number, inviterId: number) => {
+        const course = await CourseService.getCourseById(courseId);
+        if (!course) {
+            throw new Error('Course not found.');
+        }
+
+        
+        const existingUser = await pool.query('SELECT id, status FROM users WHERE email = $1', [email]);
+        if (existingUser.rows.length > 0 && existingUser.rows[0].status === 'active') {
+            throw new Error('An active user with this email already exists.');
+        }
+
+        
+        const client = await pool.connect();
+        try {
+            await client.query('BEGIN');
+
+            const invitationToken = crypto.randomBytes(32).toString('hex');
+            const hashedToken = crypto.createHash('sha256').update(invitationToken).digest('hex');
+
+            
+            const userInsertQuery = `
+                INSERT INTO users (email, verification_token, role, status)
+                VALUES ($1, $2, 'mentor', 'pending')
+                ON CONFLICT (email) DO UPDATE SET verification_token = EXCLUDED.verification_token
+                RETURNING id
+            `;
+            const userResult = await client.query(userInsertQuery, [email, hashedToken]);
+            const newMentorId = userResult.rows[0].id;
+            
+            
+            const assignmentQuery = `
+                INSERT INTO course_mentors (course_id, mentor_id)
+                VALUES ($1, $2)
+                ON CONFLICT (course_id, mentor_id) DO NOTHING
+            `;
+            await client.query(assignmentQuery, [courseId, newMentorId]);
+            
+            await client.query('COMMIT');
+            
+            
+            const completeRegistrationURL = `${process.env.FRONTED_URL || 'http://localhost:3000'}/auth/complete-registration/${invitationToken}`;
+
+            const message = `
+                <h1>You've been invited to be a Mentor at YegoSheCan!</h1>
+                <p>You have been invited to mentor the course: <strong>${course.name}</strong>.</p>
+                <p>Please click the link below to complete your registration and set up your account:</p>
+                <a href="${completeRegistrationURL}" style="background-color: #008CBA; color: white; padding: 14px 25px; text-align: center; text-decoration: none; display: inline-block; border-radius: 8px;">Complete Your Registration</a>
+                <p>This link is valid for a limited time.</p>
+            `;
+
+            await sendEmail({
+                to: email,
+                subject: `Invitation to Mentor at YegoSheCan for ${course.name}`,
+                text: `Complete your registration by visiting this URL: ${completeRegistrationURL}`,
+                html: message,
+            });
+
+            return { id: newMentorId, email, role: 'mentor', status: 'pending' };
+
+        } catch (error) {
+            await client.query('ROLLBACK');
+            throw error; 
+        } finally {
+            client.release();
+        }
+    },
+
     completeRegistration: async (token: string, userData: any) => {
-        const { username, firstName, lastName, password } = userData;
+        const { firstName, lastName, username, password } = userData;
 
         const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
         const { rows } = await pool.query(
-            'SELECT * FROM users WHERE verification_token = $1 AND is_verified = FALSE',
+            `SELECT id, role FROM users 
+             WHERE verification_token = $1 AND status = 'pending'`,
             [hashedToken]
         );
 
         if (rows.length === 0) {
             return { success: false, message: 'Invitation token is invalid or has already been used.' };
         }
+        
         const user = rows[0];
 
         const salt = await bcrypt.genSalt(10);
         const passwordHash = await bcrypt.hash(password, salt);
 
         const { rows: updatedRows } = await pool.query(
-    `UPDATE users SET 
-        username = $1, first_name = $2, last_name = $3, password_hash = $4,
-        is_verified = TRUE, verification_token = NULL,
-        status = 'active' -- Set status to active upon completion
-     WHERE id = $5
-     RETURNING id, username, email`,
-    [username, firstName, lastName, passwordHash, user.id]
-  );
-  return { success: true, user: updatedRows[0] };
+            `UPDATE users SET 
+                first_name = $1,
+                last_name = $2,
+                username = $3,
+                password_hash = $4,
+                is_verified = TRUE,
+                verification_token = NULL,
+                status = 'active'
+             WHERE id = $5
+             RETURNING id, username, email, role, status`,
+            [firstName, lastName, username, passwordHash, user.id]
+        );
+
+        return { success: true, user: updatedRows[0] };
     },
 
-    inviteUser: async (email: string, req: Request) => { 
-        const invitationToken = crypto.randomBytes(32).toString('hex');
-        const hashedToken = crypto.createHash('sha256').update(invitationToken).digest('hex');
-
+    getAllUsers: async () => {
         const { rows } = await pool.query(
-            'INSERT INTO users (email, verification_token) VALUES ($1, $2) RETURNING *',
-            [email, hashedToken, , 'pending']
+            `SELECT id, username, email, first_name, last_name, role, status, created_at 
+             FROM users ORDER BY created_at DESC`
         );
-        const newUser = rows[0];
+        return rows;
+    },
 
-        const completeRegistrationURL = `${process.env.FRONTED_URL || 'http://localhost:3000'}/complete-registration/${invitationToken}`;
+    updateUser: async (userId: number, status?: 'active' | 'disabled', role?: 'user' | 'mentor' | 'program manager') => {
+        const fieldsToUpdate: string[] = [];
+        const values: any[] = [];
+        let paramIndex = 1;
 
-        const message = `
-            <h1>You've been invited!</h1>
-            <p>You have been invited to join the YegoSheCan Platform. Please click the link below to complete your registration and set your password:</p>
-            <a href="${completeRegistrationURL}" style="background-color: #008CBA; color: white; padding: 14px 25px; text-align: center; text-decoration: none; display: inline-block; border-radius: 8px;">Complete Your Registration</a>
-            <p>This link is valid for a limited time.</p>
+        if (status) {
+            fieldsToUpdate.push(`status = $${paramIndex++}`);
+            values.push(status);
+        }
+        if (role) {
+            fieldsToUpdate.push(`role = $${paramIndex++}`);
+            values.push(role);
+        }
+
+        if (fieldsToUpdate.length === 0) {
+            throw new Error("No update information provided.");
+        }
+
+        values.push(userId); 
+
+        const updateQuery = `
+            UPDATE users SET ${fieldsToUpdate.join(', ')}, updated_at = NOW()
+            WHERE id = $${paramIndex}
+            RETURNING id, username, email, role, status
         `;
 
-        await sendEmail({
-            to: newUser.email,
-            subject: 'Invitation to Join the Inventory Platform',
-            text: `Complete your registration by visiting this URL: ${completeRegistrationURL}`,
-            html: message,
-        });
-
-        return newUser;
+        const { rows } = await pool.query(updateQuery, values);
+        if (rows.length === 0) {
+            throw new Error('User not found.');
+        }
+        return rows[0];
     },
 
+    
+    deleteUser: async (userId: number): Promise<{ success: boolean }> => {
+        const result = await pool.query('DELETE FROM users WHERE id = $1', [userId]);
+        if (result.rowCount === 0) {
+            throw new Error('User not found.');
+        }
+        return { success: true };
+    },
 
+    getEnrolledLearnersForCourse: async (mentorId: number, courseId: number) => {
+        const assignmentCheck = await pool.query(
+            'SELECT * FROM course_mentors WHERE mentor_id = $1 AND course_id = $2',
+            [mentorId, courseId]
+        );
+        if (assignmentCheck.rowCount === 0) {
+            throw new Error('Forbidden: You are not a mentor for this course.');
+        }
 
+        const query = `
+            SELECT
+                u.id,
+                u.first_name,
+                u.last_name,
+                u.email,
+                e.enrolled_at
+            FROM users u
+            JOIN enrollments e ON u.id = e.learner_id
+            WHERE e.course_id = $1 AND u.role = 'learner'
+            ORDER BY e.enrolled_at DESC
+        `;
+        const { rows } = await pool.query(query, [courseId]);
+        return rows;
+    },
 };
+
+
+
+

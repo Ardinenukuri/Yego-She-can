@@ -124,7 +124,6 @@ export const AuthController = {
   
   getProfile: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            // The `protect` middleware adds the `user` object to the request
             const userId = (req as any).user.id;
             const userProfile = await AuthService.getProfile(userId);
 
@@ -142,7 +141,7 @@ export const AuthController = {
         try {
             const userId = (req as any).user.id;
             const profileData = req.body;
-            const profilePictureFile = req.file; // Multer adds the `file` object
+            const profilePictureFile = req.file; 
 
             const updatedProfile = await AuthService.updateProfile(
                 userId,
@@ -158,32 +157,49 @@ export const AuthController = {
             next(error);
         }
     },
+
+
+    inviteMentor: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { email, courseId } = req.body;
+            const inviterId = (req as any).user.id;
+            const mentor = await AuthService.inviteMentor(email, courseId, inviterId);
+            res.status(201).json({ message: 'Mentor invitation sent successfully', mentor });
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    completeRegistration: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { token } = req.params; 
+            const userData = req.body;   
+
+            const result = await AuthService.completeRegistration(token, userData);
+
+            if (!result.success) {
+                return res.status(400).json({ message: result.message });
+            }
+
+            res.status(200).json({ 
+                message: 'Registration completed successfully!', 
+                user: result.user 
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
+
+
+    getAllUsers: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const users = await AuthService.getAllUsers();
+            res.status(200).json(users);
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    
 };
-    // completeRegistration: async (req: Request, res: Response) => {
-    //     try {
-    //         const parsedBody = completeRegistrationSchema.shape.body.parse(req.body);
-
-    //         const { token } = req.params;
-    //         const result = await AuthService.completeRegistration(token, parsedBody);
-            
-    //         if (!result.success) {
-    //             res.status(400).json({ message: result.message });
-    //             return; 
-    //         }
-    //         res.status(200).json({ message: 'Registration complete! You can now log in.', user: result.user });
-    //     } catch (error: any) {
-    //         if (error instanceof ZodError) {
-    //             res.status(400).json({
-    //                 message: "Input validation failed",
-    //                 errors: error.errors,
-    //             });
-    //             return; 
-    //         }
-    //         if (error.code === '23505') { 
-    //             res.status(409).json({ message: 'This username is already taken. Please choose another.' });
-    //             return;
-    //         }
-    //         res.status(500).json({ message: 'Error completing registration', error: error.message });
-    //     }
-    // },
-
+    

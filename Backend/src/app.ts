@@ -5,6 +5,9 @@ import express, { Request, Response, NextFunction } from 'express';
 import authRoutes from './routes/auth.routes';
 import path from 'path';
 import cors from 'cors';
+import courseRoutes from './routes/course.routes';
+import userRoutes from './routes/user.routes'
+import resourceRoutes from './routes/resource.routes';
 
 
 
@@ -23,8 +26,10 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.get('/api/healthcheck', (req, res) => res.status(200).json({ message: 'Server is running' }));
 app.use('/api/auth', authRoutes);
+app.use('/api/courses', courseRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/resources', resourceRoutes);
 
-// Basic error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
   res.status(500).json({ message: 'Something went wrong!' });
