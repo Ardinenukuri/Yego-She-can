@@ -1,4 +1,3 @@
-// src/app/auth/login/page.tsx
 "use client";
 
 import { useState } from 'react';
@@ -6,10 +5,9 @@ import toast from 'react-hot-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import api from '@/lib/api';
 import Link from 'next/link';
-import './login.css'; // Import the custom CSS file
+import './login.css'; 
 
 export default function LoginPage() {
-  // We use 'username' to match your backend logic
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
@@ -24,10 +22,8 @@ export default function LoginPage() {
     try {
       const response = await api.post('/api/auth/login', formData);
       toast.success('Login successful!');
-      // The login function from AuthContext handles token storage and redirection
       login(response.data.token, response.data.user);
     } catch (error: any) {
-      // Show the specific error message from the backend
       const errorMessage = error.response?.data?.message || 'Login failed. Please check your credentials.';
       toast.error(errorMessage);
     } finally {
@@ -68,7 +64,7 @@ export default function LoginPage() {
         </div>
 
         <div className="login-options">
-            <Link href="/auth/forgot-password" className="login-link">
+            <Link href="/forgot-password" className="login-link">
                 Forgot password?
             </Link>
         </div>

@@ -1,4 +1,3 @@
-// src/app/auth/register/page.tsx
 "use client";
 
 import { useState } from 'react';
@@ -6,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
 import Link from 'next/link';
-import '@/app/register/register.css'; // Import the custom CSS file
+import '@/app/register/register.css'; 
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
