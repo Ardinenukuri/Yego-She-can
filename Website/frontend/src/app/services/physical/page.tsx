@@ -102,7 +102,7 @@ export default function PhysicalProgramsPage() {
           <section className="hero-details">
             <div className="hero-left">
               <img
-                src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=60"
+                src="https://myayep.org/wp-content/uploads/elementor/thumbs/palms-up-hands-happy-group-multinational-african-latin-american-european-people-who-stay-together-circle-qftjwkd3vv6ucvihckmufycf6yohxufix7nbhgwtl6.jpg"
                 alt="Empowering Women Entrepreneurs"
               />
             </div>

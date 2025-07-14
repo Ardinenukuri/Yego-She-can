@@ -2,6 +2,7 @@
 
 import React,{ useState } from 'react'
 import Image from 'next/image'
+import { CheckCircle} from "lucide-react"
 import { FaUserCheck, FaCalendarAlt, FaHandsHelping } from 'react-icons/fa'
 import './mentorship.css'
 import heroImage from '../../../public/mentorship.jpg'
@@ -87,12 +88,12 @@ const MentorshipPage = () => {
             <section className="why-mentorship">
                 <h2>Why Choose Our Mentorship Program?</h2>
                 <ul>
-                    <li><strong>Completely Free:</strong> All mentorship sessions are provided at no cost as part of our commitment to supporting women entrepreneurs.</li>
-                    <li><strong>Experienced Mentors:</strong> Our mentors are successful women entrepreneurs with real-world experience in various industries.</li>
-                    <li><strong>Flexible Scheduling:</strong> Book sessions at times that work for your schedule, including evenings and weekends.</li>
-                    <li><strong>Personalized Guidance:</strong> Get advice tailored to your specific business goals, challenges, and industry.</li>
-                    <li><strong>Ongoing Support:</strong> Build long-term relationships with mentors who will support your journey over time.</li>
-                    <li><strong>Network Access:</strong> Connect with other mentees and expand your professional network within our community.</li>
+                    <li><CheckCircle/> <strong>Completely Free:</strong> All mentorship sessions are provided at no cost as part of our commitment to supporting women entrepreneurs.</li>
+                    <li><CheckCircle/> <strong>Experienced Mentors:</strong> Our mentors are successful women entrepreneurs with real-world experience in various industries.</li>
+                    <li><CheckCircle/> <strong>Flexible Scheduling:</strong> Book sessions at times that work for your schedule, including evenings and weekends.</li>
+                    <li><CheckCircle/> <strong>Personalized Guidance:</strong> Get advice tailored to your specific business goals, challenges, and industry.</li>
+                    <li><CheckCircle/> <strong>Ongoing Support:</strong> Build long-term relationships with mentors who will support your journey over time.</li>
+                    <li><CheckCircle/> <strong>Network Access:</strong> Connect with other mentees and expand your professional network within our community.</li>
                 </ul>
             </section>
       {/* // Add this section where you'd like the form to appear
