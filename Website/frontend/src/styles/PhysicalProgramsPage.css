@@ -59,7 +59,7 @@
 }
 
 .primaryButton {
-  background-color: purple;
+  background-color: #7c34ab;
   color: white;
   border: none;
 }
@@ -139,7 +139,7 @@ h2 {
 
 .card-icon {
   font-size: 1.8rem;
-  color: purple /* example primary color */
+  color: #7c34ab /* example primary color */
 }
 
 .card-title {
@@ -156,7 +156,7 @@ h2 {
 }
 
 .dark-card {
-  background: purple;
+  background: #7c34ab;
   color: white;
 }
 
@@ -250,7 +250,7 @@ li {
   position: absolute;
   top: 1rem;
   left: 1rem;
-  background-color: purple;
+  background-color: #7c34ab;
   color: white;
   padding: 0.25rem 0.5rem;
   font-size: 0.75rem;
@@ -301,14 +301,14 @@ li {
 }
 
 .requirementIcon {
-  color: purple;
+  color: #7c34ab;
   margin-right: 0.5rem;
 }
 
 .registerButton {
   display: inline-block;
   margin-top: 1.5rem;
-  background-color: purple;
+  background-color: #7c34ab;
   color: white;
   padding: 0.75rem;
   text-align: center;
@@ -317,7 +317,7 @@ li {
 }
 
 .registerButton:hover {
-  background-color:  purple;
+  background-color:  #7c34ab;
 }
 
 /* CTA Section */
@@ -356,7 +356,7 @@ li {
 }
 
 .secondaryButton {
-  background-color: purple;
+  background-color: #7c34ab;
   color: white;
   padding: 0.75rem 1.5rem;
   border-radius: 0.375rem;
@@ -366,7 +366,7 @@ li {
 
 .outlineLightButton {
   background: transparent;
-  border: 1px solid purple;
+  border: 1px solid #7c34ab;
   color: gray;
   padding: 0.75rem 1.5rem;
   border-radius: 0.375rem;
@@ -375,7 +375,7 @@ li {
 }
 
 .outlineLightButton:hover {
-  background-color: purple;
+  background-color: #7c34ab;
   color: white;
   
 }

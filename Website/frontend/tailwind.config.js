@@ -16,7 +16,7 @@ export default {
                     dark: '#2B2C37',
                     'v-dark': '#20212C',
                 },
-                purple: {
+                #7c34ab: {
                     DEFAULT: '#635FC7',
                     hover: '#A8A4FF',
                     yego: '#6A1B9A',

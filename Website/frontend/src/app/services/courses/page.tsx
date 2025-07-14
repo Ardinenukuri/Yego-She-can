@@ -124,15 +124,14 @@ export default function CoursesPage() {
       >
         <div className="hero-content backdrop">
           <div className="hero-text">
-            <p className="tagbanner">Yego She can</p>
             <h1>
-              Empowering Women <br />
+              Empowering Women 
               Entrepreneurs
             </h1>
-            <p>
+            <p style={{fontSize:'1rem'}}>
               Master the fundamentals of entrepreneurship with our comprehensive
-              online curriculum. <br />
-              Learn at your own pace with expert-designed courses and earn
+              online curriculum.
+              <br /> Learn at your own pace with expert-designed courses and earn
               certificates upon completion.
             </p>
             <div className="hero-buttons">
@@ -281,7 +280,9 @@ function CourseCard({ course }: { course: Course }) {
             <li key={index}>✔ {feature}</li>
           ))}
         </ul>
+        <Link href="/register">
         <button className="course-btn">Start Course</button>
+        </Link>
       </div>
     </div>
   );
