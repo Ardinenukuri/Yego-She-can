@@ -40,7 +40,7 @@ body {
   margin-bottom: 1rem;
 }
 .hero-text .tagbanner{
-  color: purple;
+  color: #7c34ab;
   font-weight: bold;
   display: inline-block;
   margin-bottom: 1rem;
@@ -56,7 +56,7 @@ body {
 }
 
 .btn-primary {
-  background: purple;
+  background: #7c34ab;
   color: white;
   padding: 15px 30px;
   border: none;
@@ -68,25 +68,26 @@ body {
 }
 
 .btn-primary:hover {
-  background: #403f40;
-  transform: translateY(-2px);
+  background: #6b21a8;
+  /* transform: translateY(-2px); */
 }
 
 .btn-secondary {
   background: transparent;
-  color: purple;
+  color: white;
   padding: 15px 30px;
   border: 2px solid #e2e8f0;
   border-radius: 6px;
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  /* transition: all 0.3s ease; */
 }
 
 .btn-secondary:hover {
   background: #f8fafc;
   border-color: #cbd5e0;
+  color: #7c34ab;
 }
 
 .hero-image {
@@ -149,7 +150,7 @@ h2{
 .card {
   background-color: rgb(235, 235, 235);
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 1rem;
   box-shadow: 0 4px 8px rgba(0,0,0,0.06);
   text-align: left;
   transition: transform 0.3s ease;
@@ -187,7 +188,7 @@ h2{
 
 /* Highlight one card (like dark blue card in image) */
 .dark-card {
-  background-color: purple;
+  background-color: #7c34ab;
   color: #fff;
 }
 
@@ -283,7 +284,7 @@ h2{
 /* Course Button */
 .course-btn {
   width: 100%;
-  background: purple;
+  background: #7c34ab;
   color: #fff;
   padding: 12px;
   border: none;
@@ -294,7 +295,7 @@ h2{
 }
 
 .course-btn:hover {
-  background: rgb(214, 6, 214);
+  background: #6b21a8;
 }
 
 /* Physical Notice Section */
@@ -355,9 +356,9 @@ h2{
 }
 
 /* Apply to Hero Content */
-.hero-content {
+/* .hero-content {
   animation: fadeInUp 2s ease-out both;
-}
+} */
 
 /* Apply to Cards in Grid */
 .card {

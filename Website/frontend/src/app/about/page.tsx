@@ -92,7 +92,7 @@ export default function About() {
           </div>
           <h2>Who We Serve</h2>
           <ul className="card-list">
-            <li>Underserved women aged 30 and above</li>
+            <li>Underserved women aged 30 and below</li>
             <li>Women seeking economic independence</li>
             <li>Aspiring entrepreneurs with limited resources</li>
             <li>Women looking to develop practical business skills</li>
@@ -103,7 +103,7 @@ export default function About() {
           <div className="card-icon">
             <FaHeart />
           </div>
-          <h2>Why We Focus on Women 30+</h2>
+          <h2>Why We Focus on Women 30-</h2>
           <ul className="card-list">
             <li>Life experience brings valuable perspective</li>
             <li>Strong motivation for financial stability</li>
