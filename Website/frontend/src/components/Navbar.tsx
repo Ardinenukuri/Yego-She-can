@@ -38,7 +38,7 @@ export default function Navbar() {
 
         <div className="nav-links">
           <NavLink href="/">Home</NavLink>
-          <NavLink href="#about">About</NavLink>
+          <NavLink href="/about">About</NavLink>
 
           <div className="dropdown-wrapper">
             <button
