@@ -1,74 +1,89 @@
-'use client'
+// src/app/auth/login/page.tsx
+"use client";
 
-import { useState, ChangeEvent, FormEvent } from 'react'
-import { useRouter } from 'next/navigation'
-import './login.css'
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import { useAuth } from '@/contexts/AuthContext';
+import api from '@/lib/api';
+import Link from 'next/link';
+import './login.css'; // Import the custom CSS file
 
 export default function LoginPage() {
-  const [form, setForm] = useState({ email: '', password: '' })
-  const [error, setError] = useState<string | null>(null)
-  const router = useRouter()
+  // We use 'username' to match your backend logic
+  const [formData, setFormData] = useState({ username: '', password: '' });
+  const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setForm((prev) => ({ ...prev, [name]: value }))
-  }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault()
-
-    if (!form.email || !form.password) {
-      setError('Please fill in all fields.')
-      return
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const response = await api.post('/api/auth/login', formData);
+      toast.success('Login successful!');
+      // The login function from AuthContext handles token storage and redirection
+      login(response.data.token, response.data.user);
+    } catch (error: any) {
+      // Show the specific error message from the backend
+      const errorMessage = error.response?.data?.message || 'Login failed. Please check your credentials.';
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
-
-    setError(null)
-
-    console.log('Logging in:', form)
-    alert('Login successful! (placeholder)')
-
-    router.push('/dashboard')
-
-    setForm({ email: '', password: '' })
-  }
+  };
 
   return (
     <div className="login-container">
       <form className="login-form" onSubmit={handleSubmit}>
         <h2 className="login-title">Welcome Back</h2>
-        <p className="login-subtitle">Login to your Yego SheCan account</p>
+        <p className="login-subtitle">Sign in to your Yego SheCan account</p>
 
-        {error && <p className="login-error">{error}</p>}
+        <div className="login-input-group">
+            <label htmlFor="username" className="login-label">Username</label>
+            <input
+                id="username"
+                name="username"
+                type="text"
+                className="login-input"
+                required
+                value={formData.username}
+                onChange={handleChange}
+            />
+        </div>
 
-        <label htmlFor="email" className="login-label">Email</label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          className="login-input"
-          value={form.email}
-          onChange={handleChange}
-          required
-        />
+        <div className="login-input-group">
+            <label htmlFor="password" className="login-label">Password</label>
+            <input
+                id="password"
+                name="password"
+                type="password"
+                className="login-input"
+                required
+                value={formData.password}
+                onChange={handleChange}
+            />
+        </div>
 
-        <label htmlFor="password" className="login-label">Password</label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          className="login-input"
-          value={form.password}
-          onChange={handleChange}
-          required
-        />
+        <div className="login-options">
+            <Link href="/auth/forgot-password" className="login-link">
+                Forgot password?
+            </Link>
+        </div>
 
-        <button type="submit" className="login-button">Login</button>
+        <button type="submit" className="login-button" disabled={loading}>
+            {loading ? 'Signing in...' : 'Sign In'}
+        </button>
 
         <p className="login-footer">
           Don’t have an account?{' '}
-          <a href="/register" className="login-link">Sign up</a>
+          <Link href="/register" className="login-link">
+            Sign up
+          </Link>
         </p>
       </form>
     </div>
-  )
+  );
 }

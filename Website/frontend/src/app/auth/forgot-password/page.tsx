@@ -1,10 +1,11 @@
+// src/app/auth/forgot-password/page.tsx
 "use client";
 
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
-import Input from '@/components/ui/Input';
-import Button from '@/components/ui/Button';
+import Link from 'next/link';
+import './forgot-password.css'; // Import the new custom CSS file
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -13,33 +14,54 @@ export default function ForgotPasswordPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    toast.loading('Sending reset link...');
+    // Use a loading toast for better user feedback
+    const toastId = toast.loading('Sending reset link...');
     try {
       await api.post('/api/auth/forgot-password', { email });
-      toast.dismiss();
-      toast.success('If an account with that email exists, a reset link has been sent.');
+      toast.success('If an account with that email exists, a reset link has been sent.', {
+        id: toastId, // Use the same toastId to replace the loading one
+      });
     } catch (error: any) {
-      toast.dismiss();
-      toast.error('An error occurred.');
+      toast.error('An error occurred. Please try again.', {
+        id: toastId, // Use the same toastId to replace the loading one
+      });
     } finally {
       setLoading(false);
     }
   };
   
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Forgot Password</h2>
-        <p className="mt-2 text-center text-sm text-gray-600">Enter your email and we'll send you a link to reset your password.</p>
-      </div>
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <Input label="Email" name="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-            <Button type="submit" isLoading={loading}>Send Reset Link</Button>
-          </form>
+    <div className="forgot-password-container">
+      <form className="forgot-password-form" onSubmit={handleSubmit}>
+        <h2 className="forgot-password-title">Forgot Your Password?</h2>
+        <p className="forgot-password-subtitle">
+          No worries! Enter your email below and we'll send you a link to reset it.
+        </p>
+
+        <div className="forgot-password-input-group">
+            <label htmlFor="email" className="forgot-password-label">Email Address</label>
+            <input
+                id="email"
+                name="email"
+                type="email"
+                className="forgot-password-input"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+            />
         </div>
-      </div>
+
+        <button type="submit" className="forgot-password-button" disabled={loading}>
+            {loading ? 'Sending...' : 'Send Reset Link'}
+        </button>
+
+        <p className="forgot-password-footer">
+          Remembered your password?{' '}
+          <Link href="/auth/login" className="forgot-password-link">
+            Back to Login
+          </Link>
+        </p>
+      </form>
     </div>
   );
 }
