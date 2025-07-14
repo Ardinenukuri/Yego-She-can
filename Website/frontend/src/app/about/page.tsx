@@ -2,7 +2,7 @@
 'use client'
 
 import Image from 'next/image'
-import aboutImg from '../../../public/about.jpg'
+import aboutImg from '../../../public/2148761757.jpg'
 import { useEffect } from 'react'
 import AOS from 'aos'
 import 'aos/dist/aos.css'

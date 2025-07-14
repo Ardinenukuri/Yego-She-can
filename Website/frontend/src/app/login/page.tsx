@@ -1,11 +1,13 @@
 'use client'
 
 import { useState, ChangeEvent, FormEvent } from 'react'
+import { useRouter } from 'next/navigation'
 import './login.css'
 
 export default function LoginPage() {
   const [form, setForm] = useState({ email: '', password: '' })
   const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -24,6 +26,8 @@ export default function LoginPage() {
 
     console.log('Logging in:', form)
     alert('Login successful! (placeholder)')
+
+    router.push('/dashboard')
 
     setForm({ email: '', password: '' })
   }
