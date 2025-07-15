@@ -8,6 +8,7 @@ import cors from 'cors';
 import courseRoutes from './routes/course.routes';
 import userRoutes from './routes/user.routes'
 import resourceRoutes from './routes/resource.routes';
+import quizRoutes from './routes/quiz.routes';
 
 
 
@@ -29,6 +30,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/resources', resourceRoutes);
+app.use('/api/quizzes', quizRoutes);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);

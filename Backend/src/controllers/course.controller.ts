@@ -62,4 +62,13 @@ export const CourseController = {
             next(error);
         }
     },
+
+    getPublicCourses: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const courses = await CourseService.getPublicCourses();
+            res.status(200).json(courses);
+        } catch (error) {
+            next(error);
+        }
+    },
 };
