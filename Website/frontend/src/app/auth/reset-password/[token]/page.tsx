@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
-import Input from '@/components/ui/Input';
-import Button from '@/components/ui/Button';
+import Link from 'next/link';
+import '../reset-password.css';
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('');
@@ -38,19 +38,49 @@ export default function ResetPasswordPage() {
   };
 
   return (
-     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Reset Your Password</h2>
-      </div>
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <Input label="New Password" name="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
-            <Input label="Confirm New Password" name="confirmPassword" type="password" required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-            <Button type="submit" isLoading={loading}>Reset Password</Button>
-          </form>
+    <div className="reset-password-container">
+      <form className="reset-password-form" onSubmit={handleSubmit}>
+        <h2 className="reset-password-title">Set a New Password</h2>
+        <p className="reset-password-subtitle">
+          Please enter and confirm your new password below.
+        </p>
+
+        <div className="reset-password-input-group">
+          <label htmlFor="password" className="reset-password-label">New Password</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            className="reset-password-input"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </div>
-      </div>
+
+        <div className="reset-password-input-group">
+          <label htmlFor="confirmPassword" className="reset-password-label">Confirm New Password</label>
+          <input
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            className="reset-password-input"
+            required
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+        </div>
+
+        <button type="submit" className="reset-password-button" disabled={loading}>
+          {loading ? 'Resetting...' : 'Reset Password'}
+        </button>
+        
+        <p className="reset-password-footer">
+          <Link href="/login" className="reset-password-link">
+            Back to Login
+          </Link>
+        </p>
+      </form>
     </div>
   );
 }

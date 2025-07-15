@@ -4,9 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
-import Input from '@/components/ui/Input';
-import Button from '@/components/ui/Button';
 import Link from 'next/link';
+import '@/app/register/register.css'; 
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -49,37 +48,67 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Create your account</h2>
-      </div>
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <Input label="First Name" name="firstName" type="text" required value={formData.firstName} onChange={handleChange} />
-            <Input label="Last Name" name="lastName" type="text" required value={formData.lastName} onChange={handleChange} />
-            <Input label="Username" name="username" type="text" required value={formData.username} onChange={handleChange} />
-            <Input label="Email" name="email" type="email" required value={formData.email} onChange={handleChange} />
-            <Input label="Password" name="password" type="password" required value={formData.password} onChange={handleChange} />
-            <Input label="Confirm Password" name="confirmPassword" type="password" required value={formData.confirmPassword} onChange={handleChange} />
-            <Input label="Age" name="age" type="number" required value={formData.age} onChange={handleChange} />
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Gender</label>
-              <select name="gender" value={formData.gender} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
-                <option value="Female">Female</option>
-                <option value="Male">Male</option>
-              </select>
-            </div>
-            <Button type="submit" isLoading={loading}>Register</Button>
-          </form>
-          <p className="mt-4 text-center text-sm text-gray-600">
-            Already have an account?{' '}
-            <Link href="/auth/login" className="font-medium text-indigo-600 hover:text-indigo-500">
-              Sign in
-            </Link>
-          </p>
+    <div className="register-container">
+      <form className="register-form" onSubmit={handleSubmit}>
+        <h2 className="register-title">Create Account</h2>
+        <p className="register-subtitle">Join the Yego SheCan community</p>
+
+        <div className="register-name-fields">
+          <div className="register-input-group">
+            <label htmlFor="firstName" className="register-label">First Name</label>
+            <input id="firstName" name="firstName" type="text" className="register-input" required value={formData.firstName} onChange={handleChange} />
+          </div>
+          <div className="register-input-group">
+            <label htmlFor="lastName" className="register-label">Last Name</label>
+            <input id="lastName" name="lastName" type="text" className="register-input" required value={formData.lastName} onChange={handleChange} />
+          </div>
         </div>
-      </div>
+        
+        <div className="register-input-group">
+            <label htmlFor="username" className="register-label">Username</label>
+            <input id="username" name="username" type="text" className="register-input" required value={formData.username} onChange={handleChange} />
+        </div>
+
+        <div className="register-input-group">
+            <label htmlFor="email" className="register-label">Email Address</label>
+            <input id="email" name="email" type="email" className="register-input" required value={formData.email} onChange={handleChange} />
+        </div>
+
+        <div className="register-input-group">
+            <label htmlFor="password" className="register-label">Password</label>
+            <input id="password" name="password" type="password" className="register-input" required value={formData.password} onChange={handleChange} />
+        </div>
+
+        <div className="register-input-group">
+            <label htmlFor="confirmPassword" className="register-label">Confirm Password</label>
+            <input id="confirmPassword" name="confirmPassword" type="password" className="register-input" required value={formData.confirmPassword} onChange={handleChange} />
+        </div>
+        
+        <div className="register-name-fields">
+            <div className="register-input-group">
+                <label htmlFor="age" className="register-label">Age</label>
+                <input id="age" name="age" type="number" className="register-input" required value={formData.age} onChange={handleChange} />
+            </div>
+            <div className="register-input-group">
+                <label htmlFor="gender" className="register-label">Gender</label>
+                <select id="gender" name="gender" value={formData.gender} onChange={handleChange} className="register-input">
+                    <option value="Female">Female</option>
+                    <option value="Male">Male</option>
+                </select>
+            </div>
+        </div>
+
+        <button type="submit" className="register-button" disabled={loading}>
+          {loading ? 'Registering...' : 'Register'}
+        </button>
+
+        <p className="register-footer">
+          Already have an account?{' '}
+          <Link href="/login" className="register-link">
+            Login
+          </Link>
+        </p>
+      </form>
     </div>
   );
 }
