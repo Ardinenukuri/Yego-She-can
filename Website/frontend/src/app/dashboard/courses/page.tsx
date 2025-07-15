@@ -1,8 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { FiClock, FiBookOpen, FiAward } from 'react-icons/fi'
 import './courses.css'
+import { FiEye, FiClock, FiBookOpen, FiAward } from 'react-icons/fi'
 
 export default function CoursesPage() {
   const courses = [
@@ -14,7 +14,6 @@ export default function CoursesPage() {
       lessons: 12,
       level: "Beginner",
       price: "Free",
-      image: "",
       features: [
         "Bookkeeping principles",
         "Managing budgets",
@@ -32,7 +31,6 @@ export default function CoursesPage() {
       lessons: 10,
       level: "Beginner",
       price: "Free",
-      image: "",
       features: [
         "Sales psychology",
         "Customer service excellence",
@@ -50,7 +48,6 @@ export default function CoursesPage() {
       lessons: 14,
       level: "Intermediate",
       price: "Free",
-      image: "",
       features: [
         "Brand development",
         "Social media marketing",
@@ -68,7 +65,6 @@ export default function CoursesPage() {
       lessons: 9,
       level: "Intermediate",
       price: "Free",
-      image: "",
       features: [
         "Design thinking process",
         "Problem analysis",
@@ -85,52 +81,42 @@ export default function CoursesPage() {
       <div className="admin-header">
         <h1>Manage Courses</h1>
         <Link href="/dashboard/courses/add">
-          <button className="add-course-button">+ Add Course</button>
+          <button className="add-course-button">
+            + Add Course
+          </button>
         </Link>
       </div>
 
-      <section className="courses-grid">
-        {courses.map(course => (
-          <CourseCard key={course.id} course={course} />
-        ))}
-      </section>
-    </div>
-  )
-}
-
-type Course = {
-  id: number;
-  title: string;
-  description: string;
-  duration: string;
-  lessons: number;
-  level: string;
-  price: string;
-  image: string;
-  features: string[];
-  category: string;
-}
-
-function CourseCard({ course }: { course: Course }) {
-  return (
-    <div className="admin-course-card">
-      <div className="admin-course-content">
-        <h3 className="course-title">{course.title}</h3>
-        <p className="course-description">{course.description}</p>
-        <div className="admin-meta">
-          <span><FiClock /> {course.duration}</span>
-          <span><FiBookOpen /> {course.lessons} lessons</span>
-          <span><FiAward /> {course.level}</span>
-        </div>
-        <ul className="admin-features">
-          {course.features.map((feature, idx) => (
-            <li key={idx}>✔ {feature}</li>
+      <table className="courses-table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Duration</th>
+            <th>Lessons</th>
+            <th>Level</th>
+            <th>Category</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {courses.map(course => (
+            <tr key={course.id}>
+              <td>{course.title}</td>
+              <td><FiClock /> {course.duration}</td>
+              <td><FiBookOpen /> {course.lessons}</td>
+              <td><FiAward /> {course.level}</td>
+              <td>{course.category}</td>
+              <td>
+                <Link href={`/dashboard/courses/${course.id}`}>
+                  <button className="view-btn">
+                    <FiEye /> View Details
+                  </button>
+                </Link>
+              </td>
+            </tr>
           ))}
-        </ul>
-        <Link href={`/dashboard/courses/${course.id}`}>
-          <button className="course-btn">View Details</button>
-        </Link>
-      </div>
+        </tbody>
+      </table>
     </div>
   )
 }
