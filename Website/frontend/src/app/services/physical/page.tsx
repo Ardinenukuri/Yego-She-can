@@ -20,12 +20,12 @@ export default function PhysicalProgramsPage() {
       title: "Soap Making Workshop",
       description:
         "Learn the art of handcrafted soap making from natural ingredients",
-      duration: "2 days",
+      duration: "20 days",
       schedule: "Weekends",
-      capacity: "12 participants",
+      // capacity: "12 participants",
       price: "Free",
-      nextSession: "March 15-16, 2024",
-      location: "EmpowerHer Training Center",
+      nextSession: "Comming soon",
+      location: "Yego SheCan Training Center",
       image:
         "https://c.ndtvimg.com/2020-01/vu8rka3g_soap_625x300_08_January_20.jpg",
       skills: [
@@ -50,10 +50,10 @@ export default function PhysicalProgramsPage() {
         "Master coffee processing, roasting, and business development",
       duration: "3 days",
       schedule: "Weekends",
-      capacity: "10 participants",
+      // capacity: "10 participants",
       price: "Free",
-      nextSession: "March 22-24, 2024",
-      location: "EmpowerHer Training Center",
+      nextSession: "Coming soon",
+      location: "Yego SheCan Training Center",
       image:
         "https://unocasa.com/cdn/shop/articles/types_of_coffee_91a828a5-7ff3-427d-acaa-c8b7289c9e5a_600x.jpg?v=1621261041",
       skills: [
@@ -76,26 +76,29 @@ export default function PhysicalProgramsPage() {
   return (
     <div className="page-wrapper">
       <div className="pageWrapper">
-        <section className="heroSection">
-          <div className="heroContent">
-            <h1>
-              Hands-On <span>Training</span> Programs
-            </h1>
-            <p>
-              Learn practical skills through our intensive hands-on workshops.
-              Master soap making and coffee processing while building the
-              foundation for your own business.
-            </p>
-            <div className="heroButtons">
-              <Link href="#programs" className="primaryButton">
-                View Programs
-              </Link>
-              <Link href="/register" className="outlineButton">
-                Register Now
-              </Link>
-            </div>
-          </div>
-        </section>
+<section className="heroSection">
+  <div className="heroOverlay">
+    <div className="heroContent">
+      <h1>
+        Hands-On <span>Training</span> Programs
+      </h1>
+      <p>
+        Learn practical skills through our intensive hands-on workshops.
+        Master soap making and coffee processing while building the
+        foundation for your own business.
+      </p>
+      <div className="heroButtons">
+        <Link href="#programs" className="primaryButton">
+          View Programs
+        </Link>
+        <Link href="/register" className="outlineButton">
+          Register Now
+        </Link>
+      </div>
+    </div>
+  </div>
+</section>
+
 
         <section className="whyChooseSection">
           <h2>Why Choose Our Physical Programs?</h2>
@@ -165,7 +168,7 @@ export default function PhysicalProgramsPage() {
           </section>
 
           <div className="prerequisitesContainer">
-            <h3>Program Prerequisites</h3>
+            <h2>Program Prerequisites</h2>
             <div className="prerequisitesGrid">
               <div>
                 <h4>Before You Apply:</h4>
@@ -227,9 +230,9 @@ export default function PhysicalProgramsPage() {
                     <span>
                       <Clock className="metaIcon" /> {program.duration}
                     </span>
-                    <span>
+                    {/* <span>
                       <Users className="metaIcon" /> {program.capacity}
-                    </span>
+                    </span> */}
                     <span>
                       <Calendar className="metaIcon" /> {program.nextSession}
                     </span>
@@ -243,7 +246,7 @@ export default function PhysicalProgramsPage() {
                     <ul>
                       {program.skills.map((skill, index) => (
                         <li key={index}>
-                          <CheckCircle className="checkIcon" /> {skill}
+                           {skill}
                         </li>
                       ))}
                     </ul>
@@ -254,14 +257,14 @@ export default function PhysicalProgramsPage() {
                     <ul>
                       {program.requirements.map((req, index) => (
                         <li key={index}>
-                          <CheckCircle className="requirementIcon" /> {req}
+                           {req}
                         </li>
                       ))}
                     </ul>
                   </div>
 
                   <Link
-                    href={`/services/physical/register?program=${program.id}`}
+                    href={`/register`}
                     className="registerButton"
                   >
                     Register for This Program

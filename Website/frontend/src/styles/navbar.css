@@ -3,6 +3,7 @@
   margin: 0;
   box-sizing: border-box;
   text-decoration: none;
+ font-family: 'Poppins', 'Segoe UI', sans-serif;
 }
 
 .navbar {
@@ -36,9 +37,9 @@
 }
 
 .nav-link {
-  color: #7c34ab;
+  color: black;
   font-size: 16px;
-  font-weight: bold;
+  /* font-weight: bold;/ */
   position: relative;
   cursor: pointer;
   padding: 8px 0;
@@ -60,16 +61,24 @@
   width: 100%;
 }
 
+.nav-link:hover {
+  color: #6b21a8;
+}
+
+.nav-link.active {
+  color: #6b21a8;
+}
+
 .dropdown-wrapper {
   position: relative;
 }
 
 .dropdown-button {
-  color: #7c34ab;
+  color: black;
   background: none;
   border: none;
   font-size: 16px;
-  font-weight: bold;
+  /* font-weight: bold; */
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -138,7 +147,6 @@
   background-color: #4c1d95;
 }
 
-/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -153,6 +161,6 @@
 
 @media screen and (max-width: 768px) {
   .nav-links {
-    display: none; 
+    display: none;
   }
 }
