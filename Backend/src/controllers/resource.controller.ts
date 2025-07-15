@@ -4,23 +4,19 @@ import { ResourceService } from '../services/ResourceService';
 export const ResourceController = {
     uploadResource: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { courseId, description, timeline } = req.body;
+            const { courseId, description, timeline, level } = req.body;
             const mentorId = (req as any).user.id;
-            const file = req.file;
+            const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
-            if (!file) {
-                return res.status(400).json({ message: 'A resource file is required.' });
-            }
 
             const result = await ResourceService.addCourseResource(
                 mentorId,
                 courseId,
-                description,
-                timeline,
-                file
+                { description, timeline, level },
+                files
             );
 
-            res.status(201).json({ message: 'Resource and chapters uploaded successfully', ...result });
+            res.status(201).json({ message: 'Resource, image, and chapters uploaded successfully', ...result });
         } catch (error) {
             next(error);
         }

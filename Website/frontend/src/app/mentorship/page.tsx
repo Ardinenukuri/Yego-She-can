@@ -1,9 +1,11 @@
-'use client'
+"use client";
 
-import React, { useState } from 'react'
+import React, { useState, ChangeEvent, FormEvent } from 'react'
 import Image from 'next/image'
 import { CheckCircle } from 'lucide-react'
 import { FaUserCheck, FaCalendarAlt, FaHandsHelping } from 'react-icons/fa'
+import toast from 'react-hot-toast'
+import api from '@/lib/api'
 import './mentorship.css'
 import heroImage from '../../../public/mentorship.jpg'
 
@@ -11,31 +13,42 @@ const MentorshipPage = () => {
     const [form, setForm] = useState({
         name: '',
         email: '',
-        mentor: '',
-        date: '',
-        time: '',
+        expertise: '', 
         message: '',
-    })
+    });
+    const [loading, setLoading] = useState(false);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target
-        setForm(prev => ({ ...prev, [name]: value }))
-    }
+    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setForm({ ...form, [e.target.name]: e.target.value });
+    };
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault()
-        alert('Your mentorship request has been submitted! We’ll be in touch soon.')
-        console.log(form)
+    const handleSubmit = async (e: FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        const toastId = toast.loading('Submitting your application...');
+        
+        try {
+            
+            const response = await api.post('/api/auth/apply-mentor', form);
+            
+            toast.success(response.data.message || 'Application submitted successfully!', { id: toastId });
+            
+            
+            setForm({
+                name: '',
+                email: '',
+                expertise: '',
+                message: '',
+            });
 
-        setForm({
-            name: '',
-            email: '',
-            mentor: '',
-            date: '',
-            time: '',
-            message: '',
-        })
-    }
+        } catch (error: any) {
+            const errorMessage = error.response?.data?.errors?.[0]?.message || 'Submission failed. Please try again.';
+            toast.error(errorMessage, { id: toastId });
+        } finally {
+            setLoading(false);
+        }
+    };
+    
 
     return (
         <main className="mentorship-page">
@@ -51,12 +64,18 @@ const MentorshipPage = () => {
                             Get personalized guidance, support, and advice to help you grow your business.
                         </p>
                         <div className="hero-buttons">
-                            <button className="btn-primary">Book a Session</button>
+                            <button
+                                className="btn-primary"
+                                onClick={() => {
+                                    document.getElementById('become-mentor-form')?.scrollIntoView({ behavior: 'smooth' });
+                                }}
+                            >
+                                Book a Session
+                            </button>
                             <button
                                 className="btn-outline"
                                 onClick={() => {
-                                    const section = document.getElementById('become-mentor-form');
-                                    section?.scrollIntoView({ behavior: 'smooth' });
+                                    document.getElementById('become-mentor-form')?.scrollIntoView({ behavior: 'smooth' });
                                 }}
                             >
                                 Become a Mentor
@@ -113,6 +132,7 @@ const MentorshipPage = () => {
                 </div>
             </section>
 
+        
             <section className="book-session-form-section" id="become-mentor-form">
                 <h2>Request to Become a Mentor</h2>
                 <form className="session-form" onSubmit={handleSubmit}>
@@ -124,6 +144,7 @@ const MentorshipPage = () => {
                             required
                             value={form.name}
                             onChange={handleChange}
+                            disabled={loading}
                         />
                         <input
                             type="email"
@@ -132,39 +153,30 @@ const MentorshipPage = () => {
                             required
                             value={form.email}
                             onChange={handleChange}
+                            disabled={loading}
                         />
                     </div>
                     <input
                         type="text"
-                        name="mentor"
-                        placeholder="Your Field of Expertise"
-                        value={form.mentor}
+                        name="expertise" 
+                        placeholder="Your Field of Expertise *"
+                        required
+                        value={form.expertise}
                         onChange={handleChange}
+                        disabled={loading}
                     />
-                    <div className="form-group">
-                        <input
-                            type="date"
-                            name="date"
-                            required
-                            value={form.date}
-                            onChange={handleChange}
-                        />
-                        <input
-                            type="time"
-                            name="time"
-                            required
-                            value={form.time}
-                            onChange={handleChange}
-                        />
-                    </div>
                     <textarea
                         name="message"
-                        placeholder="Tell us why you want to be a mentor"
+                        placeholder="Tell us why you want to be a mentor *"
                         rows={4}
+                        required
                         value={form.message}
                         onChange={handleChange}
+                        disabled={loading}
                     ></textarea>
-                    <button type="submit" className="btn-primary">Submit Request</button>
+                    <button type="submit" className="btn-primary" disabled={loading}>
+                        {loading ? 'Submitting...' : 'Submit Request'}
+                    </button>
                 </form>
             </section>
         </main>
