@@ -38,7 +38,7 @@ export default function RegisterPage() {
         age: parseInt(formData.age), 
       });
       toast.success('Registration successful! Please check your email to verify.');
-      router.push('/auth/login');
+      router.push('/login');
     } catch (error: any) {
       const errorMessage = error.response?.data?.errors?.[0]?.message || 'Registration failed';
       toast.error(errorMessage);

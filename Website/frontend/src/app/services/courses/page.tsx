@@ -2,110 +2,59 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import "../../../styles/courses.css";
-import { useState } from "react";
-import serviceImage from "../../../../public/services.jpg";
-import accountingImg from "../../../../public/accounting.jpg";
-import marketingImg from "../../../../public/marketing.jpg";
-import { FiClock, FiBookOpen, FiAward, FiUsers } from "react-icons/fi";
+import "../../../styles/courses.css"; 
+import { useState, useEffect } from "react";
+import api from "@/lib/api"; 
+import serviceImage from "../../../../public/services.jpg"
+
+
+interface Course {
+  id: number;
+  title: string;
+  description: string;
+  duration: string;
+  lessons: number;
+  level: 'Beginner' | 'Intermediate' | 'Advanced';
+  price: string;
+  image: string;
+  features: string[];
+}
 
 export default function CoursesPage() {
+  const [allCourses, setAllCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filter, setFilter] = useState("All");
+  const [filter, setFilter] = useState("All"); 
   const [sortOrder, setSortOrder] = useState("asc");
   const [currentPage, setCurrentPage] = useState(1);
   const coursesPerPage = 3;
 
-  const courses = [
-    {
-      id: 1,
-      title: "Accounting & Finance Fundamentals",
-      description:
-        "Master the basics of accounting, budgeting, and financial planning for women entrepreneurs.",
-      duration: "4 weeks",
-      lessons: 12,
-      level: "Beginner",
-      price: "Free",
-      image: accountingImg.src,
-      features: [
-        "Bookkeeping principles",
-        "Managing budgets",
-        "Understanding financial statements",
-        "Small business taxes",
-        "Cash flow management",
-      ],
-      category: "Most Taken",
-    },
-    {
-      id: 2,
-      title: "Sales & Customer Relations",
-      description:
-        "Learn effective sales strategies and build lasting customer relationships.",
-      duration: "3 weeks",
-      lessons: 10,
-      level: "Beginner",
-      price: "Free",
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS68NyGBjP_Y1gkPuQos3PlvXBICj6t2PTdUQ&s",
-      features: [
-        "Sales psychology",
-        "Customer service excellence",
-        "Building loyalty",
-        "Handling objections",
-        "Digital sales techniques",
-      ],
-      category: "Recent",
-    },
-    {
-      id: 3,
-      title: "Marketing & Brand Building",
-      description:
-        "Build your brand and master marketing for small businesses.",
-      duration: "4 weeks",
-      lessons: 14,
-      level: "Intermediate",
-      price: "Free",
-      image: marketingImg.src,
-      features: [
-        "Brand development",
-        "Social media marketing",
-        "Content creation",
-        "Email marketing",
-        "Local marketing",
-      ],
-      category: "Most Taken",
-    },
-    {
-      id: 4,
-      title: "Design Thinking & Innovation",
-      description:
-        "Apply design thinking to solve business problems creatively.",
-      duration: "3 weeks",
-      lessons: 9,
-      level: "Intermediate",
-      price: "Free",
-      image:
-        "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=800&q=60",
-      features: [
-        "Design thinking process",
-        "Problem analysis",
-        "Creative solutions",
-        "Prototyping",
-        "Small business innovation",
-      ],
-      category: "Recent",
-    },
-  ];
 
-  const filteredCourses = courses
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get('/api/courses/public');
+        setAllCourses(response.data);
+      } catch (error) {
+        console.error("Failed to fetch courses:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, []); 
+
+
+  const filteredCourses = allCourses
     .filter(course => {
-      const matchesCategory = filter === "All" || course.category === filter;
-      const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesCategory && matchesSearch;
+      return course.title.toLowerCase().includes(searchQuery.toLowerCase());
     })
     .sort((a, b) => {
-      const aWeeks = parseInt(a.duration);
-      const bWeeks = parseInt(b.duration);
+      // A more robust sort for durations like "4 weeks"
+      const aWeeks = parseInt(a.duration.split(' ')[0]) || 0;
+      const bWeeks = parseInt(b.duration.split(' ')[0]) || 0;
       return sortOrder === "asc" ? aWeeks - bWeeks : bWeeks - aWeeks;
     });
 
@@ -116,14 +65,11 @@ export default function CoursesPage() {
 
   return (
     <div className="courses-page">
-      {/* Hero Section */}
+      {/* Hero Section (remains the same) */}
       <section
         className="hero long-hero"
         style={{
           backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${serviceImage.src})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
         }}
       >
         <div className="hero-content backdrop">
@@ -132,22 +78,18 @@ export default function CoursesPage() {
             <p>
               Master the fundamentals of entrepreneurship with our comprehensive
               online curriculum.
-              Learn at your own pace with expert-designed courses and earn
-              certificates upon completion.
             </p>
             <div className="hero-buttons">
-              <Link href="/register">
+              <Link href="/auth/register">
                 <button className="btn-primary">Enroll now</button>
               </Link>
-              <Link href="#courses">
-                <button className="btn-secondary">Browse Courses</button>
-              </Link>
+              <a href="#courses" className="btn-secondary">Browse Courses</a>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Course Filters */}
+      {/* Course List Section */}
       <section id="courses" className="courses">
         <h2>Courses</h2>
 
@@ -158,51 +100,55 @@ export default function CoursesPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-            <option value="All">All</option>
-            <option value="Most Taken">Most Taken</option>
-            <option value="Recent">Recent</option>
-          </select>
+          {/* Category filter is removed for now */}
           <select value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
             <option value="asc">Duration: Short to Long</option>
             <option value="desc">Duration: Long to Short</option>
           </select>
         </div>
 
-        <div className="courses-grid">
-          {currentCourses.map((course) => (
-            <div key={course.id} className="course-card fade-in">
-              <img src={course.image} alt={course.title} className="course-image" />
-              <div className="course-info">
-                <h3>{course.title}</h3>
-                <p>{course.description}</p>
-                <div className="course-meta">
-                  <span>{course.duration}</span> | <span>{course.lessons} lessons</span> | <span>{course.level}</span>
+        {loading ? (
+          <div className="loading-state">Loading courses...</div>
+        ) : (
+          <>
+            <div className="courses-grid">
+              {currentCourses.map((course) => (
+                <div key={course.id} className="course-card fade-in">
+                  {/* Use next/image for optimized images, but ensure backend URL is configured */}
+                  <img src={`${process.env.NEXT_PUBLIC_API_URL}${course.image}`} alt={course.title} className="course-image" />
+                  <div className="course-info">
+                    <h3>{course.title}</h3>
+                    <p>{course.description}</p>
+                    <div className="course-meta">
+                      <span>{course.duration}</span> | <span>{course.lessons} lessons</span> | <span>{course.level}</span>
+                    </div>
+                    {/* The 'features' are now the chapter titles */}
+                    <ul>
+                      {course.features.map((feature, index) => (
+                        <li key={index}> {feature}</li>
+                      ))}
+                    </ul>
+                    <Link href="/auth/register">
+                      <button className="course-btn">Start Course</button>
+                    </Link>
+                  </div>
                 </div>
-                <ul>
-                  {course.features.map((feature, index) => (
-                    <li key={index}> {feature}</li>
-                  ))}
-                </ul>
-                <Link href="/register">
-                  <button className="course-btn">Start Course</button>
-                </Link>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        <div className="pagination">
-          {Array.from({ length: totalPages }, (_, i) => (
-            <button
-              key={i + 1}
-              className={currentPage === i + 1 ? "active" : ""}
-              onClick={() => setCurrentPage(i + 1)}
-            >
-              {i + 1}
-            </button>
-          ))}
-        </div>
+            <div className="pagination">
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i + 1}
+                  className={currentPage === i + 1 ? "active" : ""}
+                  onClick={() => setCurrentPage(i + 1)}
+                >
+                  {i + 1}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
       </section>
     </div>
   );
