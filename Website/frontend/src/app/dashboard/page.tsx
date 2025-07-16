@@ -143,7 +143,7 @@ export default function DashboardHome() {
     result.sort((a, b) => courseSort === "az" ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title));
     return result;
   }, [courses, searchTerm, courseFilter, courseSort]);
-  
+
   const filteredMentors = useMemo(() => {
     return mentors.filter(mentor => mentor.name.toLowerCase().includes(mentorSearchTerm.toLowerCase()));
   }, [mentors, mentorSearchTerm]);
@@ -153,9 +153,9 @@ export default function DashboardHome() {
     if (studentFilter === "above50") result = result.filter(s => s.progress > 50);
     if (studentSearchTerm) result = result.filter(student => student.name.toLowerCase().includes(studentSearchTerm.toLowerCase()));
     result.sort((a, b) => {
-        if (studentSort === "name") return a.name.localeCompare(b.name);
-        if (studentSort === "progress") return b.progress - a.progress;
-        return 0;
+      if (studentSort === "name") return a.name.localeCompare(b.name);
+      if (studentSort === "progress") return b.progress - a.progress;
+      return 0;
     });
     return result;
   }, [students, studentSearchTerm, studentFilter, studentSort]);
@@ -178,14 +178,14 @@ export default function DashboardHome() {
     { name: "Pending", value: courses.filter(c => c.mentorStatus === 'pending').length },
     { name: "Not Assigned", value: courses.filter(c => c.mentorStatus === 'not-assigned').length }
   ], [courses]);
-  
+
   const percentAssigned = useMemo(() => {
     const total = courses.length;
     if (total === 0) return "0.0";
     const assigned = courses.filter(c => c.mentorStatus === "assigned").length;
     return ((assigned / total) * 100).toFixed(1);
   }, [courses]);
-  
+
   const avgProgress = useMemo(() => {
     if (students.length === 0) return "0";
     const total = students.reduce((sum, s) => sum + s.progress, 0);
@@ -194,10 +194,10 @@ export default function DashboardHome() {
 
   if (loading) {
     return (
-        <div className="dashboard-container">
-            <h1 className="dashboard-title">Loading Dashboard...</h1>
-            <p style={{textAlign: 'center', marginTop: '2rem'}}>Fetching the latest data for you.</p>
-        </div>
+      <div className="dashboard-container">
+        <h1 className="dashboard-title">Loading Dashboard...</h1>
+        <p style={{ textAlign: 'center', marginTop: '2rem' }}>Fetching the latest data for you.</p>
+      </div>
     );
   }
 
@@ -241,15 +241,17 @@ export default function DashboardHome() {
       </div>
 
       <div className="dashboard-controls">
+        <h2 className="heading-name">Courses</h2>
+        <div className="controls">
         <input type="text" placeholder="Search courses..." className="search-input" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
-        <select value={courseFilter} onChange={(e) => setCourseFilter(e.target.value)}><option value="all">All Statuses</option><option value="assigned">Assigned</option><option value="pending">Pending</option><option value="not-assigned">Not Assigned</option></select>
-        <select value={courseSort} onChange={(e) => setCourseSort(e.target.value)}><option value="az">Sort A–Z</option><option value="za">Sort Z–A</option></select>
+        <select value={courseFilter} onChange={(e) => setCourseFilter(e.target.value)} className="select-filter"><option value="all">All Statuses</option><option value="assigned">Assigned</option><option value="pending">Pending</option><option value="not-assigned">Not Assigned</option></select>
+        <select value={courseSort} onChange={(e) => setCourseSort(e.target.value)} className="select-filter"><option value="az">Sort A–Z</option><option value="za">Sort Z–A</option></select>
       </div>
-
+</div>
       <table className="course-table">
         <thead>
           <tr>
-            <th>Course</th>
+            <th><FiBook className="table-icon" />Course</th>
             <th>Assigned Mentor</th>
             <th>Mentor Status</th>
             <th>Actions</th>
@@ -258,7 +260,7 @@ export default function DashboardHome() {
         <tbody>
           {paginatedCourses.map((course) => (
             <tr key={course.id}>
-              <td><div className="course-name"><FiBook className="table-icon" /><span>{course.title}</span></div></td>
+              <td><div className="course-name"><span>{course.title}</span></div></td>
               <td>{course.mentorName || "—"}</td>
               <td><span className={`mentor-status ${course.mentorStatus}`}>{course.mentorStatus.replace("-", " ")}</span></td>
               <td><div className="course-actions"><button className="action-icon delete-icon" title="Delete" onClick={() => setCourseToDelete(course)}><FiTrash2 /></button></div></td>
@@ -273,12 +275,12 @@ export default function DashboardHome() {
         <button onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))} disabled={currentPage === totalPages}>Next</button>
       </div>
 
-      <h2 className="dashboard-subtitle">Mentors Overview</h2>
-
       <div className="dashboard-controls">
+          <h2 className="heading-name">Mentors Overview</h2>
+          <div className="controls">
         <input type="text" placeholder="Search mentors..." className="search-input" value={mentorSearchTerm} onChange={(e) => setMentorSearchTerm(e.target.value)} />
       </div>
-
+</div>
       <table className="course-table">
         <thead>
           <tr>
@@ -297,7 +299,7 @@ export default function DashboardHome() {
               <td>
                 <div className="course-actions">
                   <button className="action-icon" title={mentor.status === "Active" ? "Disable Mentor" : "Enable Mentor"} onClick={() => { setMentorToModify(mentor); setModificationType('toggle'); }}>
-                    {mentor.status === "Active" ? <FiToggleLeft /> : <FiToggleRight />}
+                    {mentor.status === "Active" ? <FiToggleLeft /> : <FiToggleRight  style={{color:'#7c34ab'}}/>}
                   </button>
                   <button className="action-icon delete-icon" title="Delete Mentor" onClick={() => { setMentorToModify(mentor); setModificationType('delete'); }}>
                     <FiTrash2 />
@@ -315,14 +317,15 @@ export default function DashboardHome() {
         <button onClick={() => setCurrentMentorPage((p) => Math.min(p + 1, totalMentorPages))} disabled={currentMentorPage === totalMentorPages}>Next</button>
       </div>
 
-      <h2 className="dashboard-subtitle">Student Overview</h2>
 
       <div className="dashboard-controls">
+      <h2 className="headig-name">Student Overview</h2>
+      <div className="controls">
         <input type="text" placeholder="Search students..." className="search-input" value={studentSearchTerm} onChange={(e) => setStudentSearchTerm(e.target.value)} />
-        <select value={studentFilter} onChange={(e) => setStudentFilter(e.target.value)}><option value="all">All Progress</option><option value="above50">Progress > 50%</option></select>
-        <select value={studentSort} onChange={(e) => setStudentSort(e.target.value)}><option value="name">Sort by Name</option><option value="progress">Sort by Progress</option></select>
+        <select value={studentFilter} onChange={(e) => setStudentFilter(e.target.value)} className="select-filter"><option value="all">All Progress</option><option value="above50">Progress > 50%</option></select>
+        <select value={studentSort} onChange={(e) => setStudentSort(e.target.value)} className="select-filter"><option value="name">Sort by Name</option><option value="progress">Sort by Progress</option></select>
       </div>
-
+</div>
       <table className="course-table">
         <thead>
           <tr>
@@ -348,7 +351,7 @@ export default function DashboardHome() {
           ))}
         </tbody>
       </table>
-      
+
       <div className="pagination">
         <button onClick={() => setCurrentStudentPage((p) => Math.max(p - 1, 1))} disabled={currentStudentPage === 1}>Previous</button>
         <span>Page {currentStudentPage} of {totalStudentPages}</span>
