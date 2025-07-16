@@ -98,7 +98,7 @@ export default function AddCoursePage() {
 
         <form onSubmit={handleCourseSubmit} className="add-course-form">
           <label>
-            Course Name
+            Course Name</label>
             <input
               name="title"
               value={courseTitle}
@@ -107,13 +107,13 @@ export default function AddCoursePage() {
               placeholder="e.g. Agribusiness 101"
               disabled={isAddingCourse}
             />
-          </label>
+          
           <button type="submit" className="submit-btn" disabled={isAddingCourse}>
             {isAddingCourse ? 'Adding...' : 'Add Course'}
           </button>
         </form>
 
-        <hr className="divider" />
+        {/* <hr className="divider" />
 
         <h2 className="section-title">Invite a Mentor to a Course</h2>
 
@@ -150,8 +150,8 @@ export default function AddCoursePage() {
           </label>
           <button type="submit" className="invite-btn" disabled={isInvitingMentor}>
             {isInvitingMentor ? 'Sending Invite...' : 'Invite Mentor'}
-          </button>
-        </form>
+          </button> */}
+        {/* </form> */}
       </div>
     </div>
   );

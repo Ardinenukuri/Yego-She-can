@@ -114,7 +114,6 @@ export default function CoursesPage() {
             <div className="courses-grid">
               {currentCourses.map((course) => (
                 <div key={course.id} className="course-card fade-in">
-                  {/* Use next/image for optimized images, but ensure backend URL is configured */}
                   <img src={`${process.env.NEXT_PUBLIC_API_URL}${course.image}`} alt={course.title} className="course-image" />
                   <div className="course-info">
                     <h3>{course.title}</h3>
@@ -122,13 +121,12 @@ export default function CoursesPage() {
                     <div className="course-meta">
                       <span>{course.duration}</span> | <span>{course.lessons} lessons</span> | <span>{course.level}</span>
                     </div>
-                    {/* The 'features' are now the chapter titles */}
                     <ul>
                       {course.features.map((feature, index) => (
                         <li key={index}> {feature}</li>
                       ))}
                     </ul>
-                    <Link href="/auth/register">
+                    <Link href="/login">
                       <button className="course-btn">Start Course</button>
                     </Link>
                   </div>
