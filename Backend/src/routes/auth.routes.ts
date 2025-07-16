@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { AuthController } from '../controllers/auth.controller';
 import { validateRequest } from '../middlewares/validateRequest';
-import { registerSchema, loginSchema, resetPasswordSchema, forgotPasswordSchema, changePasswordSchema, updateProfileSchema, completeRegistrationSchema } from '../schemas/auth.schema';
+import { registerSchema, loginSchema, resetPasswordSchema, forgotPasswordSchema, changePasswordSchema, updateProfileSchema, completeRegistrationSchema, mentorApplicationSchema, contactFormSchema } from '../schemas/auth.schema';
 import { protect } from '../middlewares/auth.middleware';
 import { upload } from '../middlewares/upload.middleware';
 import { authorize } from '../middlewares/authorize.middleware';
@@ -15,6 +15,8 @@ router.get('/verify/:token', AuthController.verifyEmail);
 router.post('/forgot-password', validateRequest(forgotPasswordSchema), AuthController.forgotPassword);
 router.put('/reset-password/:token', validateRequest(resetPasswordSchema), AuthController.resetPassword);
 router.put('/complete-registration/:token', validateRequest(completeRegistrationSchema), AuthController.completeRegistration);
+router.post('/apply-mentor', validateRequest(mentorApplicationSchema), AuthController.applyToBeMentor);
+router.post('/contact', validateRequest(contactFormSchema), AuthController.handleContactForm);
 
 
 router.use(protect);

@@ -467,6 +467,88 @@ export const AuthService = {
         const { rows } = await pool.query(query, [courseId]);
         return rows;
     },
+
+    applyToBeMentor: async (applicationData: { name: string; email: string; expertise: string; message: string }) => {
+        const { name, email, expertise, message } = applicationData;
+
+        const { rows: programManagers } = await pool.query(
+            "SELECT email FROM users WHERE role = 'program manager' AND status = 'active'"
+        );
+
+        if (programManagers.length === 0) {
+            console.error("CRITICAL: Mentor application received, but no active program managers found to notify.");
+            return { success: true }; 
+        }
+
+        const recipientEmails = programManagers.map(pm => pm.email);
+        const subject = `New Mentor Application: ${name}`;
+        const emailBody = `
+            <h1>New Mentor Application Received</h1>
+            <p>A new candidate has applied to become a mentor on the YegoSheCan platform.</p>
+            <hr>
+            <h2>Applicant Details:</h2>
+            <ul>
+                <li><strong>Name:</strong> ${name}</li>
+                <li><strong>Email:</strong> ${email}</li>
+                <li><strong>Field of Expertise:</strong> ${expertise}</li>
+            </ul>
+            <h2>Message:</h2>
+            <p style="white-space: pre-wrap; background-color: #f9f9f9; padding: 15px; border-radius: 5px;">${message}</p>
+            <hr>
+            <p><strong>Next Steps:</strong> To invite this person as a mentor, please log in to your Program Manager dashboard and use the "Invite Mentor" feature with their email address.</p>
+        `;
+
+        await sendEmail({
+            to: recipientEmails.join(','), 
+            subject: subject,
+            text: `New mentor application from ${name} (${email}). Expertise: ${expertise}. Message: ${message}`,
+            html: emailBody,
+        });
+
+        return { success: true };
+    },
+
+    handleContactForm: async (contactData: { name: string; email: string; phone?: string; category: string; message: string }) => {
+        const { name, email, phone, category, message } = contactData;
+
+        
+        const { rows: programManagers } = await pool.query(
+            "SELECT email FROM users WHERE role = 'program manager' AND status = 'active'"
+        );
+
+        if (programManagers.length === 0) {
+            console.error("CRITICAL: Contact form submission received, but no active program managers found to notify.");
+            return { success: true }; 
+        }
+
+        const recipientEmails = programManagers.map(pm => pm.email);
+        const subject = `New Contact Form Submission: [${category}] from ${name}`;
+        const emailBody = `
+            <h1>New Contact Form Submission</h1>
+            <p>A message has been submitted through the website's contact form.</p>
+            <hr>
+            <h2>Submission Details:</h2>
+            <ul>
+                <li><strong>Name:</strong> ${name}</li>
+                <li><strong>Email:</strong> <a href="mailto:${email}">${email}</a></li>
+                ${phone ? `<li><strong>Phone:</strong> ${phone}</li>` : ''}
+                <li><strong>Category:</strong> ${category}</li>
+            </ul>
+            <h2>Message:</h2>
+            <p style="white-space: pre-wrap; background-color: #f9f9f9; padding: 15px; border-radius: 5px;">${message}</p>
+            <hr>
+            <p>You can reply directly to the user at their provided email address.</p>
+        `;
+
+        await sendEmail({
+            to: recipientEmails.join(','),
+            subject: subject,
+            text: `New contact message from ${name} (${email}). Category: ${category}. Message: ${message}`,
+            html: emailBody,
+        });
+
+        return { success: true };
+    },
 };
 
 

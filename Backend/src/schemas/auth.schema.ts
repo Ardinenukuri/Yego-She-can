@@ -128,6 +128,11 @@ export const createResourceSchema = z.object({
     courseId: z.string().transform(val => parseInt(val, 10)), 
     description: z.string().min(10, 'Description is too short'),
     timeline: z.string().min(3, 'Timeline is required'),
+    level: z.string().refine((val) => ['beginner', 'intermediate', 'advanced'].includes(val),
+                 {
+                     message: "Level must be 'beginner', 'intermediate', or 'advanced'."
+                 }
+             ),
   }),
 });
 
@@ -136,3 +141,43 @@ export const enrollInCourseSchema = z.object({
     courseId: z.number().int().positive('A valid course ID is required.'),
   }),
 });
+
+export const generateChapterQuizSchema = z.object({
+  body: z.object({
+    courseId: z.number().int().positive(),
+    chapterId: z.number().int().positive(),
+  }),
+});
+
+export const generateFinalQuizSchema = z.object({
+  body: z.object({
+    courseId: z.number().int().positive(),
+  }),
+});
+
+
+export const submitQuizSchema = z.object({
+  body: z.object({
+    // The answers will be an object where keys are question text and values are the selected option
+    answers: z.record(z.string(), z.string()),
+  }),
+});
+
+export const mentorApplicationSchema = z.object({
+  body: z.object({
+    name: z.string().min(3, 'Full name is required.'),
+    email: z.string().email('A valid email address is required.'),
+    expertise: z.string().min(5, 'Please specify your field of expertise.'),
+    message: z.string().min(20, 'Please tell us more about why you want to be a mentor.'),
+  }),
+});
+
+export const contactFormSchema = z.object({
+  body: z.object({
+    name: z.string().min(3, 'Full name is required.'),
+    email: z.string().email('A valid email address is required.'),
+    phone: z.string().optional(), // Phone is optional
+    category: z.enum(['support', 'partnership', 'feedback', 'other']),
+    message: z.string().min(10, 'Please provide a more detailed message.'),
+  }),
+})
