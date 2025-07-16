@@ -74,14 +74,79 @@ export default function MentorsPage() {
           </button>
         </Link>
       </div>
+<div className="search-bar">
+  <input
+    type="text"
+    placeholder="Search by name, email, or expertise..."
+    value={searchQuery}
+    onChange={(e) => setSearchQuery(e.target.value)}
+  />
+</div>
 
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Search by name, email, or expertise..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
+{/* TABLE VIEW - desktop */}
+<table className="mentors-table">
+  <thead>
+    <tr>
+      <th>Profile</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Expertise</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {mentors.map((mentor) => (
+      <tr key={mentor.id}>
+        <td>
+          <img src={mentor.image} alt={mentor.name} className="mentor-img" />
+        </td>
+        <td>{mentor.name}</td>
+        <td>
+          <FiMail className="table-icon" /> {mentor.email}
+        </td>
+        <td>{mentor.expertise}</td>
+        <td>
+          <span className={`mentor-status ${mentor.status.toLowerCase()}`}>
+            {mentor.status}
+          </span>
+        </td>
+        <td>
+          <div className="mentor-actions">
+            <button className="view-btn">
+              <FiEye className="table-icon" /> View
+            </button>
+            <button className="delete-btn">
+              <FiTrash2 className="table-icon" /> Remove
+            </button>
+          </div>
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+{/* CARD VIEW - mobile */}
+<div className="mentors-cards">
+  {mentors.map((mentor) => (
+    <div key={mentor.id} className="mentor-card">
+      <img src={mentor.image} alt={mentor.name} className="mentor-img" />
+      <div className="mentor-info">
+        <h3>{mentor.name}</h3>
+        <p><FiMail /> {mentor.email}</p>
+        <p>Expertise: {mentor.expertise}</p>
+        <span className={`mentor-status ${mentor.status.toLowerCase()}`}>
+          {mentor.status}
+        </span>
+      </div>
+      <div className="mentor-actions">
+        <button className="view-btn"><FiEye /> View</button>
+        <button className="delete-btn"><FiTrash2 /> Remove</button>
+      </div>
+    </div>
+  ))}
+</div>
+
       </div>
 
       <table className="mentors-table">
