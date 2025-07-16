@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { FiUserPlus, FiMail, FiEye, FiTrash2 } from 'react-icons/fi'
 import './mentors.css'
 
+const ITEMS_PER_PAGE = 5
+
 type Mentor = {
   id: number
   name: string
@@ -15,6 +17,8 @@ type Mentor = {
 }
 
 export default function MentorsPage() {
+  const [searchQuery, setSearchQuery] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
   const [mentors, setMentors] = useState<Mentor[]>([
     {
       id: 1,
@@ -42,6 +46,24 @@ export default function MentorsPage() {
     },
   ])
 
+  const filteredMentors = mentors.filter((mentor) =>
+    mentor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    mentor.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    mentor.expertise.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+
+  const totalPages = Math.ceil(filteredMentors.length / ITEMS_PER_PAGE)
+  const paginatedMentors = filteredMentors.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  )
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page)
+    }
+  }
+
   return (
     <div className="mentors-page">
       <div className="mentors-header">
@@ -53,7 +75,15 @@ export default function MentorsPage() {
         </Link>
       </div>
 
-      {/* TABLE VIEW - desktop */}
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Search by name, email, or expertise..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+
       <table className="mentors-table">
         <thead>
           <tr>
@@ -66,7 +96,7 @@ export default function MentorsPage() {
           </tr>
         </thead>
         <tbody>
-          {mentors.map((mentor) => (
+          {paginatedMentors.map((mentor) => (
             <tr key={mentor.id}>
               <td>
                 <img src={mentor.image} alt={mentor.name} className="mentor-img" />
@@ -96,26 +126,20 @@ export default function MentorsPage() {
         </tbody>
       </table>
 
-      {/* CARD VIEW - mobile */}
-      <div className="mentors-cards">
-        {mentors.map((mentor) => (
-          <div key={mentor.id} className="mentor-card">
-            <img src={mentor.image} alt={mentor.name} className="mentor-img" />
-            <div className="mentor-info">
-              <h3>{mentor.name}</h3>
-              <p><FiMail /> {mentor.email}</p>
-              <p>Expertise: {mentor.expertise}</p>
-              <span className={`mentor-status ${mentor.status.toLowerCase()}`}>
-                {mentor.status}
-              </span>
-            </div>
-            <div className="mentor-actions">
-              <button className="view-btn"><FiEye /> View</button>
-              <button className="delete-btn"><FiTrash2 /> Remove</button>
-            </div>
-          </div>
-        ))}
-      </div>
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="pagination-controls">
+          <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+            Previous
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+            Next
+          </button>
+        </div>
+      )}
     </div>
   )
 }
