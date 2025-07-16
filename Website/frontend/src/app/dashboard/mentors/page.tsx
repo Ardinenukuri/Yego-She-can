@@ -8,6 +8,8 @@ import api from '@/lib/api'
 import toast from 'react-hot-toast'
 
 
+const ITEMS_PER_PAGE = 5
+
 type Mentor = {
   id: number
   name: string
@@ -18,6 +20,7 @@ type Mentor = {
 }
 
 export default function MentorsPage() {
+
   const [mentors, setMentors] = useState<Mentor[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -173,5 +176,6 @@ export default function MentorsPage() {
         </div>
       )}
     </>
+
   )
 }

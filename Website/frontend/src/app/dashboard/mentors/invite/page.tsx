@@ -14,6 +14,7 @@ interface Course {
 
 export default function InviteMentorPage() {
   const [email, setEmail] = useState('')
+
   const [selectedCourseId, setSelectedCourseId] = useState<string>('')
   const [courses, setCourses] = useState<Course[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -68,6 +69,7 @@ export default function InviteMentorPage() {
     }
   };
 
+
   return (
     <div className="invite-page">
       <h1 className="form-title">Invite a New Mentor</h1>
@@ -97,15 +99,19 @@ export default function InviteMentorPage() {
           <input
             type="email"
             value={email}
+
             onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+
             required
             placeholder="Enter mentor's email"
             disabled={isLoading}
           />
         </label>
 
+
         <button type="submit" className="invite-btn" disabled={isLoading}>
           <FiSend /> {isLoading ? 'Sending...' : 'Send Invite'}
+
         </button>
       </form>
     </div>

@@ -1,0 +1,74 @@
+.invite-page {
+  max-width: 500px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.form-title {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #333;
+}
+
+.success-message {
+  background-color: #e6ffed;
+  color: #2e7d32;
+  border: 1px solid #b9f6ca;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.invite-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.invite-form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  color: #555;
+}
+
+.invite-form input[type="email"],
+.invite-form select {
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.invite-form input[type="email"]:focus,
+.invite-form select:focus {
+  border-color: #4caf50;
+  outline: none;
+}
+
+.invite-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: #4caf50;
+  color: white;
+  font-size: 1rem;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.invite-btn:hover {
+  background-color: #388e3c;
+}
