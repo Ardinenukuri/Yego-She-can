@@ -1,16 +1,18 @@
-"use client";
+'use client';
 
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import api from '@/lib/api';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import './login.css'; 
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+  const router = useRouter(); 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,7 +24,16 @@ export default function LoginPage() {
     try {
       const response = await api.post('/api/auth/login', formData);
       toast.success('Login successful!');
-      login(response.data.token, response.data.user);
+
+      const user = response.data.user;
+      login(response.data.token, user);
+
+      if (user.role === 'program manager') {
+        router.push('/dashboard');
+      } else {
+        router.push('/about'); 
+      }
+
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || 'Login failed. Please check your credentials.';
       toast.error(errorMessage);
