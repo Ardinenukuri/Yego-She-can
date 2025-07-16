@@ -1,118 +1,172 @@
+/* General styles */
 .mentors-page {
-  padding: 2rem;
+  padding: 1.5rem;
+  font-family: "Segoe UI", sans-serif;
 }
 
 .mentors-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
-}
-
-.mentors-header h1 {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #4b1c88;
+  margin-bottom: 1.5rem;
 }
 
 .invite-mentor-btn {
-  background-color: #7c34ab;
+  background-color: #4b1c88;
   color: white;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-weight: 600;
+  padding: 0.5rem 1rem;
   border: none;
+  font-weight: 500;
+  border-radius: 8px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 .invite-mentor-btn:hover {
-  background-color: #5e259a;
+  background-color: #3a1570;
 }
 
-.mentors-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
+/* Mentor Image */
+.mentor-img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
 }
 
-.mentor-card {
-  background: #f9f5fb;
-  border-radius: 10px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  width: 300px;
+/* TABLE styles */
+.mentors-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
 }
 
-.mentor-info h3 {
-  font-size: 1.2rem;
+.mentors-table th,
+.mentors-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.mentors-table th {
+  background-color: #f9f9f9;
   font-weight: 600;
-  color: #4b1c88;
-  margin-bottom: 0.25rem;
+  color: #333;
 }
 
-.mentor-info p {
-  font-size: 0.95rem;
-  color: #555;
-  margin-bottom: 0.3rem;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.mentors-table tr:hover {
+  background-color: #f6f6ff;
 }
 
-.status {
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 20px;
-  display: inline-block;
-  margin-top: 0.5rem;
+.mentor-status {
+  padding: 0.3rem 0.7rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: capitalize;
 }
 
-.status.active {
-  background-color: #dcfce7;
-  color: #15803d;
+.mentor-status.active {
+  background-color: #e7f5e9;
+  color: #2e7d32;
 }
 
-.status.pending {
-  background-color: #fef3c7;
-  color: #92400e;
+.mentor-status.pending {
+  background-color: #fff4e5;
+  color: #ff9800;
 }
 
 .mentor-actions {
-  margin-top: 1rem;
   display: flex;
-  gap: 10px;
+  gap: 0.5rem;
 }
 
 .view-btn,
 .delete-btn {
-  background-color: #e4d4f2;
   border: none;
-  padding: 8px 12px;
+  padding: 0.4rem 0.7rem;
   border-radius: 6px;
   font-size: 0.85rem;
-  font-weight: 500;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
-  cursor: pointer;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.view-btn {
+  background-color: #4b1c88;
+  color: white;
 }
 
 .view-btn:hover {
-  background-color: #d2b9eb;
+  background-color: #3a1570;
 }
 
 .delete-btn {
-  background-color: #fee2e2;
-  color: #b91c1c;
+  background-color: #fceaea;
+  color: #d32f2f;
 }
 
 .delete-btn:hover {
-  background-color: #fecaca;
+  background-color: #f8d7da;
+}
+
+/* Icons inside table */
+.table-icon {
+  vertical-align: middle;
+  color: #4b1c88;
+}
+
+/* CARD VIEW - hidden on desktop */
+.mentors-cards {
+  display: none;
+}
+
+/* Card styles for mobile */
+.mentor-card {
+  background-color: white;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mentor-info {
+  flex-grow: 1;
+}
+
+.mentor-info h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.mentor-info p {
+  margin: 0.2rem 0;
+  font-size: 0.9rem;
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* Show cards & hide table on small screens */
+@media (max-width: 768px) {
+  .mentors-table {
+    display: none;
+  }
+
+  .mentors-cards {
+    display: block;
+  }
 }
