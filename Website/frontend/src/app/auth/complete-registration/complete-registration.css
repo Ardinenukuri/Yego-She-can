@@ -1,0 +1,96 @@
+/* src/app/auth/complete-registration/complete-registration.css */
+
+.complete-registration-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f3f4f6;
+}
+
+.complete-registration-form {
+  background-color: #f8f6f5;
+  padding: 2.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  max-width: 450px; /* Wider to accommodate more fields */
+  width: 100%;
+  color: #4b4b4b;
+}
+
+.complete-registration-title {
+  font-size: 24px;
+  color: #7c34ab;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.complete-registration-subtitle {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.complete-registration-input-group {
+  margin-bottom: 1.25rem;
+}
+
+.complete-registration-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.complete-registration-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.complete-registration-button {
+  width: 100%;
+  background-color: #7c34ab;
+  color: white;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem;
+}
+
+.complete-registration-button:hover {
+  background-color: #6b21a8;
+}
+
+.complete-registration-button:disabled {
+  background-color: #9d78be;
+  cursor: not-allowed;
+}
+
+.complete-registration-footer {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 14px;
+}
+
+.complete-registration-link {
+  color: #7c34ab;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.complete-registration-link:hover {
+  text-decoration: underline;
+}

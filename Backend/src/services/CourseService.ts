@@ -66,4 +66,41 @@ export const CourseService = {
             throw error;
         }
     },
+
+    getPublicCourses: async () => {
+
+        const query = `
+            SELECT DISTINCT ON (c.id)
+                c.id,
+                c.name as title,
+                r.description,
+                r.timeline as duration,
+                r.level,
+                r.image_url as image,
+                (
+                    SELECT json_agg(ch.title ORDER BY ch.chapter_number)
+                    FROM chapters ch
+                    WHERE ch.resource_id = r.id
+                ) as features,
+                (
+                    SELECT COUNT(*)
+                    FROM chapters ch
+                    WHERE ch.resource_id = r.id
+                ) as lessons
+            FROM 
+                courses c
+            JOIN 
+                resources r ON c.id = r.course_id
+            ORDER BY 
+                c.id, r.created_at DESC;
+        `;
+
+        const { rows } = await pool.query(query);
+
+        return rows.map(course => ({
+            ...course,
+            price: 'Free', 
+            features: course.features || [], 
+        }));
+    },
 };

@@ -1,248 +1,181 @@
 .mentorship-page {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #4b4b4b;
+  font-family: 'Segoe UI', sans-serif;
+  color: #333;
 }
 
 .hero {
-    position: relative;
-    height: 80vh;
-    overflow: hidden;
+  position: relative;
+  height: 90vh;
+  width: 100%;
+  overflow: hidden;
 }
 
 .hero-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .hero-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .hero-text {
-    color: white;
-    max-width: 700px;
-    text-align: center;
-    animation: fadeUp 1s ease;
+  color: white;
+  text-align: center;
+  padding: 2rem;
+  max-width: 800px;
 }
 
 .hero-text h1 {
-    font-size: 2.8rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
+  font-size: 2.8rem;
+  margin-bottom: 1rem;
 }
 
-.hero-text p {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    margin-bottom: 2rem;
+.highlight {
+  color: #7c34ab;
 }
 
 .hero-buttons {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.btn-primary,
+.btn-outline {
+  padding: 0.7rem 1.5rem;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .btn-primary {
-    background-color: #7c34ab;
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+  background-color: #7c34ab;
+  color: white;
+  border: none;
 }
 
 .btn-primary:hover {
-    background-color: #6b21a8;
+  background-color: #5b2393;
 }
 
 .btn-outline {
-    background-color: transparent;
-    color: white;
-    border: 2px solid white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+  border: 2px solid white;
+  background-color: transparent;
+  color: white;
 }
 
 .btn-outline:hover {
-    background-color: white;
-    color: #7c34ab;
+  background-color: white;
+  color: #7c34ab;
 }
 
-.how-it-works {
-    padding: 4rem 1rem;
-    background-color: #f8f6f5;
-    text-align: center;
-}
-
-.how-it-works h2 {
-    font-size: 2rem;
-    color: #7c34ab;
-    margin-bottom: 2rem;
+.how-it-works,
+.why-mentorship,
+.book-session-form-section {
+  padding: 4rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .cards {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  margin-top: 2rem;
 }
 
 .card {
-    background: white;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(124, 52, 171, 0.1);
-    flex: 1 1 300px;
-    max-width: 360px;
-    transition: transform 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-8px);
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 350px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+  text-align: center;
 }
 
 .card-icon {
-    font-size: 2.5rem;
-    color: #7c34ab;
-    margin-bottom: 1rem;
+  font-size: 2.5rem;
+  color: #7c34ab;
+  margin-bottom: 1rem;
 }
 
-.card h3 {
-    font-size: 1.3rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
+.why-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: left;
+  margin-top: 4rem;
 }
 
-.card p {
-    font-size: 1rem;
-    color: #666;
+.why-column {
+  flex: 1 1 400px;
 }
 
-.why-mentorship {
-    padding: 4rem 1rem;
-    background: white;
-    max-width: 900px;
-    margin: 0 auto;
+.why-column ul {
+  list-style: none;
+  padding-left: 0;
 }
 
-.why-mentorship h2 {
-    text-align: center;
-    font-size: 2rem;
-    margin-bottom: 2rem;
-    color: #7c34ab;
+.why-column li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  color: #444;
 }
 
-.why-mentorship ul {
-    list-style: none;
-    padding: 0;
+.why-column li svg {
+  color: #7c34ab;
+  min-width: 15px;
+  margin-top: 0px;
 }
 
-.why-mentorship li {
-    margin-bottom: 1.5rem;
-    font-size: 1rem;
-    line-height: 1.6;
-}
-
-.why-mentorship li strong {
-    color: #7c34ab;
-}
-
-@keyframes fadeUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@media (max-width: 768px) {
-    .hero-text h1 {
-        font-size: 2rem;
-    }
-
-    .cards {
-        flex-direction: column;
-        align-items: center;
-    }
-}
-/* 
-.book-session-form-section {
-    padding: 4rem 1rem;
-    background-color: #f8f6f5;
-    max-width: 800px;
-    margin: 0 auto;
-    border-radius: 12px;
-    animation: fadeUp 1s ease;
-}
-
-.book-session-form-section h2 {
-    text-align: center;
-    font-size: 2rem;
-    color: #4b4b4b;
-    margin-bottom: 2rem;
-}
 
 .session-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+  max-width: 700px;
+  margin: 2rem auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: #f9f6fc;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
 .form-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .session-form input,
 .session-form textarea {
-    flex: 1;
-    padding: 0.9rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-family: inherit;
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
 }
 
-.session-form input:focus,
-.session-form textarea:focus {
-    border-color: #7c34ab;
-    outline: none;
+.session-form textarea {
+  resize: vertical;
 }
 
 .session-form button {
-    background-color: #7c34ab;
-    color: white;
-    border: none;
-    padding: 0.9rem 1.6rem;
-    font-size: 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    align-self: flex-start;
+  align-self: center;
+  width: fit-content;
 }
-
-.session-form button:hover {
-    background-color: #6b21a8;
-} */

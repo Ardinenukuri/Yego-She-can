@@ -4,7 +4,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import logo from '../../public/yego-shecan-logo.png'
 import { useState, useEffect, ReactNode } from 'react'
-import '../styles/navbar.css' 
+import { usePathname } from 'next/navigation'
+import '../styles/navbar.css'
 
 export default function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false)
@@ -27,10 +28,10 @@ export default function Navbar() {
     <nav className="navbar">
       <div className="nav-content">
         <Link href="/" className="logo-link">
-          <Image 
-            src={logo} 
-            alt="Yego SheCan Logo" 
-            width={120} 
+          <Image
+            src={logo}
+            alt="Yego SheCan Logo"
+            width={120}
             height={60}
             style={{ height: '60px', width: 'auto', borderRadius: '50px' }}
           />
@@ -52,34 +53,30 @@ export default function Navbar() {
               Services
               <svg
                 className="dropdown-icon"
-                style={{ transform: showDropdown ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                style={{ transform: showDropdown ? 'rotate(180deg)' : 'rotate(0deg)',color:'black' }}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </button>
 
-{hydrated && showDropdown && (
-  <div className="dropdown-content" onMouseLeave={() => setShowDropdown(false)}>
-    <Link href="/services/courses" className="dropdown-item">
-      <strong className="dropdown-title">Online Courses</strong>
-      <p className="dropdown-desc">Accounting, Sales, Marketing, Design Thinking</p>
-    </Link>
-
-    <Link href="/services/physical" className="dropdown-item">
-      <strong className="dropdown-title">Physical Programs</strong>
-      <p className="dropdown-desc">Soap & Coffee making workshops</p>
-    </Link>
-
-    <Link href="/services/entreprenuer" className="dropdown-item">
-      <strong className="dropdown-title">E-commerce</strong>
-      <p className="dropdown-desc">Buy soaps & coffee from our graduates</p>
-    </Link>
-  </div>
-)}
-
+            {hydrated && showDropdown && (
+              <div className="dropdown-content" onMouseLeave={() => setShowDropdown(false)}>
+                <Link href="/services/courses" className="dropdown-item">
+                  <strong className="dropdown-title">Online Courses</strong>
+                  <p className="dropdown-desc">Accounting, Sales, Marketing, Design Thinking</p>
+                </Link>
+                <Link href="/services/physical" className="dropdown-item">
+                  <strong className="dropdown-title">Physical Programs</strong>
+                  <p className="dropdown-desc">Soap & Coffee making workshops</p>
+                </Link>
+              </div>
+            )}
           </div>
 
+          <NavLink href="/products">Products</NavLink>
           <NavLink href="/mentorship">Mentorship</NavLink>
           <NavLink href="/contact">Contact</NavLink>
 
@@ -98,17 +95,12 @@ interface NavLinkProps {
 }
 
 function NavLink({ href, children }: NavLinkProps) {
-  return (
-    <Link href={href}>
-      <span className="nav-link">{children}</span>
-    </Link>
-  )
-}
+  const pathname = usePathname()
+  const isActive = pathname === href
 
-function DropdownLink({ href, children }: NavLinkProps) {
   return (
     <Link href={href}>
-      <span className="dropdown-link">{children}</span>
+      <span className={`nav-link ${isActive ? 'active' : ''}`}>{children}</span>
     </Link>
   )
 }

@@ -200,6 +200,25 @@ export const AuthController = {
         }
     },
 
+    applyToBeMentor: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const applicationData = req.body;
+            await AuthService.applyToBeMentor(applicationData);
+            res.status(200).json({ message: 'Your application has been submitted successfully. Our team will review it and get back to you.' });
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    handleContactForm: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const contactData = req.body;
+            await AuthService.handleContactForm(contactData);
+            res.status(200).json({ message: 'Your message has been sent successfully. We will get back to you shortly.' });
+        } catch (error) {
+            next(error);
+        }
+    },
     
 };
     

@@ -1,61 +1,88 @@
-'use client'
+"use client";
 
-import React,{ useState } from 'react'
+import React, { useState, ChangeEvent, FormEvent } from 'react'
 import Image from 'next/image'
-import { CheckCircle} from "lucide-react"
+import { CheckCircle } from 'lucide-react'
 import { FaUserCheck, FaCalendarAlt, FaHandsHelping } from 'react-icons/fa'
+import toast from 'react-hot-toast'
+import api from '@/lib/api'
 import './mentorship.css'
 import heroImage from '../../../public/mentorship.jpg'
 
 const MentorshipPage = () => {
-    // const [form, setForm] = useState({
-    //     name: '',
-    //     email: '',
-    //     mentor: '',
-    //     date: '',
-    //     time: '',
-    //     message: '',
-    // });
+    const [form, setForm] = useState({
+        name: '',
+        email: '',
+        expertise: '', 
+        message: '',
+    });
+    const [loading, setLoading] = useState(false);
 
-    // const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    //     const { name, value } = e.target;
-    //     setForm((prev) => ({ ...prev, [name]: value }));
-    // };
+    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setForm({ ...form, [e.target.name]: e.target.value });
+    };
 
-    // const handleSubmit = (e: React.FormEvent) => {
-    //     e.preventDefault();
+    const handleSubmit = async (e: FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        const toastId = toast.loading('Submitting your application...');
+        
+        try {
+            
+            const response = await api.post('/api/auth/apply-mentor', form);
+            
+            toast.success(response.data.message || 'Application submitted successfully!', { id: toastId });
+            
+            
+            setForm({
+                name: '',
+                email: '',
+                expertise: '',
+                message: '',
+            });
 
-    //     // Replace this with your backend POST request
-    //     console.log('Submitted form:', form);
-
-    //     alert('Your mentorship request has been submitted! We’ll be in touch soon.');
-    //     setForm({
-    //         name: '',
-    //         email: '',
-    //         mentor: '',
-    //         date: '',
-    //         time: '',
-    //         message: '',
-    //     });
-    // };
+        } catch (error: any) {
+            const errorMessage = error.response?.data?.errors?.[0]?.message || 'Submission failed. Please try again.';
+            toast.error(errorMessage, { id: toastId });
+        } finally {
+            setLoading(false);
+        }
+    };
+    
 
     return (
         <main className="mentorship-page">
             <section className="hero">
+                <Image src={heroImage} alt="Mentorship" className="hero-img" priority />
                 <div className="hero-overlay">
                     <div className="hero-text">
-                        <h1>Find Your <span style={{ color: ' #7c34ab' }}>Mentor</span></h1>
+                        <h1>
+                            Find Your <span className="highlight">Mentor</span>
+                        </h1>
                         <p>
-                            Connect with successful women entrepreneurs who understand your journey. Get personalized
-                            guidance, support, and advice to help you build and grow your business.
+                            Connect with successful women entrepreneurs who understand your journey.
+                            Get personalized guidance, support, and advice to help you grow your business.
                         </p>
                         <div className="hero-buttons">
-                            <button className="btn-primary">Book a Session</button>
-                            <button className="btn-outline">Become a Mentor</button>
+                            <button
+                                className="btn-primary"
+                                onClick={() => {
+                                    document.getElementById('become-mentor-form')?.scrollIntoView({ behavior: 'smooth' });
+                                }}
+                            >
+                                Book a Session
+                            </button>
+                            <button
+                                className="btn-outline"
+                                onClick={() => {
+                                    document.getElementById('become-mentor-form')?.scrollIntoView({ behavior: 'smooth' });
+                                }}
+                            >
+                                Become a Mentor
+                            </button>
                         </div>
                     </div>
                 </div>
-                <Image src={heroImage} alt="Mentorship" className="hero-img" priority />
             </section>
 
             <section className="how-it-works">
@@ -87,18 +114,27 @@ const MentorshipPage = () => {
 
             <section className="why-mentorship">
                 <h2>Why Choose Our Mentorship Program?</h2>
-                <ul>
-                    <li><CheckCircle/> <strong>Completely Free:</strong> All mentorship sessions are provided at no cost as part of our commitment to supporting women entrepreneurs.</li>
-                    <li><CheckCircle/> <strong>Experienced Mentors:</strong> Our mentors are successful women entrepreneurs with real-world experience in various industries.</li>
-                    <li><CheckCircle/> <strong>Flexible Scheduling:</strong> Book sessions at times that work for your schedule, including evenings and weekends.</li>
-                    <li><CheckCircle/> <strong>Personalized Guidance:</strong> Get advice tailored to your specific business goals, challenges, and industry.</li>
-                    <li><CheckCircle/> <strong>Ongoing Support:</strong> Build long-term relationships with mentors who will support your journey over time.</li>
-                    <li><CheckCircle/> <strong>Network Access:</strong> Connect with other mentees and expand your professional network within our community.</li>
-                </ul>
+                <div className="why-columns">
+                    <div className="why-column">
+                        <ul>
+                            <li><CheckCircle /> <strong style={{fontSize:'1rem'}}>Completely Free:</strong> All sessions are free as part of our commitment to support.</li>
+                            <li><CheckCircle /> <strong style={{fontSize:'1rem'}}>Experienced Mentors:</strong> Real-world experts across industries.</li>
+                            <li><CheckCircle /> <strong style={{fontSize:'1rem'}}>Flexible Scheduling:</strong> Sessions available evenings and weekends.</li>
+                        </ul>
+                    </div>
+                    <div className="why-column">
+                        <ul>
+                            <li><CheckCircle /> <strong style={{fontSize:'1rem'}}>Personalized Guidance:</strong> Tailored advice for your business challenges.</li>
+                            <li><CheckCircle /> <strong style={{fontSize:'1rem'}}>Ongoing Support:</strong> Build long-term mentor relationships.</li>
+                            <li><CheckCircle /> <strong style={{fontSize:'1rem'}}>Network Access:</strong> Connect with a strong women-led business community.</li>
+                        </ul>
+                    </div>
+                </div>
             </section>
-      {/* // Add this section where you'd like the form to appear
-            <section className="book-session-form-section">
-                <h2>Book a Mentorship Session</h2>
+
+        
+            <section className="book-session-form-section" id="become-mentor-form">
+                <h2>Request to Become a Mentor</h2>
                 <form className="session-form" onSubmit={handleSubmit}>
                     <div className="form-group">
                         <input
@@ -108,6 +144,7 @@ const MentorshipPage = () => {
                             required
                             value={form.name}
                             onChange={handleChange}
+                            disabled={loading}
                         />
                         <input
                             type="email"
@@ -116,42 +153,32 @@ const MentorshipPage = () => {
                             required
                             value={form.email}
                             onChange={handleChange}
+                            disabled={loading}
                         />
                     </div>
                     <input
                         type="text"
-                        name="mentor"
-                        placeholder="Preferred Mentor (Optional)"
-                        value={form.mentor}
+                        name="expertise" 
+                        placeholder="Your Field of Expertise *"
+                        required
+                        value={form.expertise}
                         onChange={handleChange}
+                        disabled={loading}
                     />
-                    <div className="form-group">
-                        <input
-                            type="date"
-                            name="date"
-                            required
-                            value={form.date}
-                            onChange={handleChange}
-                        />
-                        <input
-                            type="time"
-                            name="time"
-                            required
-                            value={form.time}
-                            onChange={handleChange}
-                        />
-                    </div>
                     <textarea
                         name="message"
-                        placeholder="What would you like to discuss?"
+                        placeholder="Tell us why you want to be a mentor *"
                         rows={4}
+                        required
                         value={form.message}
                         onChange={handleChange}
+                        disabled={loading}
                     ></textarea>
-                    <button type="submit">Submit Request</button>
+                    <button type="submit" className="btn-primary" disabled={loading}>
+                        {loading ? 'Submitting...' : 'Submit Request'}
+                    </button>
                 </form>
-            </section> */}
-
+            </section>
         </main>
     )
 }
