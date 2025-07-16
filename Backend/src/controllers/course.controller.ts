@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { CourseService } from '../services/CourseService';
+import { AuthService } from '../services/auth.service';
 
 export const CourseController = {
     createCourse: async (req: Request, res: Response, next: NextFunction) => {
@@ -71,4 +72,15 @@ export const CourseController = {
             next(error);
         }
     },
+
+    getAdminCourseList: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const courses = await CourseService.getAdminCourseList();
+            res.status(200).json(courses);
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    
 };
