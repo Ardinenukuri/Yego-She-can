@@ -12,6 +12,7 @@
   font-weight: 700;
   text-align: center;
 }
+
 .dashboard-kpi-wrapper {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -48,7 +49,7 @@
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  margin-top: 2rem;
+  margin-top: 3rem;
   background-color: #fff;
   border-radius: 12px;
   overflow: hidden;
@@ -62,7 +63,7 @@
 .course-table th {
   padding: 1rem 1.25rem;
   font-weight: 700;
-  color:#4b1c88;
+  color: #4b1c88;
   text-align: left;
   border-bottom: 2px solid #e4d7f5;
   font-size: 0.9rem;
@@ -71,16 +72,20 @@
 }
 
 .course-table td {
-  padding: 1rem 1.25rem;
+  padding: 0.75rem 1.25rem;
   border-bottom: 1px solid #eee;
   vertical-align: middle;
   font-size: 0.95rem;
   color: #333;
 }
 
+.course-table tbody tr:nth-child(odd) {
+  background-color: #faf6ff;
+}
+
 .course-table tr:hover {
-  background-color: #f9f3fd;
-  transition: background-color 0.2s ease;
+  background-color: #f0e8ff;
+  transition: background-color 0.3s ease;
 }
 
 .table-header {
@@ -99,12 +104,14 @@
   align-items: center;
   gap: 0.5rem;
   font-weight: 500;
-  color: black;
+  color: #333;
 }
 
 .course-actions {
   display: flex;
   gap: 0.75rem;
+  text-align: center;
+justify-content: left;
 }
 
 .action-icon {
@@ -114,18 +121,12 @@
   font-size: 1.1rem;
   padding: 0.25rem;
   transition: transform 0.15s ease, color 0.15s ease;
+  border-radius: 8px;
 }
-
 .action-icon:hover {
   transform: scale(1.1);
-}
-
-.edit-icon {
+  background-color: #f1e4ff;
   color: #4b1c88;
-}
-
-.edit-icon:hover {
-  color: #673ab7;
 }
 
 .delete-icon {
@@ -133,10 +134,19 @@
 }
 
 .delete-icon:hover {
+  animation: shake 0.25s ease-in-out;
   color: #a10000;
 }
 
-/* Modern mentor status badges */
+@keyframes shake {
+  0% { transform: rotate(0); }
+  25% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+  75% { transform: rotate(-2deg); }
+  100% { transform: rotate(0); }
+}
+
+/* Mentor Status Badges */
 .mentor-status {
   padding: 0.35rem 0.75rem;
   border-radius: 20px;
@@ -145,9 +155,10 @@
   display: inline-block;
   text-transform: capitalize;
   border: 1px solid transparent;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
 }
 
-.mentor-status.Active{
+.mentor-status.Active {
   background-color: #e9f9ee;
   color: #219653;
   border-color: #b4e2c1;
@@ -165,38 +176,44 @@
   border-color: #ffe58f;
 }
 
-/* Responsive improvements */
-@media (max-width: 768px) {
-  .dashboard-title {
-    font-size: 1.6rem;
-  }
-
-  .course-count-card {
-    width: 100%;
-    font-size: 1rem;
-    padding: 1rem;
-  }
-
-  .course-table th,
-  .course-table td {
-    padding: 0.75rem 1rem;
-  }
-
-  .course-name span {
-    font-size: 0.9rem;
-  }
-
-  .mentor-status {
-    font-size: 0.7rem;
-    padding: 0.3rem 0.6rem;
-  }
+/* Progress Bar */
+.progress-bar-container {
+  background-color: #eee6fb;
+  border-radius: 12px;
+  height: 10px;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Search and Controls */
+.progress-bar-fill {
+  background: linear-gradient(to right, #a064e3, #4b1c88);
+  height: 100%;
+  border-radius: 12px;
+  transition: width 0.4s ease-in-out;
+}
+
+
 .dashboard-controls {
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: 1rem;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.heading-name {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #111;
+  margin: 0;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .search-input {
@@ -204,7 +221,7 @@
   border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 0.9rem;
-  width: 300px;
+  width: 250px;
   transition: border 0.2s ease;
 }
 
@@ -213,8 +230,18 @@
   border-color: #7c34ab;
 }
 
-/* Pagination styles */
-.pagination {
+.select-filter {
+  padding: 0.6rem 0.9rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+select option {
+  font-size: 0.9rem;
+}
+
+  .pagination {
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -242,7 +269,6 @@
   opacity: 0.5;
 }
 
-/* Modal styles */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -311,13 +337,14 @@
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
 }
-/* Add these styles to your existing CSS to style the charts professionally and side-by-side */
 
+/* Dashboard Charts */
 .dashboard-analytics-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
-  margin-top: 2rem;
+  margin-top: 5rem;
+  margin-bottom: 3rem;
 }
 
 .dashboard-chart-box {
@@ -341,21 +368,60 @@
   text-align: center;
 }
 
-/* Make sure recharts fits the container well */
 .recharts-responsive-container {
   width: 100% !important;
   height: 250px !important;
 }
 
-/* Mobile responsiveness */
+/* Mobile */
 @media (max-width: 768px) {
+  .dashboard-title {
+    font-size: 1.6rem;
+  }
+
+  .course-count-card {
+    width: 100%;
+    font-size: 1rem;
+    padding: 1rem;
+  }
+
   .dashboard-analytics-row {
     grid-template-columns: 1fr;
   }
+
   .dashboard-chart-box {
     padding: 1rem;
   }
+
   .dashboard-graph-title {
     font-size: 1rem;
+  }
+
+  .course-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .course-table th,
+  .course-table td {
+    padding: 0.75rem 1rem;
+  }
+
+  .course-name span {
+    font-size: 0.9rem;
+  }
+
+  .mentor-status {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .progress-bar-container {
+    height: 16px;
+  }
+
+  .progress-text {
+    font-size: 0.7rem;
   }
 }
