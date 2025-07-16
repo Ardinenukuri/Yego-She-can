@@ -9,6 +9,7 @@ import courseRoutes from './routes/course.routes';
 import userRoutes from './routes/user.routes'
 import resourceRoutes from './routes/resource.routes';
 import quizRoutes from './routes/quiz.routes';
+import dashboardRoutes from './routes/dashboard.routes';
 
 
 
@@ -31,6 +32,7 @@ app.use('/api/courses', courseRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/resources', resourceRoutes);
 app.use('/api/quizzes', quizRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
