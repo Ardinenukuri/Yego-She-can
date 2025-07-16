@@ -1,18 +1,30 @@
+/* 🔍 Search Bar Container */
 .search-bar {
   margin: 1rem 0;
   text-align: right;
 }
 
-.search-input {
-  padding: 0.5rem;
-  width: 300px;
+/* 🔎 Search Input Styling */
+.search-bar input {
+  padding: 0.5rem 1rem;
+  width: 280px;
   border: 1px solid #ccc;
   border-radius: 8px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease;
 }
 
+.search-bar input:focus {
+  outline: none;
+  border-color: #4b1c88;
+  box-shadow: 0 0 0 2px rgba(75, 28, 136, 0.2);
+}
+
+/* 📊 Courses Table */
 .courses-table {
   width: 100%;
   border-collapse: collapse;
+  font-family: "Segoe UI", sans-serif;
 }
 
 .courses-table th,
@@ -20,12 +32,17 @@
   padding: 1rem;
   border-bottom: 1px solid #eee;
   text-align: left;
+  vertical-align: middle;
 }
 
 .courses-table th {
   background-color: #f9f9f9;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #333;
 }
 
+/* 👁️ View Button */
 .view-btn {
   background-color: #4b1c88;
   color: white;
@@ -36,10 +53,32 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  font-size: 0.85rem;
+  transition: background-color 0.2s ease;
 }
 
+.view-btn:hover {
+  background-color: #3a1570;
+}
+
+/* ℹ️ No Results Message */
 .no-results {
   text-align: center;
   padding: 2rem;
   color: gray;
+  font-size: 1rem;
+  font-style: italic;
+}
+
+/* 🧩 Icon Alignment (optional, if not already defined) */
+.table-icon {
+  margin-right: 6px;
+  vertical-align: middle;
+  color: #4b1c88;
+}
+
+/* 🟣 Muted Text (for null/empty fields like mentor) */
+.text-muted {
+  color: #999;
+  font-style: italic;
 }

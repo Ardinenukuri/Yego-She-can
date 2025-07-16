@@ -90,27 +90,74 @@ export default function DashboardHome() {
       progress: 100,
     },
   ]);
+  
 
-  const [studentSearchTerm, setStudentSearchTerm] = useState("");
+const [studentSearchTerm, setStudentSearchTerm] = useState("");
+const [studentFilter, setStudentFilter] = useState("all");
+const [studentSort, setStudentSort] = useState("name");
 
-  const filteredStudents = useMemo(() => {
-    return students.filter((student) =>
-      student.name.toLowerCase().includes(studentSearchTerm.toLowerCase())
-    );
-  }, [students, studentSearchTerm]);
+
+const filteredStudents = useMemo(() => {
+  let result = [...students];
+
+  // Filter
+  if (studentFilter === "above50") {
+    result = result.filter((s) => s.progress > 50);
+  }
+
+  // Search
+  result = result.filter((student) =>
+    student.name.toLowerCase().includes(studentSearchTerm.toLowerCase())
+  );
+
+  // Sort
+  result.sort((a, b) => {
+    if (studentSort === "name") return a.name.localeCompare(b.name);
+    if (studentSort === "progress") return b.progress - a.progress;
+    return 0;
+  });
+
+  return result;
+}, [students, studentSearchTerm, studentFilter, studentSort]);
+
+const [currentStudentPage, setCurrentStudentPage] = useState(1);
+const studentItemsPerPage = 5;
+const totalStudentPages = Math.ceil(filteredStudents.length / studentItemsPerPage);
+
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [courseToDelete, setCourseToDelete] = useState<number | null>(null);
   const itemsPerPage = 5;
 
-  const filteredCourses = useMemo(() => {
-    return courses.filter(
-      (course) =>
-        course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        course.mentorName.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [courses, searchTerm]);
+const [courseFilter, setCourseFilter] = useState("all");
+const [courseSort, setCourseSort] = useState("az");
+
+const filteredCourses = useMemo(() => {
+  let result = [...courses];
+
+  // Filter
+  if (courseFilter !== "all") {
+    result = result.filter((course) => course.mentorStatus === courseFilter);
+  }
+
+  // Search
+  result = result.filter(
+    (course) =>
+      course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      course.mentorName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Sort
+  result.sort((a, b) => {
+    if (courseSort === "az") return a.title.localeCompare(b.title);
+    if (courseSort === "za") return b.title.localeCompare(a.title);
+    return 0;
+  });
+
+  return result;
+}, [courses, searchTerm, courseFilter, courseSort]);
+
 
   const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
   const paginatedCourses = filteredCourses.slice(
@@ -131,14 +178,15 @@ export default function DashboardHome() {
 
   const handleCancelDelete = () => setCourseToDelete(null);
 
-  const [mentors, setMentors] = useState([
-    { name: "Alice Uwimana", status: "Active", assignedCourses: 2 },
-    { name: "Jean Bosco", status: "pending", assignedCourses: 2 },
-    { name: "Clare Niyonsaba", status: "Active", assignedCourses: 1 },
-    { name: "Eric Mugisha", status: "Inactive", assignedCourses: 0 },
-    { name: "Olivia Iradukunda", status: "pending", assignedCourses: 1 },
-    { name: "Sam Dusabe", status: "Active", assignedCourses: 3 },
-  ]);
+const [mentors, setMentors] = useState([
+  { name: "Alice Uwimana", status: "Active", assignedCourses: 2 },
+  { name: "Jean Bosco", status: "pending", assignedCourses: 2 },
+  { name: "Clare Niyonsaba", status: "Active", assignedCourses: 1 },
+  { name: "Eric Mugisha", status: "Inactive", assignedCourses: 0 },
+  { name: "Olivia Iradukunda", status: "pending", assignedCourses: 1 },
+  { name: "Sam Dusabe", status: "Active", assignedCourses: 3 },
+]);
+
   const [mentorSearchTerm, setMentorSearchTerm] = useState("");
   const [currentMentorPage, setCurrentMentorPage] = useState(1);
   const [mentorToDelete, setMentorToDelete] = useState<string | null>(null);
@@ -191,17 +239,17 @@ export default function DashboardHome() {
     {
       name: "Active",
       value: mentors.filter((m) => m.status === "Active").length,
-      color: "#219653",
+      color: "#cfc4efff",
     },
     {
       name: "Inactive",
       value: mentors.filter((m) => m.status === "Inactive").length,
-      color: "#c62828",
+      color: "gray",
     },
     {
       name: "Pending",
       value: mentors.filter((m) => m.status === "pending").length,
-      color: "#f9a825",
+      color: "#e025f9ff",
     },
   ];
   const courseMentorStatusData = [
@@ -222,6 +270,22 @@ export default function DashboardHome() {
     },
   ];
 
+  const totalCourses = courses.length;
+const activeMentors = mentors.filter((m) => m.status === "Active").length;
+const enrolledStudents = students.length;
+
+const percentAssigned = useMemo(() => {
+  const assigned = courses.filter((c) => c.mentorStatus === "assigned").length;
+  return totalCourses > 0 ? ((assigned / totalCourses) * 100).toFixed(1) : "0.0";
+}, [courses]);
+
+const avgProgress = useMemo(() => {
+  if (students.length === 0) return "0";
+  const total = students.reduce((sum, s) => sum + s.progress, 0);
+  return (total / students.length).toFixed(1);
+}, [students]);
+
+
   return (
     <div className="dashboard-container">
       {toast && <div className="toast-message">{toast}</div>}
@@ -229,17 +293,38 @@ export default function DashboardHome() {
         Welcome to your dashboard, Yego SheCan!
       </h1>
 
-      <div className="dashboard-count-wrapper">
-        <div className="course-count-card">
-          <FiBook className="card-icon" />
-          <span>Number of Courses: {courses.length}</span>
-        </div>
+      <div className="dashboard-kpi-wrapper">
+  <div className="kpi-card">
+    <FiBook className="kpi-icon" />
+    <div className="kpi-label">Total Courses</div>
+    <div className="kpi-value">{totalCourses}</div>
+  </div>
 
-        <div className="course-count-card">
-          <FiUsers className="card-icon" />
-          <span>Number of Mentors: {mentors.length}</span>
-        </div>
-      </div>
+  <div className="kpi-card">
+    <FiUsers className="kpi-icon" />
+    <div className="kpi-label">Active Mentors</div>
+    <div className="kpi-value">{activeMentors}</div>
+  </div>
+
+  <div className="kpi-card">
+    <FiUsers className="kpi-icon" />
+    <div className="kpi-label">Enrolled Students</div>
+    <div className="kpi-value">{enrolledStudents}</div>
+  </div>
+
+  <div className="kpi-card">
+    <FiBook className="kpi-icon" />
+    <div className="kpi-label">% Assigned Courses</div>
+    <div className="kpi-value">{percentAssigned}%</div>
+  </div>
+
+  <div className="kpi-card">
+    <FiUsers className="kpi-icon" />
+    <div className="kpi-label">Avg. Student Progress</div>
+    <div className="kpi-value">{avgProgress}%</div>
+  </div>
+</div>
+
 
       <div className="dashboard-analytics-row">
         {/* Mentor Status Pie Chart */}
@@ -280,6 +365,27 @@ export default function DashboardHome() {
           </ResponsiveContainer>
         </div>
       </div>
+
+      <div className="dashboard-controls">
+  <input
+    type="text"
+    placeholder="Search courses..."
+    className="search-input"
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+  />
+  <select value={courseFilter} onChange={(e) => setCourseFilter(e.target.value)}>
+    <option value="all">All Statuses</option>
+    <option value="assigned">Assigned</option>
+    <option value="pending">Pending</option>
+    <option value="not-assigned">Not Assigned</option>
+  </select>
+  <select value={courseSort} onChange={(e) => setCourseSort(e.target.value)}>
+    <option value="az">Sort A–Z</option>
+    <option value="za">Sort Z–A</option>
+  </select>
+</div>
+
       <table className="course-table">
         <thead>
           <tr>
@@ -487,36 +593,92 @@ export default function DashboardHome() {
 
         </div>
       )}
-       <h2 className="dashboard-subtitle">Student Overview</h2>
 
-     <table className="course-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Enrolled Course</th>
-            <th>Mentor</th>
-            <th>Progress</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredStudents.map((student) => (
-            <tr key={student.id}>
-              <td>{student.name}</td>
-              <td>{student.enrolledCourse}</td>
-              <td>{student.mentor || "Not Assigned"}</td>
-              <td>
-                <div className="progress-bar-container">
-                  <div
-                    className="progress-bar-fill"
-                    style={{ width: `${student.progress}%` }}
-                  ></div>
-                  <span className="progress-text">{student.progress}%</span>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="dashboard-controls">
+  <input
+    type="text"
+    placeholder="Search students..."
+    className="search-input"
+    value={studentSearchTerm}
+    onChange={(e) => setStudentSearchTerm(e.target.value)}
+  />
+  <select value={studentFilter} onChange={(e) => setStudentFilter(e.target.value)}>
+    <option value="all">All Progress</option>
+    <option value="above50">Progress  50%</option>
+  </select>
+  <select value={studentSort} onChange={(e) => setStudentSort(e.target.value)}>
+    <option value="name">Sort by Name</option>
+    <option value="progress">Sort by Progress</option>
+  </select>
+</div>
+
+       
+
+     <h2 className="dashboard-subtitle">Student Overview</h2>
+
+<div className="dashboard-controls">
+  <input
+    type="text"
+    placeholder="Search students..."
+    className="search-input"
+    value={studentSearchTerm}
+    onChange={(e) => setStudentSearchTerm(e.target.value)}
+  />
+</div>
+
+<table className="course-table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Enrolled Course</th>
+      <th>Mentor</th>
+      <th>Progress</th>
+    </tr>
+  </thead>
+  <tbody>
+    {filteredStudents
+      .slice(
+        (currentStudentPage - 1) * studentItemsPerPage,
+        currentStudentPage * studentItemsPerPage
+      )
+      .map((student) => (
+        <tr key={student.id}>
+          <td>{student.name}</td>
+          <td>{student.enrolledCourse}</td>
+          <td>{student.mentor || "Not Assigned"}</td>
+          <td>
+            <div className="progress-bar-container">
+              <div
+                className="progress-bar-fill"
+                style={{ width: `${student.progress}%` }}
+              ></div>
+              <span className="progress-text">{student.progress}%</span>
+            </div>
+          </td>
+        </tr>
+      ))}
+  </tbody>
+</table>
+
+<div className="pagination">
+  <button
+    onClick={() => setCurrentStudentPage((p) => Math.max(p - 1, 1))}
+    disabled={currentStudentPage === 1}
+  >
+    Previous
+  </button>
+  <span>
+    Page {currentStudentPage} of {totalStudentPages}
+  </span>
+  <button
+    onClick={() =>
+      setCurrentStudentPage((p) => Math.min(p + 1, totalStudentPages))
+    }
+    disabled={currentStudentPage === totalStudentPages}
+  >
+    Next
+  </button>
+</div>
 
 
     </div>

@@ -12,29 +12,36 @@
   font-weight: 700;
   text-align: center;
 }
-.dashboard-count-wrapper {
-  display: flex;
+.dashboard-kpi-wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 1rem;
-  justify-content: center; 
-  flex-wrap: wrap; 
-  margin-bottom: 2rem;
+  margin: 2rem 0;
 }
 
-.course-count-card {
-  background-color: #f4f0f8;
-  color: #444;
+.kpi-card {
+  background: #f6f2fb;
   padding: 1rem;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(124, 52, 171, 0.2);
-  font-size: 1.1rem;
-  font-weight: 600;
   text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin: 0 auto 2rem;
-  width: fit-content;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+}
+
+.kpi-icon {
+  font-size: 1.5rem;
+  color: #7c34ab;
+  margin-bottom: 0.25rem;
+}
+
+.kpi-label {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.kpi-value {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #333;
 }
 
 .course-table {
