@@ -8,7 +8,11 @@ import { useRouter } from 'next/navigation';
 interface User {
   id: number;
   username: string;
-  email: string;
+  email: string;firstName: string; // Add these fields
+  lastName: string;
+  profile_picture_url?: string;
+  role: string;
+
   // Add other user fields like role, firstName, etc., if needed
 }
 
