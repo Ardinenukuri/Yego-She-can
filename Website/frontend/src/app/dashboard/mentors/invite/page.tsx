@@ -6,19 +6,34 @@ import { FiSend } from 'react-icons/fi'
 
 export default function InviteMentorPage() {
   const [email, setEmail] = useState('')
+  const [selectedCourse, setSelectedCourse] = useState('')
   const [message, setMessage] = useState('')
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  // Example course list – replace or fetch from your API if needed
+  const courses = [
+    'Accounting & Finance',
+    'Agricultural Technology',
+    'Entrepreneurship Basics',
+    'Digital Marketing',
+    'Sustainable Farming'
+  ]
+
+  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value)
+  }
+
+  const handleCourseChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCourse(e.target.value)
   }
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
 
     // Simulate sending an email invite
-    console.log('Sending invite to:', email)
-    setMessage(`✅ Invite sent to ${email}`)
+    console.log('Sending invite to:', email, 'for course:', selectedCourse)
+    setMessage(`✅ Invite sent to ${email} for the course "${selectedCourse}"`)
     setEmail('')
+    setSelectedCourse('')
   }
 
   return (
@@ -33,10 +48,22 @@ export default function InviteMentorPage() {
           <input
             type="email"
             value={email}
-            onChange={handleChange}
+            onChange={handleEmailChange}
             required
             placeholder="Enter mentor's email"
           />
+        </label>
+
+        <label>
+          Select Course:
+          <select value={selectedCourse} onChange={handleCourseChange} required>
+            <option value="">-- Choose a course --</option>
+            {courses.map((course, idx) => (
+              <option key={idx} value={course}>
+                {course}
+              </option>
+            ))}
+          </select>
         </label>
 
         <button type="submit" className="invite-btn">
