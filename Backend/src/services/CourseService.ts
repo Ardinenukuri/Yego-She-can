@@ -103,4 +103,47 @@ export const CourseService = {
             features: course.features || [], 
         }));
     },
+
+    getAdminCourseList: async () => {
+        const query = `
+            SELECT DISTINCT ON (c.id)
+                c.id,
+                c.name as title,
+                r.image_url as image,
+                r.description,
+                r.timeline as duration,
+                r.level,
+                COALESCE(m.first_name || ' ' || m.last_name, 'Not Assigned') as mentor,
+                (
+                    SELECT COUNT(*) 
+                    FROM enrollments e 
+                    WHERE e.course_id = c.id
+                )::int as "enrolledCount",
+                (
+                    SELECT COUNT(*) 
+                    FROM chapters ch 
+                    WHERE ch.resource_id = r.id
+                )::int as lessons
+            FROM
+                courses c
+            LEFT JOIN 
+                resources r ON c.id = r.course_id
+            LEFT JOIN 
+                course_mentors cm ON c.id = cm.course_id
+            LEFT JOIN 
+                users m ON cm.mentor_id = m.id
+            ORDER BY
+                c.id,
+                CASE WHEN m.id IS NOT NULL THEN 0 ELSE 1 END, -- Prioritize rows with a mentor
+                r.created_at DESC; -- Then by the newest resource
+        `;
+        
+        const { rows } = await pool.query(query);
+
+
+        return rows.map(course => ({
+            ...course,
+            price: 'Free',
+        }));
+    },
 };

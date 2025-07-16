@@ -47,4 +47,13 @@ export const UserController = {
             next(error);
         }
     },
+
+    getAllMentors: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const mentors = await AuthService.getAllMentors();
+            res.status(200).json(mentors);
+        } catch (error) {
+            next(error);
+        }
+    },
 };

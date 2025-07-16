@@ -14,5 +14,5 @@ router.delete('/:id', protect, authorize('program manager'), CourseController.de
 router.get('/available', protect, authorize('learner'), CourseController.getAllCoursesForLearner);
 router.post('/enroll', protect, authorize('learner'), validateRequest(enrollInCourseSchema), CourseController.enrollInCourse);
 router.get('/public', CourseController.getPublicCourses);
-
+router.get('/admin-list', protect, authorize('program manager'), CourseController.getAdminCourseList);
 export default router;

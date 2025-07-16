@@ -549,6 +549,42 @@ export const AuthService = {
 
         return { success: true };
     },
+
+    getAllMentors: async () => {
+
+        const query = `
+            SELECT
+                u.id,
+                u.first_name || ' ' || u.last_name as name,
+                u.email,
+                u.status,
+                u.profile_picture_url as image,
+                -- Aggregate all assigned course names into a single comma-separated string
+                STRING_AGG(c.name, ', ') as expertise,
+                -- Also get a count of assigned courses
+                COUNT(c.id)::int as "assignedCourses"
+            FROM 
+                users u
+            LEFT JOIN 
+                course_mentors cm ON u.id = cm.mentor_id
+            LEFT JOIN 
+                courses c ON cm.course_id = c.id
+            WHERE 
+                u.role = 'mentor'
+            GROUP BY 
+                u.id, u.first_name, u.last_name, u.email, u.status, u.profile_picture_url
+            ORDER BY 
+                u.created_at DESC;
+        `;
+        
+        const { rows } = await pool.query(query);
+
+
+        return rows.map(mentor => ({
+            ...mentor,
+            status: mentor.status === 'active' ? 'Active' : 'Pending'
+        }));
+    },
 };
 
 
