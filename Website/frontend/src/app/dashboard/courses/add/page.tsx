@@ -1,35 +1,100 @@
-'use client'
+'use client';
 
-import { useState, ChangeEvent, FormEvent } from 'react'
-import './add.css' // adjust the path based on your project
+import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
+import './add.css'; 
+import api from '@/lib/api';
+import toast from 'react-hot-toast';
+
+
+interface Course {
+  id: number;
+  name: string;
+}
+
 export default function AddCoursePage() {
-  const [courseTitle, setCourseTitle] = useState('')
-  const [mentorEmail, setMentorEmail] = useState('')
-  const [courseAdded, setCourseAdded] = useState(false)
-  const [mentorInvited, setMentorInvited] = useState(false)
+  const [courseTitle, setCourseTitle] = useState('');
+  const [isAddingCourse, setIsAddingCourse] = useState(false);
 
-  const handleCourseSubmit = (e: FormEvent) => {
-    e.preventDefault()
-    console.log('Course added:', courseTitle)
-    setCourseTitle('')
-    setCourseAdded(true)
-    setTimeout(() => setCourseAdded(false), 3000)
-  }
 
-  const handleInvite = () => {
-    if (!mentorEmail) return
-    console.log(`Sending invite to mentor: ${mentorEmail}`)
-    setMentorInvited(true)
-    setMentorEmail('')
-    setTimeout(() => setMentorInvited(false), 3000)
-  }
+  const [mentorEmail, setMentorEmail] = useState('');
+  const [selectedCourseId, setSelectedCourseId] = useState<string>('');
+  const [isInvitingMentor, setIsInvitingMentor] = useState(false);
+  
+
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [isLoadingCourses, setIsLoadingCourses] = useState(true);
+
+
+  const fetchCourses = async () => {
+    try {
+      const response = await api.get('/api/courses'); 
+      setCourses(response.data);
+    } catch (error) {
+      console.error("Failed to fetch courses:", error);
+      toast.error("Could not load course list.");
+    } finally {
+      setIsLoadingCourses(false);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
+  const handleCourseSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setIsAddingCourse(true);
+    const toastId = toast.loading('Adding new course...');
+    
+    try {
+      await api.post('/api/courses', { name: courseTitle });
+      
+      toast.success('Course added successfully!', { id: toastId });
+      setCourseTitle('');
+      
+
+      fetchCourses(); 
+
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.errors?.[0]?.message || 'Failed to add course.';
+      toast.error(errorMessage, { id: toastId });
+    } finally {
+      setIsAddingCourse(false);
+    }
+  };
+
+  const handleInviteSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!mentorEmail || !selectedCourseId) {
+        toast.error("Please select a course and enter a mentor's email.");
+        return;
+    }
+    setIsInvitingMentor(true);
+    const toastId = toast.loading('Sending invitation...');
+
+    try {
+      await api.post('/api/auth/invite-mentor', {
+        email: mentorEmail,
+        courseId: parseInt(selectedCourseId, 10),
+      });
+
+      toast.success('Invitation sent successfully!', { id: toastId });
+      setMentorEmail('');
+      setSelectedCourseId(''); 
+
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 'Failed to send invitation.';
+      toast.error(errorMessage, { id: toastId });
+    } finally {
+      setIsInvitingMentor(false);
+    }
+  };
 
   return (
     <div className="add-course-container">
       <div className="add-course-card">
         <h1 className="add-course-title">Add New Course</h1>
-
-        {courseAdded && <p className="success-message">✅ Course added successfully!</p>}
 
         <form onSubmit={handleCourseSubmit} className="add-course-form">
           <label>
@@ -40,28 +105,54 @@ export default function AddCoursePage() {
               onChange={(e: ChangeEvent<HTMLInputElement>) => setCourseTitle(e.target.value)}
               required
               placeholder="e.g. Agribusiness 101"
+              disabled={isAddingCourse}
             />
           </label>
-          <button type="submit" className="submit-btn">Add Course</button>
+          <button type="submit" className="submit-btn" disabled={isAddingCourse}>
+            {isAddingCourse ? 'Adding...' : 'Add Course'}
+          </button>
         </form>
 
         <hr className="divider" />
 
-        <h2 className="section-title">Invite a Mentor</h2>
+        <h2 className="section-title">Invite a Mentor to a Course</h2>
 
-        {mentorInvited && <p className="success-message">✅ Invitation sent!</p>}
+        <form onSubmit={handleInviteSubmit} className="add-course-form">
+          <label>
+            Select Course
+            <select
+              value={selectedCourseId}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) => setSelectedCourseId(e.target.value)}
+              required
+              disabled={isLoadingCourses || isInvitingMentor}
+            >
+              <option value="" disabled>
+                {isLoadingCourses ? 'Loading courses...' : 'Choose a course...'}
+              </option>
+              {courses.map(course => (
+                <option key={course.id} value={course.id}>
+                  {course.name}
+                </option>
+              ))}
+            </select>
+          </label>
 
-        <div className="mentor-invite">
-          <input
-            type="email"
-            placeholder="Mentor email"
-            value={mentorEmail}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setMentorEmail(e.target.value)}
-            required
-          />
-          <button onClick={handleInvite} className="invite-btn">Invite Mentor</button>
-        </div>
+          <label>
+            Mentor's Email Address
+            <input
+              type="email"
+              placeholder="mentor@example.com"
+              value={mentorEmail}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setMentorEmail(e.target.value)}
+              required
+              disabled={isInvitingMentor}
+            />
+          </label>
+          <button type="submit" className="invite-btn" disabled={isInvitingMentor}>
+            {isInvitingMentor ? 'Sending Invite...' : 'Invite Mentor'}
+          </button>
+        </form>
       </div>
     </div>
-  )
+  );
 }

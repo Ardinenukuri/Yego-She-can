@@ -37,7 +37,7 @@ const Sidebar = () => {
                 <Link href="/dashboard/settings" className={isActive('/dashboard/settings') ? 'nav-item active' : 'nav-item'}>
                     <FaCog /> Settings
                 </Link>
-                <Link href="/logout" className="nav-item logout">
+                <Link href="/" className="nav-item logout">
                     <FaSignOutAlt /> Logout
                 </Link>
             </nav>

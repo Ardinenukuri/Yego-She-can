@@ -18,7 +18,7 @@
 .add-course-title {
   text-align: center;
   font-size: 1.75rem;
-  color: #a927ba; /* Green-700 */
+  color: #a927ba; 
   font-weight: bold;
   margin-bottom: 1.5rem;
 }
@@ -26,14 +26,14 @@
 .section-title {
   text-align: center;
   font-size: 1.25rem;
-  color: #54145c; /* Green-700 */
+  color: #54145c; 
   font-weight: 600;
   margin-bottom: 1rem;
 }
 
 .success-message {
   text-align: center;
-  color: #97428d; /* Green-700 */
+  color: #97428d; 
   font-weight: bold;
   margin-bottom: 1rem;
 }
@@ -47,13 +47,13 @@
 
 .add-course-form label {
   font-weight: 500;
-  color: #374151; /* Gray-700 */
+  color: #374151; 
 }
 
 .add-course-form input,
 .mentor-invite input {
   padding: 0.75rem;
-  border: 1px solid #d1d5db; /* Gray-300 */
+  border: 1px solid #d1d5db; 
   border-radius: 0.5rem;
   outline: none;
   transition: border 0.2s ease;
@@ -61,13 +61,13 @@
 
 .add-course-form input:focus,
 .mentor-invite input:focus {
-  border-color: #16a34a; /* Green-600 */
+  border-color: #16a34a; 
   box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.2);
 }
 
 .submit-btn,
 .invite-btn {
-  background-color: #16a34a; /* Green-600 */
+  background-color: #16a34a; 
   color: white;
   padding: 0.75rem;
   font-weight: 600;
@@ -79,11 +79,11 @@
 
 .submit-btn:hover,
 .invite-btn:hover {
-  background-color: #15803d; /* Green-700 */
+  background-color: #15803d; 
 }
 
 .divider {
   margin: 2rem 0;
   border: none;
-  border-top: 1px solid #e5e7eb; /* Gray-200 */
+  border-top: 1px solid #e5e7eb; 
 }
