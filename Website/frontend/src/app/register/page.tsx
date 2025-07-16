@@ -35,7 +35,7 @@ export default function RegisterPage() {
     try {
       await api.post('/api/auth/register', {
         ...formData,
-        age: parseInt(formData.age), 
+        age: parseInt(formData.age),
       });
       toast.success('Registration successful! Please check your email to verify.');
       router.push('/login');
@@ -53,7 +53,8 @@ export default function RegisterPage() {
         <h2 className="register-title">Create Account</h2>
         <p className="register-subtitle">Join the Yego SheCan community</p>
 
-        <div className="register-name-fields">
+        {/* First and Last Name */}
+        <div className="register-row">
           <div className="register-input-group">
             <label htmlFor="firstName" className="register-label">First Name</label>
             <input id="firstName" name="firstName" type="text" className="register-input" required value={formData.firstName} onChange={handleChange} />
@@ -63,39 +64,44 @@ export default function RegisterPage() {
             <input id="lastName" name="lastName" type="text" className="register-input" required value={formData.lastName} onChange={handleChange} />
           </div>
         </div>
-        
-        <div className="register-input-group">
+
+        {/* Username + Email */}
+        <div className="register-row">
+          <div className="register-input-group">
             <label htmlFor="username" className="register-label">Username</label>
             <input id="username" name="username" type="text" className="register-input" required value={formData.username} onChange={handleChange} />
-        </div>
-
-        <div className="register-input-group">
+          </div>
+          <div className="register-input-group">
             <label htmlFor="email" className="register-label">Email Address</label>
             <input id="email" name="email" type="email" className="register-input" required value={formData.email} onChange={handleChange} />
+          </div>
         </div>
 
-        <div className="register-input-group">
+        {/* Password + Confirm Password */}
+        <div className="register-row">
+          <div className="register-input-group">
             <label htmlFor="password" className="register-label">Password</label>
             <input id="password" name="password" type="password" className="register-input" required value={formData.password} onChange={handleChange} />
-        </div>
-
-        <div className="register-input-group">
+          </div>
+          <div className="register-input-group">
             <label htmlFor="confirmPassword" className="register-label">Confirm Password</label>
             <input id="confirmPassword" name="confirmPassword" type="password" className="register-input" required value={formData.confirmPassword} onChange={handleChange} />
+          </div>
         </div>
-        
-        <div className="register-name-fields">
-            <div className="register-input-group">
-                <label htmlFor="age" className="register-label">Age</label>
-                <input id="age" name="age" type="number" className="register-input" required value={formData.age} onChange={handleChange} />
-            </div>
-            <div className="register-input-group">
-                <label htmlFor="gender" className="register-label">Gender</label>
-                <select id="gender" name="gender" value={formData.gender} onChange={handleChange} className="register-input">
-                    <option value="Female">Female</option>
-                    <option value="Male">Male</option>
-                </select>
-            </div>
+
+        {/* Age + Gender */}
+        <div className="register-row">
+          <div className="register-input-group">
+            <label htmlFor="age" className="register-label">Age</label>
+            <input id="age" name="age" type="number" className="register-input" required value={formData.age} onChange={handleChange} />
+          </div>
+          <div className="register-input-group">
+            <label htmlFor="gender" className="register-label">Gender</label>
+            <select id="gender" name="gender" value={formData.gender} onChange={handleChange} className="register-input">
+              <option value="Female">Female</option>
+              <option value="Male">Male</option>
+            </select>
+          </div>
         </div>
 
         <button type="submit" className="register-button" disabled={loading}>
@@ -109,6 +115,7 @@ export default function RegisterPage() {
           </Link>
         </p>
       </form>
+
     </div>
   );
 }
