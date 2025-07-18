@@ -121,7 +121,7 @@ export default function CoursesPage() {
                     
               
                     {course.isEnrolled ? (
-                        <Link href={`/dashboard/learn/${course.id}`}>
+                        <Link href={`/user-dashboard/your-courses/${course.id}`}>
                             <button className="course-btn enrolled">Continue Learning</button>
                         </Link>
                     ) : (
