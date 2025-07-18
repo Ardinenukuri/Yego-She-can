@@ -4,19 +4,25 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
+
 export interface QuizQuestion {
     question: string;
     options: string[];
     correct_answer: string;
 }
 
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 export async function generateQuiz(
     title: string, 
     content: string, 
     numQuestions: number, 
-    quizType: 'chapter' | 'final'
+    quizType: 'chapter' | 'final',
+    retries = 3 
 ): Promise<QuizQuestion[] | null> {
     
+
     const quizDescription = (quizType === 'chapter')
         ? "Each question should be based on a different key concept from the chapter content provided."
         : "The quiz should broadly cover all the provided content, testing the most important key concepts from the entire course.";
@@ -47,28 +53,41 @@ export async function generateQuiz(
         ]
     `;
 
-    try {
-        const result = await model.generateContent(prompt);
-        const response = result.response;
-        const rawResponseText = response.text();
 
-        const cleanedJsonString = rawResponseText.replace(/```json|```/g, '').trim();
+    for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
 
-        const quizData: QuizQuestion[] = JSON.parse(cleanedJsonString);
-        
-        if (Array.isArray(quizData) && quizData.length > 0) {
-            return quizData;
-        } else {
-            console.error("AI returned a valid JSON but it was not a non-empty array.");
-            return null;
+            const result = await model.generateContent(prompt);
+            const response = result.response;
+            const rawResponseText = response.text();
+            const cleanedJsonString = rawResponseText.replace(/```json|```/g, '').trim();
+            const quizData: QuizQuestion[] = JSON.parse(cleanedJsonString);
+            
+            if (Array.isArray(quizData) && quizData.length > 0) {
+                return quizData; 
+            } else {
+                console.error("AI returned a valid JSON but it was not a non-empty array.");
+                return null;
+            }
+
+        } catch (error: any) {
+
+            if (error.message && error.message.includes('503') && attempt < retries) {
+                console.warn(`AI Quiz Generator: Model overloaded (Attempt ${attempt}/${retries}). Retrying in ${attempt * 2} seconds...`);
+                await sleep(attempt * 2000); 
+                continue; 
+            }
+            
+            if (error instanceof SyntaxError) {
+                console.error("AI Quiz Generator: JSON Parse Error after all retries.", error.message);
+            } else {
+                console.error(`AI Quiz Generator: Failed to generate quiz questions after ${attempt} attempts.`, error);
+            }
+            return null; 
         }
-
-    } catch (error) {
-        if (error instanceof SyntaxError) {
-            console.error("AI Quiz Generator: JSON Parse Error.", error.message);
-        } else {
-            console.error("AI Quiz Generator: Error generating quiz questions.", error);
-        }
-        return null;
     }
+    
+
+    console.error(`AI Quiz Generator: All ${retries} attempts failed.`);
+    return null;
 }

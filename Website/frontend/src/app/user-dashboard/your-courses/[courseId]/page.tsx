@@ -1,195 +1,156 @@
 'use client'
 
-import { useState } from 'react'
-import Modal from 'react-modal'
-import toast, { Toaster } from 'react-hot-toast'
-import '@/styles/courses.css'
+import { useState, useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import toast, { Toaster } from 'react-hot-toast';
+import api from '@/lib/api';
+import '@/styles/courseses.css'; 
 
-type Chapter = {
-  id: string
-  title: string
-  content: string
-  hasQuiz?: boolean
+
+interface Chapter {
+  id: number;
+  title: string;
+  content: string;
+  quizId: number | null;
+  isCompleted: boolean;
+  quizPassed: boolean; 
+}
+interface QuizQuestion {
+  question: string;
+  options: string[];
+  correct_answer: string;
+}
+interface CourseData {
+  id: number;
+  title: string;
+  description: string;
+  chapters: Chapter[];
+  finalQuiz: {
+    quizId: number;
+    isCompleted: boolean;
+  } | null;
+}
+interface Quiz {
+    quiz_id: number;
+    questions: QuizQuestion[];
 }
 
-const dummyCourse = {
-  title: 'Empowering Women Entrepreneurs',
-  description: 'Learn the essential skills and mindset to start and grow your own business.',
-  chapters: [
-    {
-      id: 'chapter1',
-      title: 'Chapter 1: Introduction to Entrepreneurship',
-      content:
-        'Learn the basics of entrepreneurship, including what it means to be an entrepreneur and the mindset required to succeed.',
-      hasQuiz: true,
-    },
-    {
-      id: 'chapter2',
-      title: 'Chapter 2: Identifying Business Opportunities',
-      content: 'Discover how to spot profitable business ideas and evaluate market needs.',
-      hasQuiz: true,
-    },
-    {
-      id: 'chapter3',
-      title: 'Chapter 3: Business Planning Basics',
-      content: 'Understand the key components of a business plan and how to create one.',
-      hasQuiz: true,
-    },
-    {
-      id: 'chapter4',
-      title: 'Chapter 4: Marketing and Branding',
-      content: 'Learn effective strategies to promote your business and build a brand.',
-      hasQuiz: false,
-    },
-    {
-      id: 'chapter5',
-      title: 'Chapter 5: Financial Literacy',
-      content:
-        'Gain essential knowledge about managing business finances, budgeting, and funding options.',
-      hasQuiz: true,
-    },
-  ],
-}
 
 export default function CoursePage() {
-  const [completedChapters, setCompletedChapters] = useState<string[]>([])
-  const [quizTakenChapters, setQuizTakenChapters] = useState<string[]>([])
-  const [openQuizChapterId, setOpenQuizChapterId] = useState<string | null>(null)
-  const [finalQuizTaken, setFinalQuizTaken] = useState(false)
+  // --- STATE MANAGEMENT ---
+  const [course, setCourse] = useState<CourseData | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const handleMarkDone = (chapterId: string) => {
-    const chapterIndex = dummyCourse.chapters.findIndex((c) => c.id === chapterId)
+  // Get courseId from the URL
+  const params = useParams();
+  const router = useRouter(); 
+  const courseId = params.courseId as string;
 
-    if (chapterIndex > 0) {
-      const prevChapterId = dummyCourse.chapters[chapterIndex - 1].id
-      if (!completedChapters.includes(prevChapterId)) {
-        toast.error('Please complete the previous chapter first.')
-        return
-      }
+  // --- DATA FETCHING ---
+  const fetchCourseData = async () => {
+    if (!courseId) return;
+    try {
+      if (!course) setLoading(true); 
+      const response = await api.get(`/api/courses/learn/${courseId}`);
+      setCourse(response.data);
+    } catch (error) {
+      toast.error("Failed to load course content.");
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    const chapter = dummyCourse.chapters[chapterIndex]
-    if (chapter.hasQuiz && !quizTakenChapters.includes(chapterId)) {
-      toast.error('Please take the quiz before marking this chapter as done.')
-      return
+  useEffect(() => {
+    fetchCourseData();
+  }, [courseId]);
+
+  // --- ACTION HANDLERS ---
+  const handleMarkDone = async (chapterId: number) => {
+    try {
+        const response = await api.post('/api/courses/chapters/toggle-completion', { chapterId });
+        setCourse(prevCourse => {
+            if (!prevCourse) return null;
+            return {
+                ...prevCourse,
+                chapters: prevCourse.chapters.map(ch => 
+                    ch.id === chapterId ? { ...ch, isCompleted: response.data.completed } : ch
+                )
+            };
+        });
+        toast.success(response.data.completed ? "Chapter marked as complete!" : "Chapter marked as incomplete.");
+    } catch (error) {
+        toast.error("Failed to update chapter status.");
     }
+  };
 
-    if (completedChapters.includes(chapterId)) {
-      setCompletedChapters((prev) => prev.filter((id) => id !== chapterId))
-      toast('Chapter marked as incomplete.')
-    } else {
-      setCompletedChapters((prev) => [...prev, chapterId])
-      toast.success('Chapter marked as complete!')
-    }
-  }
 
-  const handleTakeQuiz = (chapterId: string) => {
-    setOpenQuizChapterId(chapterId)
-  }
+  const completedChaptersCount = course?.chapters.filter(c => c.isCompleted).length || 0;
+  const totalChapters = course?.chapters.length || 0;
+  const progressPercent = totalChapters > 0 ? Math.round((completedChaptersCount / totalChapters) * 100) : 0;
+  
 
-  const handleQuizSubmit = (chapterId: string) => {
-    if (!quizTakenChapters.includes(chapterId)) {
-      setQuizTakenChapters((prev) => [...prev, chapterId])
-      toast.success('Quiz completed!')
-    }
-    setOpenQuizChapterId(null)
-  }
-
-  const isCourseComplete =
-    completedChapters.length === dummyCourse.chapters.length && finalQuizTaken
-
-  const progressPercent = finalQuizTaken
-    ? 100
-    : Math.round((completedChapters.length / dummyCourse.chapters.length) * 100)
+  if (loading) return <div className="course-page"><h1>Loading Course...</h1></div>;
+  if (!course) return <div className="course-page"><h1>Course not found.</h1></div>;
 
   return (
     <div className="course-page">
-      <Toaster position="top-right" reverseOrder={false} />
-      <h1 className="course-title">{dummyCourse.title}</h1>
-      <p className="course-description">{dummyCourse.description}</p>
+      <Toaster position="top-right" />
+      <h1 className="course-title">{course.title}</h1>
+      <p className="course-description">{course.description}</p>
 
-      {completedChapters.length > 0 && (
-        <div className="progress-bar">
+
+      <div className="progress-bar-container" style={{ margin: '1.5rem 0' }}>
           <div className="progress-fill" style={{ width: `${progressPercent}%` }}></div>
-        </div>
-      )}
-      <span className="progress-text">{progressPercent}% Complete</span>
+          <span className="progress-text">{progressPercent}% Complete ({completedChaptersCount} / {totalChapters} Chapters)</span>
+      </div>
 
       <div className="chapter-list">
-        {dummyCourse.chapters.map((chapter) => (
-          <div key={chapter.id} className="chapter-card">
+        {course.chapters.map((chapter) => (
+          <div key={chapter.id} className={`chapter-card ${chapter.isCompleted ? 'completed' : ''}`}>
             <h3>{chapter.title}</h3>
             <p>{chapter.content}</p>
             <div className="chapter-actions">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={completedChapters.includes(chapter.id)}
-                  onChange={() => handleMarkDone(chapter.id)}
-                />
-                Mark as Done
+              <label className="mark-done-label">
+                  <input
+                      type="checkbox"
+                      checked={chapter.isCompleted}
+                      onChange={() => handleMarkDone(chapter.id)}
+                  />
+                  Mark as Done
               </label>
-              {chapter.hasQuiz && !quizTakenChapters.includes(chapter.id) && (
-                <button
-                  onClick={() => handleTakeQuiz(chapter.id)}
-                  className="quiz-button"
-                >
-                  Take Quiz
-                </button>
-              )}
-              {chapter.hasQuiz && quizTakenChapters.includes(chapter.id) && (
-                <span
-                  style={{ color: 'green', marginLeft: '1rem', fontWeight: '600' }}
-                >
-                  Quiz Completed ✓
-                </span>
+              {chapter.quizId && (
+                chapter.quizPassed ? (
+                  <span className="quiz-status-completed">Quiz Passed ✓</span>
+                ) : (
+                  <Link href={`/user-dashboard/quiz/${chapter.quizId}`} className="quiz-button">
+                    Take Chapter Quiz
+                  </Link>
+                )
               )}
             </div>
-
-            {openQuizChapterId === chapter.id && (
-              <Modal
-                isOpen={true}
-                onRequestClose={() => setOpenQuizChapterId(null)}
-                contentLabel="Quiz Modal"
-                className="quiz-modal"
-                overlayClassName="quiz-overlay"
-              >
-                <h2>{chapter.title} - Quiz</h2>
-                <p>This is a sample quiz for this chapter.</p>
-                <button
-                  onClick={() => handleQuizSubmit(chapter.id)}
-                  className="close-button"
-                >
-                  Submit Quiz
-                </button>
-              </Modal>
-            )}
           </div>
         ))}
       </div>
+      
 
-      {!isCourseComplete && completedChapters.length === dummyCourse.chapters.length && (
+      {course.finalQuiz && (
         <div className="final-quiz-section">
-          <h2>🎉 All chapters done!</h2>
-          <p>Ready for the final quiz?</p>
-          <button
-            onClick={() => {
-              toast.success('Final quiz submitted! Course complete.')
-              setFinalQuizTaken(true)
-            }}
-            className="final-quiz-button"
-          >
-            Take Final Quiz
-          </button>
-        </div>
-      )}
-
-      {isCourseComplete && (
-        <div
-          className="final-quiz-section"
-          style={{ color: 'green', fontWeight: 'bold' }}
-        >
-          🎉 Congratulations! You have completed the entire course.
+            {course.finalQuiz.isCompleted ? (
+                <div className="course-complete-message">
+                    <h2>🎉 Final Quiz Passed!</h2>
+                    <p>Congratulations! You have earned your certificate. View it in your profile.</p>
+                </div>
+            ) : (
+                <>
+                    <h2>Ready for the Final Challenge?</h2>
+                    <p>Take the final quiz to complete the course and earn your certificate.</p>
+                    <Link href={`/user-dashboard/quiz/${course.finalQuiz.quizId}`} className="final-quiz-button">
+                        Take Final Quiz
+                    </Link>
+                </>
+            )}
         </div>
       )}
     </div>
