@@ -125,7 +125,7 @@ export default function YourCoursesPage() {
                       </div>
                       
 
-                      <Link href={`/dashboard/learn/${course.slug}`}>
+                      <Link href={`/user-dashboard/your-courses/${course.id}`}>
                         <button className="course-btn enrolled">Go to Course</button>
                       </Link>
                     </div>
