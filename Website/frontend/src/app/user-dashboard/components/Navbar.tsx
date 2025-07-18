@@ -3,29 +3,15 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import logo from '../../../../public/yego-shecan-logo.png'
-import { useState, useEffect, ReactNode } from 'react'
+import { ReactNode } from 'react' 
 import { usePathname } from 'next/navigation'
-import { FaSignOutAlt, FaUserCircle } from 'react-icons/fa'
+import { FaUserCircle } from 'react-icons/fa'
 import '../../../styles/navbar.css'
 import '../../../app/dashboard/components/dashboardNavbar.css'
-
+import { useAuth } from '@/contexts/AuthContext'
 
 export default function Navbar() {
-    const [showDropdown, setShowDropdown] = useState(false)
-    const [hydrated, setHydrated] = useState(false)
-
-    useEffect(() => {
-        setHydrated(true)
-    }, [])
-
-    useEffect(() => {
-        const handleClickOutside = () => {
-            if (showDropdown) setShowDropdown(false)
-        }
-
-        document.addEventListener('click', handleClickOutside)
-        return () => document.removeEventListener('click', handleClickOutside)
-    }, [showDropdown])
+    const { user, loading } = useAuth();
 
     return (
         <nav className="navbar">
@@ -45,23 +31,42 @@ export default function Navbar() {
                     <NavLink href="/user-dashboard/your-courses">Your Courses</NavLink>
                     <NavLink href="/user-dashboard/physical-programs">Physical Programs</NavLink>
                     <NavLink href="/user-dashboard/mentorship">Mentorship</NavLink>
+                    
+                
                     <div className="dashboard-user">
-                        <Link href="/user-dashboard/learner-profile" className="profile-link" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginLeft: '2rem' }}>
-                            <Image
-                                src={logo}
-                                alt="User profile picture"
-                                width={36}
-                                height={36}
-                                className="user-avatar"
-                            />
-                            <span className="username">Learner</span>
-                        </Link>
+                        {loading ? (
+                            <div className="skeleton-user">
+                                <div className="skeleton-avatar"></div>
+                                <div className="skeleton-name"></div>
+                            </div>
+                        ) : user ? (
+                            <Link href="/user-dashboard/learner-profile" className="profile-link">
+                                {user.profile_picture_url ? (
+                                    <Image
+                                        src={`${process.env.NEXT_PUBLIC_API_URL}${user.profile_picture_url}`}
+                                        alt="User profile picture"
+                                        width={36}
+                                        height={36}
+                                        className="user-avatar" 
+                                    />
+                                ) : (
+                                    <FaUserCircle className="user-icon" />
+                                )}
+                                <span className="username">{user.username}</span>
+                            </Link>
+                        ) : (
+                            <div className="auth-buttons">
+                                <Link href="/auth/login" className="nav-button login">Login</Link>
+                                <Link href="/auth/register" className="nav-button register">Register</Link>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
         </nav>
     )
 }
+
 
 interface NavLinkProps {
     href: string

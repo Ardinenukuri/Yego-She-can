@@ -1,10 +1,11 @@
 'use client';
 
 import Link from "next/link";
-import Image from "next/image";
-import "@/styles/courses.css"; 
 import { useState, useEffect } from "react";
 import api from "@/lib/api"; 
+import toast from "react-hot-toast";
+import "@/styles/courses.css"; 
+
 
 interface Course {
   id: number;
@@ -14,23 +15,10 @@ interface Course {
   lessons: number;
   level: 'Beginner' | 'Intermediate' | 'Advanced';
   price: string;
-  image: string;
+  image: string | null;
   features: string[];
+  isEnrolled: boolean;
 }
-
-const dummyCourse: Course = {
-  id: 1,
-  title: "Intro to Accounting",
-  description: "A beginner course to help you understand the Accounting world.",
-  duration: "4 weeks",
-  lessons: 12,
-  level: "Beginner",
-  price: "Free",
-  image: "/accounting.jpg", // make sure this exists in your public folder
-  features: [
-    "Basic Accounting skills",
-  ]
-};
 
 export default function CoursesPage() {
   const [allCourses, setAllCourses] = useState<Course[]>([]);
@@ -38,23 +26,38 @@ export default function CoursesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
   const [currentPage, setCurrentPage] = useState(1);
-  const coursesPerPage = 3;
+  const coursesPerPage = 6; 
 
+  const handleEnroll = async (courseId: number) => {
+    const toastId = toast.loading("Enrolling...");
+    try {
+        await api.post('/api/courses/enroll', { courseId });
+        toast.success("Successfully enrolled!", { id: toastId });
+        
+        
+        setAllCourses(prevCourses => 
+            prevCourses.map(course => 
+                course.id === courseId ? { ...course, isEnrolled: true } : course
+            )
+        );
+
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.message || "Enrollment failed.";
+        toast.error(errorMessage, { id: toastId });
+    }
+  };
+
+
+  
   useEffect(() => {
     const fetchCourses = async () => {
       try {
         setLoading(true);
-        const response = await api.get('/api/courses/');
-        const data = response.data;
-
-        if (!Array.isArray(data) || data.length === 0) {
-          setAllCourses([dummyCourse]);
-        } else {
-          setAllCourses(data);
-        }
+        const response = await api.get('/api/courses/available');
+        setAllCourses(response.data);
       } catch (error) {
-        console.error("Failed to fetch courses. Using fallback.", error);
-        setAllCourses([dummyCourse]);
+        console.error("Failed to fetch courses:", error);
+        toast.error("Could not load courses.");
       } finally {
         setLoading(false);
       }
@@ -68,8 +71,8 @@ export default function CoursesPage() {
       course.title?.toLowerCase().includes(searchQuery.toLowerCase())
     )
     .sort((a, b) => {
-      const aWeeks = parseInt(a.duration.split(' ')[0]) || 0;
-      const bWeeks = parseInt(b.duration.split(' ')[0]) || 0;
+      const aWeeks = parseInt(a.duration?.split(' ')[0]) || 0;
+      const bWeeks = parseInt(b.duration?.split(' ')[0]) || 0;
       return sortOrder === "asc" ? aWeeks - bWeeks : bWeeks - aWeeks;
     });
 
@@ -81,7 +84,8 @@ export default function CoursesPage() {
   return (
     <div className="courses-page" style={{ marginTop: '0rem', padding: '1.5rem' }}>
       <section id="courses" className="courses">
-        <h2>Courses</h2>
+        <h2>Our Courses</h2>
+
 
         <div className="filter-bar">
           <input
@@ -104,7 +108,7 @@ export default function CoursesPage() {
               {currentCourses.map((course) => (
                 <div key={course.id} className="course-card fade-in">
                   <img
-                    src={course.image.startsWith("http") ? course.image : `${process.env.NEXT_PUBLIC_API_URL || ""}${course.image}`}
+                    src={course.image ? `${process.env.NEXT_PUBLIC_API_URL}${course.image}` : '/placeholder-image.png'}
                     alt={course.title}
                     className="course-image"
                   />
@@ -114,14 +118,18 @@ export default function CoursesPage() {
                     <div className="course-meta">
                       <span>{course.duration}</span> | <span>{course.lessons} lessons</span> | <span>{course.level}</span>
                     </div>
-                    <ul>
-                      {course.features.map((feature, index) => (
-                        <li key={index}> {feature}</li>
-                      ))}
-                    </ul>
-                    <Link href="/login">
-                      <button className="course-btn">Start Course</button>
-                    </Link>
+                    
+              
+                    {course.isEnrolled ? (
+                        <Link href={`/dashboard/learn/${course.id}`}>
+                            <button className="course-btn enrolled">Continue Learning</button>
+                        </Link>
+                    ) : (
+                        <button className="course-btn" onClick={() => handleEnroll(course.id)}>
+                            Enroll Now
+                        </button>
+                    )}
+
                   </div>
                 </div>
               ))}
