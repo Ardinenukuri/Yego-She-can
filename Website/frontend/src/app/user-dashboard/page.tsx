@@ -2,11 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import "../../../styles/courses.css"; 
+import "@/styles/courses.css"; 
 import { useState, useEffect } from "react";
 import api from "@/lib/api"; 
-import serviceImage from "../../../../public/services.jpg"
-
 
 interface Course {
   id: number;
@@ -20,39 +18,56 @@ interface Course {
   features: string[];
 }
 
+const dummyCourse: Course = {
+  id: 1,
+  title: "Intro to Accounting",
+  description: "A beginner course to help you understand the Accounting world.",
+  duration: "4 weeks",
+  lessons: 12,
+  level: "Beginner",
+  price: "Free",
+  image: "/accounting.jpg", // make sure this exists in your public folder
+  features: [
+    "Basic Accounting skills",
+  ]
+};
+
 export default function CoursesPage() {
   const [allCourses, setAllCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filter, setFilter] = useState("All"); 
   const [sortOrder, setSortOrder] = useState("asc");
   const [currentPage, setCurrentPage] = useState(1);
   const coursesPerPage = 3;
-
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
         setLoading(true);
-        const response = await api.get('/api/courses/public');
-        setAllCourses(response.data);
+        const response = await api.get('/api/courses/');
+        const data = response.data;
+
+        if (!Array.isArray(data) || data.length === 0) {
+          setAllCourses([dummyCourse]);
+        } else {
+          setAllCourses(data);
+        }
       } catch (error) {
-        console.error("Failed to fetch courses:", error);
+        console.error("Failed to fetch courses. Using fallback.", error);
+        setAllCourses([dummyCourse]);
       } finally {
         setLoading(false);
       }
     };
 
     fetchCourses();
-  }, []); 
-
+  }, []);
 
   const filteredCourses = allCourses
-    .filter(course => {
-      return course.title.toLowerCase().includes(searchQuery.toLowerCase());
-    })
+    .filter(course =>
+      course.title?.toLowerCase().includes(searchQuery.toLowerCase())
+    )
     .sort((a, b) => {
-      // A more robust sort for durations like "4 weeks"
       const aWeeks = parseInt(a.duration.split(' ')[0]) || 0;
       const bWeeks = parseInt(b.duration.split(' ')[0]) || 0;
       return sortOrder === "asc" ? aWeeks - bWeeks : bWeeks - aWeeks;
@@ -64,32 +79,7 @@ export default function CoursesPage() {
   const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
 
   return (
-    <div className="courses-page">
-      {/* Hero Section (remains the same) */}
-      <section
-        className="hero long-hero"
-        style={{
-          backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${serviceImage.src})`,
-        }}
-      >
-        <div className="hero-content backdrop">
-          <div className="hero-text">
-            <h1>Empowering Women Entrepreneurs</h1>
-            <p>
-              Master the fundamentals of entrepreneurship with our comprehensive
-              online curriculum.
-            </p>
-            <div className="hero-buttons">
-              <Link href="/auth/register">
-                <button className="btn-primary">Enroll now</button>
-              </Link>
-              <a href="#courses" className="btn-secondary">Browse Courses</a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Course List Section */}
+    <div className="courses-page" style={{ marginTop: '0rem', padding: '1.5rem' }}>
       <section id="courses" className="courses">
         <h2>Courses</h2>
 
@@ -100,7 +90,6 @@ export default function CoursesPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          {/* Category filter is removed for now */}
           <select value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
             <option value="asc">Duration: Short to Long</option>
             <option value="desc">Duration: Long to Short</option>
@@ -114,7 +103,11 @@ export default function CoursesPage() {
             <div className="courses-grid">
               {currentCourses.map((course) => (
                 <div key={course.id} className="course-card fade-in">
-                  <img src={`${process.env.NEXT_PUBLIC_API_URL}${course.image}`} alt={course.title} className="course-image" />
+                  <img
+                    src={course.image.startsWith("http") ? course.image : `${process.env.NEXT_PUBLIC_API_URL || ""}${course.image}`}
+                    alt={course.title}
+                    className="course-image"
+                  />
                   <div className="course-info">
                     <h3>{course.title}</h3>
                     <p>{course.description}</p>

@@ -1,9 +1,11 @@
+
 .add-course-container {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 2rem;
+  margin-top: -8rem;
 }
 
 .add-course-card {
@@ -18,7 +20,7 @@
 .add-course-title {
   text-align: center;
   font-size: 1.75rem;
-  color: #a927ba; 
+  color: #444; 
   font-weight: bold;
   margin-bottom: 1.5rem;
 }
@@ -67,7 +69,7 @@
 
 .submit-btn,
 .invite-btn {
-  background-color: #16a34a; 
+  background-color: #4b1c88; 
   color: white;
   padding: 0.75rem;
   font-weight: 600;
@@ -79,7 +81,7 @@
 
 .submit-btn:hover,
 .invite-btn:hover {
-  background-color: #15803d; 
+  background-color: #7c34ab; 
 }
 
 .divider {

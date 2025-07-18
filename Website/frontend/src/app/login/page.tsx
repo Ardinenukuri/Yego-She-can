@@ -30,7 +30,11 @@ export default function LoginPage() {
 
       if (user.role === 'program manager') {
         router.push('/dashboard');
-      } else {
+      }
+      else if(user.role === 'learner'){
+        router.push('/user-dashboard');
+      }
+         else {
         router.push('/about'); 
       }
 
