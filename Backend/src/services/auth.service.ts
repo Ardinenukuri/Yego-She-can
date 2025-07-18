@@ -603,11 +603,37 @@ export const AuthService = {
         
         const { rows } = await pool.query(query);
 
-        // Process status to be more frontend-friendly
         return rows.map(learner => ({
             ...learner,
             status: learner.status === 'active' ? 'Active' : learner.status === 'disabled' ? 'Inactive' : 'Pending'
         }));
+    },
+
+    getPublicMentors: async () => {
+        const query = `
+            SELECT
+                u.id,
+                u.first_name || ' ' || u.last_name as name,
+                u.bio,
+                u.profile_picture_url as image,
+                -- Aggregate all assigned course names into a single comma-separated string
+                COALESCE(STRING_AGG(c.name, ', '), 'General Mentorship') as expertise
+            FROM 
+                users u
+            LEFT JOIN 
+                course_mentors cm ON u.id = cm.mentor_id
+            LEFT JOIN 
+                courses c ON cm.course_id = c.id
+            WHERE 
+                u.role = 'mentor' AND u.status = 'active'
+            GROUP BY 
+                u.id, u.first_name, u.last_name, u.bio, u.profile_picture_url
+            ORDER BY 
+                name ASC;
+        `;
+        
+        const { rows } = await pool.query(query);
+        return rows;
     },
 };
 

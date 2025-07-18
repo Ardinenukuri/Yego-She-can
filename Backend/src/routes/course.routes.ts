@@ -15,4 +15,5 @@ router.get('/available', protect, authorize('learner'), CourseController.getAllC
 router.post('/enroll', protect, authorize('learner'), validateRequest(enrollInCourseSchema), CourseController.enrollInCourse);
 router.get('/public', CourseController.getPublicCourses);
 router.get('/admin-list', protect, authorize('program manager'), CourseController.getAdminCourseList);
+router.get('/my-courses', protect, authorize('learner'), CourseController.getEnrolledCourses);
 export default router;

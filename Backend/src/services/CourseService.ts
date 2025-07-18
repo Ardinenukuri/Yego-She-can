@@ -31,21 +31,45 @@ export const CourseService = {
 
     getAllCoursesForLearner: async (learnerId: number) => {
         const query = `
-            SELECT 
-                c.id, 
-                c.name,
-                -- Check if an enrollment exists for this learner and course
+            SELECT DISTINCT ON (c.id)
+                c.id,
+                c.name as title,
+                r.description,
+                r.timeline as duration,
+                r.level,
+                r.image_url as image,
+                (
+                    SELECT json_agg(ch.title ORDER BY ch.chapter_number)
+                    FROM chapters ch
+                    WHERE ch.resource_id = r.id
+                ) as features,
+                (
+                    SELECT COUNT(*)
+                    FROM chapters ch
+                    WHERE ch.resource_id = r.id
+                )::int as lessons,
+                -- Crucially, we add the enrollment check here
                 EXISTS (
                     SELECT 1 FROM enrollments e 
                     WHERE e.course_id = c.id AND e.learner_id = $1
                 ) as "isEnrolled"
-            FROM courses c
-            ORDER BY c.name ASC
+            FROM 
+                courses c
+            JOIN 
+                resources r ON c.id = r.course_id
+            ORDER BY 
+                c.id, r.created_at DESC;
         `;
-        const { rows } = await pool.query(query, [learnerId]);
-        return rows;
-    },
 
+        const { rows } = await pool.query(query, [learnerId]);
+
+
+        return rows.map(course => ({
+            ...course,
+            price: 'Free', 
+            features: course.features || [], 
+        }));
+    },
 
     enrollInCourse: async (learnerId: number, courseId: number) => {
         const courseCheck = await pool.query('SELECT id FROM courses WHERE id = $1', [courseId]);
@@ -144,6 +168,54 @@ export const CourseService = {
         return rows.map(course => ({
             ...course,
             price: 'Free',
+        }));
+    },
+
+    getEnrolledCoursesForLearner: async (learnerId: number) => {
+        const query = `
+            SELECT DISTINCT ON (c.id)
+                c.id,
+                c.name as title,
+                r.description,
+                r.timeline as duration,
+                r.level,
+                r.image_url as image,
+                (
+                    SELECT COUNT(*) FROM chapters ch WHERE ch.resource_id = r.id
+                )::int as lessons,
+                (
+                    SELECT COUNT(DISTINCT q.chapter_id) 
+                    FROM quiz_attempts qa
+                    JOIN quizzes q ON qa.quiz_id = q.id
+                    WHERE qa.learner_id = e.learner_id 
+                      AND q.resource_id = r.id 
+                      AND qa.passed = TRUE
+                      AND q.chapter_id IS NOT NULL
+                )::int as "lessonsCompleted",
+                (
+                    SELECT json_agg(ch.title ORDER BY ch.chapter_number)
+                    FROM chapters ch
+                    WHERE ch.resource_id = r.id
+                ) as features
+            FROM
+                enrollments e
+            JOIN
+                courses c ON e.course_id = c.id
+            LEFT JOIN 
+                resources r ON c.id = r.course_id
+            WHERE
+                e.learner_id = $1 AND r.id IS NOT NULL
+            ORDER BY
+                c.id, r.created_at DESC; -- Sort by course ID, then newest resource first
+        `;
+        
+        const { rows } = await pool.query(query, [learnerId]);
+
+        return rows.map(course => ({
+            ...course,
+            slug: course.title.toLowerCase().replace(/\s+/g, '-'),
+            price: 'Free',
+            features: course.features || [],
         }));
     },
 };
