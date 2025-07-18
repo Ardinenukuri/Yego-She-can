@@ -82,5 +82,15 @@ export const CourseController = {
         }
     },
 
+    getEnrolledCourses: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const learnerId = (req as any).user.id;
+            const courses = await CourseService.getEnrolledCoursesForLearner(learnerId);
+            res.status(200).json(courses);
+        } catch (error) {
+            next(error);
+        }
+    },
+
     
 };
