@@ -164,3 +164,46 @@
     display: none;
   }
 }
+
+.logout-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: red;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.logout-link:hover {
+  color: darkred;
+}
+
+.logout-icon {
+  font-size: 1.2rem;
+  position: relative;
+  top: 0.1rem; 
+}
+.profile-icon {
+  font-size: 1.8rem;
+  color: #4c1d95; 
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.profile-icon:hover {
+  color: #6b21a8;
+}
+
+.logout-link {
+  display: flex;
+  align-items: center;
+  color: red;
+  gap: 0.5rem;
+  font-weight: bold;
+}
+
+.logout-icon {
+  font-size: 1.2rem;
+}
+
