@@ -3,7 +3,7 @@ import { CourseController } from '../controllers/course.controller';
 import { protect } from '../middlewares/auth.middleware';
 import { authorize } from '../middlewares/authorize.middleware';
 import { validateRequest } from '../middlewares/validateRequest';
-import { createCourseSchema, enrollInCourseSchema } from '../schemas/auth.schema';
+import { createCourseSchema, enrollInCourseSchema, toggleCompletionSchema } from '../schemas/auth.schema';
 
 const router = Router();
 
@@ -16,4 +16,6 @@ router.post('/enroll', protect, authorize('learner'), validateRequest(enrollInCo
 router.get('/public', CourseController.getPublicCourses);
 router.get('/admin-list', protect, authorize('program manager'), CourseController.getAdminCourseList);
 router.get('/my-courses', protect, authorize('learner'), CourseController.getEnrolledCourses);
+router.get('/learn/:id', protect, authorize('learner'), CourseController.getCourseLearningData);
+router.post('/chapters/toggle-completion', protect, authorize('learner'), validateRequest(toggleCompletionSchema), CourseController.toggleChapterCompletion);
 export default router;
