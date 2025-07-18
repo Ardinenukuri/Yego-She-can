@@ -585,6 +585,30 @@ export const AuthService = {
             status: mentor.status === 'active' ? 'Active' : 'Pending'
         }));
     },
+
+    getAllLearners: async () => {
+        const query = `
+            SELECT
+                id,
+                first_name,
+                last_name,
+                email,
+                status,
+                profile_picture_url as image,
+                created_at
+            FROM users
+            WHERE role = 'learner'
+            ORDER BY created_at DESC;
+        `;
+        
+        const { rows } = await pool.query(query);
+
+        // Process status to be more frontend-friendly
+        return rows.map(learner => ({
+            ...learner,
+            status: learner.status === 'active' ? 'Active' : learner.status === 'disabled' ? 'Inactive' : 'Pending'
+        }));
+    },
 };
 
 

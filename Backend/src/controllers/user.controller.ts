@@ -56,4 +56,14 @@ export const UserController = {
             next(error);
         }
     },
+
+    getAllLearners: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const learners = await AuthService.getAllLearners();
+            res.status(200).json(learners);
+        } catch (error){
+            next(error);
+        }
+    },
+    
 };
