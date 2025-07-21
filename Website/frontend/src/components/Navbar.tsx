@@ -19,7 +19,6 @@ export default function Navbar() {
     const handleClickOutside = () => {
       if (showDropdown) setShowDropdown(false)
     }
-
     document.addEventListener('click', handleClickOutside)
     return () => document.removeEventListener('click', handleClickOutside)
   }, [showDropdown])
@@ -41,29 +40,30 @@ export default function Navbar() {
           <NavLink href="/">Home</NavLink>
           <NavLink href="/about">About</NavLink>
 
-          <div className="dropdown-wrapper">
-            <button
-              className="dropdown-button"
-              onClick={(e) => {
-                e.stopPropagation()
-                setShowDropdown(!showDropdown)
-              }}
-              onMouseEnter={() => setShowDropdown(true)}
-            >
+          <div
+            className="dropdown-wrapper"
+            onMouseEnter={() => setShowDropdown(true)}
+            onMouseLeave={() => setShowDropdown(false)}
+          >
+            <button className="dropdown-button">
               Services
               <svg
-                className="dropdown-icon"
-                style={{ transform: showDropdown ? 'rotate(180deg)' : 'rotate(0deg)',color:'black' }}
+                className={`dropdown-icon ${showDropdown ? 'open' : ''}`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
             </button>
 
             {hydrated && showDropdown && (
-              <div className="dropdown-content" onMouseLeave={() => setShowDropdown(false)}>
+              <div className="dropdown-content">
                 <Link href="/services/courses" className="dropdown-item">
                   <strong className="dropdown-title">Online Courses</strong>
                   <p className="dropdown-desc">Accounting, Sales, Marketing, Design Thinking</p>
@@ -80,9 +80,7 @@ export default function Navbar() {
           <NavLink href="/mentorship">Mentorship</NavLink>
           <NavLink href="/contact">Contact</NavLink>
 
-          <Link href="/login">
-            <span className="login-button">Login</span>
-          </Link>
+          <Link href="/login" className="nav-button">Login</Link>
         </div>
       </div>
     </nav>

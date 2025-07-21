@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import "../../../styles/courses.css"; 
+import "../../../styles/courses.css";
 import { useState, useEffect } from "react";
-import api from "@/lib/api"; 
+import api from "@/lib/api";
 import serviceImage from "../../../../public/services.jpg"
 
 
@@ -24,7 +24,7 @@ export default function CoursesPage() {
   const [allCourses, setAllCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filter, setFilter] = useState("All"); 
+  const [filter, setFilter] = useState("All");
   const [sortOrder, setSortOrder] = useState("asc");
   const [currentPage, setCurrentPage] = useState(1);
   const coursesPerPage = 3;
@@ -44,7 +44,7 @@ export default function CoursesPage() {
     };
 
     fetchCourses();
-  }, []); 
+  }, []);
 
 
   const filteredCourses = allCourses
@@ -65,25 +65,29 @@ export default function CoursesPage() {
 
   return (
     <div className="courses-page">
-      {/* Hero Section (remains the same) */}
-      <section
-        className="hero long-hero"
-        style={{
-          backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${serviceImage.src})`,
-        }}
-      >
-        <div className="hero-content backdrop">
-          <div className="hero-text">
-            <h1>Empowering Women Entrepreneurs</h1>
-            <p>
-              Master the fundamentals of entrepreneurship with our comprehensive
-              online curriculum.
-            </p>
-            <div className="hero-buttons">
-              <Link href="/auth/register">
-                <button className="btn-primary">Enroll now</button>
-              </Link>
-              <a href="#courses" className="btn-secondary">Browse Courses</a>
+      <section className="hero-section" data-aos="fade-up">
+        <div className="hero-image-wrapper">
+          <Image
+            src={serviceImage}
+            alt="Empowering Women"
+            fill
+            priority
+            style={{ objectFit: 'cover' }}
+          />
+          <div className="hero-overlay" />
+          <div className="hero-content backdrop">
+            <div className="hero-text">
+              <h1>Empowering Women Entrepreneurs</h1>
+              <p>
+                Master the fundamentals of entrepreneurship with our comprehensive
+                online curriculum.
+              </p>
+              <div className="hero-buttons">
+                <Link href="/auth/register">
+                  <button className="btn-primary">Enroll now</button>
+                </Link>
+                <a href="#courses" className="btn-secondary">Browse Courses</a>
+              </div>
             </div>
           </div>
         </div>
