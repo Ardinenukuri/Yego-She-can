@@ -635,6 +635,26 @@ export const AuthService = {
         const { rows } = await pool.query(query);
         return rows;
     },
+
+    searchEligibleMentors: async (searchQuery: string = '') => {
+        const query = `
+            SELECT id, first_name, last_name, email 
+            FROM users 
+            WHERE 
+                first_name ILIKE $1 OR
+                last_name ILIKE $1 OR
+                email ILIKE $1
+            ORDER BY 
+                first_name, last_name -- Add a predictable order to the results
+            LIMIT 10; -- Limit results for performance
+        `;
+        
+        const searchValue = `%${searchQuery}%`;
+        
+        const { rows } = await pool.query(query, [searchValue]);
+        return rows;
+    },
+
 };
 
 
