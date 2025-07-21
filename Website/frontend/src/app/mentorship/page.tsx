@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import React, { useState, ChangeEvent, FormEvent } from 'react'
+import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react'
 import Image from 'next/image'
 import { CheckCircle } from 'lucide-react'
 import { FaUserCheck, FaCalendarAlt, FaHandsHelping } from 'react-icons/fa'
@@ -8,6 +8,12 @@ import toast from 'react-hot-toast'
 import api from '@/lib/api'
 import './mentorship.css'
 import heroImage from '../../../public/mentorship.jpg'
+
+
+interface Course {
+    id: number;
+    title: string;
+}
 
 const MentorshipPage = () => {
     const [form, setForm] = useState({
@@ -18,19 +24,44 @@ const MentorshipPage = () => {
     });
     const [loading, setLoading] = useState(false);
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+
+    const [courses, setCourses] = useState<Course[]>([]);
+    const [isLoadingCourses, setIsLoadingCourses] = useState(true);
+
+
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const response = await api.get('/api/courses/public');
+                setCourses(response.data);
+            } catch (error) {
+                console.error("Failed to fetch courses for the form:", error);
+            } finally {
+                setIsLoadingCourses(false);
+            }
+        };
+        fetchCourses();
+    }, []);
+
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
+
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
+
+        if (!form.expertise) {
+            toast.error("Please select your field of expertise from the dropdown.");
+            return; 
+        }
+
         setLoading(true);
         const toastId = toast.loading('Submitting your application...');
         
         try {
-            
             const response = await api.post('/api/auth/apply-mentor', form);
-            
             toast.success(response.data.message || 'Application submitted successfully!', { id: toastId });
             
             
@@ -49,7 +80,6 @@ const MentorshipPage = () => {
         }
     };
     
-
     return (
         <main className="mentorship-page">
             <section className="hero">
@@ -132,7 +162,6 @@ const MentorshipPage = () => {
                 </div>
             </section>
 
-        
             <section className="book-session-form-section" id="become-mentor-form">
                 <h2>Request to Become a Mentor</h2>
                 <form className="session-form" onSubmit={handleSubmit}>
@@ -156,15 +185,26 @@ const MentorshipPage = () => {
                             disabled={loading}
                         />
                     </div>
-                    <input
-                        type="text"
-                        name="expertise" 
-                        placeholder="Your Field of Expertise *"
+                    
+                    <select
+                        name="expertise"
                         required
                         value={form.expertise}
                         onChange={handleChange}
-                        disabled={loading}
-                    />
+                        disabled={loading || isLoadingCourses}
+                        className="expertise-select"
+                    >
+                        <option value="" disabled>
+                            {isLoadingCourses ? "Loading available courses..." : "Select your field of expertise *"}
+                        </option>
+                        {courses.map(course => (
+                            <option key={course.id} value={course.title}>
+                                {course.title}
+                            </option>
+                        ))}
+                        <option value="Other">Other (Please specify in message)</option>
+                    </select>
+
                     <textarea
                         name="message"
                         placeholder="Tell us why you want to be a mentor *"
@@ -183,4 +223,4 @@ const MentorshipPage = () => {
     )
 }
 
-export default MentorshipPage
+export default MentorshipPage;
