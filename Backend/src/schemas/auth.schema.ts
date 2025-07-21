@@ -180,4 +180,11 @@ export const contactFormSchema = z.object({
     category: z.enum(['support', 'partnership', 'feedback', 'other']),
     message: z.string().min(10, 'Please provide a more detailed message.'),
   }),
+  
+})
+
+export const toggleCompletionSchema = z.object({
+  body: z.object({
+    chapterId: z.number().int().positive(),
+  }),
 })

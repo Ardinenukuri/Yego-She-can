@@ -34,6 +34,9 @@ const Sidebar = () => {
                 <Link href="/dashboard/mentors" className={isActive('/dashboard/mentors') ? 'nav-item active' : 'nav-item'}>
                     <FaUserFriends /> Mentors
                 </Link>
+                <Link href="/dashboard/users" className={isActive('/dashboard/users') ? 'nav-item active' : 'nav-item'}>
+                    <FaUserFriends /> Learners
+                </Link>
                 <Link href="/dashboard/settings" className={isActive('/dashboard/settings') ? 'nav-item active' : 'nav-item'}>
                     <FaCog /> Settings
                 </Link>

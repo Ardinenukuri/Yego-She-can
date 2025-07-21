@@ -82,5 +82,37 @@ export const CourseController = {
         }
     },
 
+    getEnrolledCourses: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const learnerId = (req as any).user.id;
+            const courses = await CourseService.getEnrolledCoursesForLearner(learnerId);
+            res.status(200).json(courses);
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    getCourseLearningData: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const learnerId = (req as any).user.id;
+            const courseId = parseInt(req.params.id, 10);
+            const data = await CourseService.getCourseLearningData(courseId, learnerId);
+            res.status(200).json(data);
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    toggleChapterCompletion: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const learnerId = (req as any).user.id;
+            const { chapterId } = req.body;
+            const result = await CourseService.toggleChapterCompletion(learnerId, chapterId);
+            res.status(200).json({ message: `Chapter status updated.`, ...result });
+        } catch (error) {
+            next(error);
+        }
+    },
+
     
 };

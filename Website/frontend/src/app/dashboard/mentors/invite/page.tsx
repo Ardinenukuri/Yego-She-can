@@ -1,30 +1,42 @@
 'use client'
 
 import { useState, FormEvent, ChangeEvent, useEffect } from 'react'
-import '../mentors.css' // Assuming your styles are here
+import '../mentors.css' 
 import { FiSend } from 'react-icons/fi'
 import api from '@/lib/api'
 import toast from 'react-hot-toast'
+import useDebounce from '@/hooks/useDebounce'
 
-// Define a type for the courses we fetch for the dropdown
+
 interface Course {
   id: number;
   name: string;
 }
 
+interface UserSuggestion {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+}
+
 export default function InviteMentorPage() {
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState('');
+  const [selectedCourseId, setSelectedCourseId] = useState<string>('');
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingCourses, setIsLoadingCourses] = useState(true);
 
-  const [selectedCourseId, setSelectedCourseId] = useState<string>('')
-  const [courses, setCourses] = useState<Course[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [isLoadingCourses, setIsLoadingCourses] = useState(true)
+  
+  const [suggestions, setSuggestions] = useState<UserSuggestion[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const debouncedSearchTerm = useDebounce(email, 300);
 
-  // Fetch all available courses when the component mounts
+  
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await api.get('/api/courses'); // Uses the existing program manager route
+        const response = await api.get('/api/courses');
         setCourses(response.data);
       } catch (error) {
         console.error("Failed to fetch courses:", error);
@@ -33,34 +45,50 @@ export default function InviteMentorPage() {
         setIsLoadingCourses(false);
       }
     };
-
     fetchCourses();
   }, []);
 
+
+  useEffect(() => {
+    if (debouncedSearchTerm.length > 2) {
+      const fetchSuggestions = async () => {
+        try {
+          const response = await api.get(`/api/users/eligible-mentors?q=${debouncedSearchTerm}`);
+          setSuggestions(response.data);
+          setShowSuggestions(true); 
+        } catch (error) {
+          console.error("Failed to fetch mentor suggestions:", error);
+        }
+      };
+      fetchSuggestions();
+    } else {
+      setSuggestions([]);
+      setShowSuggestions(false); 
+    }
+  }, [debouncedSearchTerm]);
+
+  
+  const handleSuggestionClick = (selectedEmail: string) => {
+    setEmail(selectedEmail);
+    setShowSuggestions(false); 
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
     if (!selectedCourseId) {
       toast.error("Please select a course to assign the mentor to.");
       return;
     }
-
     setIsLoading(true);
     const toastId = toast.loading('Sending invitation...');
-
     try {
-      // The backend expects an object with 'email' and 'courseId'
       await api.post('/api/auth/invite-mentor', {
         email: email,
         courseId: parseInt(selectedCourseId, 10),
       });
-
       toast.success(`Invite sent successfully to ${email}`, { id: toastId });
-      
-      // Reset the form fields after success
       setEmail('');
       setSelectedCourseId('');
-
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || 'Failed to send invitation.';
       toast.error(errorMessage, { id: toastId });
@@ -68,7 +96,6 @@ export default function InviteMentorPage() {
       setIsLoading(false);
     }
   };
-
 
   return (
     <div className="invite-page">
@@ -94,24 +121,41 @@ export default function InviteMentorPage() {
           </select>
         </label>
         
-        <label>
-          Mentor's Email Address:
-          <input
-            type="email"
-            value={email}
+        <div className="email-input-container">
+          <label>
+            Mentor's Email Address or Name:
+            <input
+              type="text"
+              value={email}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+              onFocus={() => {
+                  if (suggestions.length > 0) {
+                      setShowSuggestions(true);
+                  }
+              }}
 
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-
-            required
-            placeholder="Enter mentor's email"
-            disabled={isLoading}
-          />
-        </label>
-
+              onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+              required
+              placeholder="Start typing a name or email..."
+              disabled={isLoading}
+              autoComplete="off"
+            />
+          </label>
+          
+          {showSuggestions && suggestions.length > 0 && (
+            <ul className="suggestions-list">
+              {suggestions.map(user => (
+                <li key={user.id} onMouseDown={() => handleSuggestionClick(user.email)}>
+                  <strong>{user.first_name} {user.last_name}</strong>
+                  <span>{user.email}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
 
         <button type="submit" className="invite-btn" disabled={isLoading}>
           <FiSend /> {isLoading ? 'Sending...' : 'Send Invite'}
-
         </button>
       </form>
     </div>

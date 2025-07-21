@@ -170,6 +170,16 @@
   border-radius: 6px;
   font-size: 1rem;
 }
+.session-form .expertise-select { 
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: 'Segoe UI', sans-serif; 
+  color: #333; 
+}
+
 
 .session-form textarea {
   resize: vertical;
@@ -179,3 +189,5 @@
   align-self: center;
   width: fit-content;
 }
+
+

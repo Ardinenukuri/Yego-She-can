@@ -15,5 +15,7 @@ router.put('/:id', protect, authorize('program manager'), validateRequest(update
 router.delete('/:id', protect, authorize('program manager'), UserController.deleteUser);
 router.get('/my-learners', protect, authorize('mentor'), UserController.getEnrolledLearners);
 router.get('/mentors',protect, authorize('program manager'), UserController.getAllMentors);
-
+router.get('/learners', UserController.getAllLearners);
+router.get('/mentor', UserController.getPublicMentors);
+router.get('/eligible-mentors', UserController.searchEligibleMentors);
 export default router;

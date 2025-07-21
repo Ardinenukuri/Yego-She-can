@@ -1,0 +1,11 @@
+.quiz-page { max-width: 800px; margin: 2rem auto; padding: 2rem; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+.quiz-title { text-align: center; font-size: 2rem; margin-bottom: 2rem; color: #4b1c88; }
+.quiz-questions { display: flex; flex-direction: column; gap: 2rem; }
+.quiz-question-card { border: 1px solid #eee; padding: 1.5rem; border-radius: 8px; }
+.question-text { font-weight: 600; margin-bottom: 1rem; }
+.options-group { display: flex; flex-direction: column; gap: 0.75rem; }
+.option-label { display: block; padding: 0.75rem 1rem; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+.option-label:hover { background-color: #f6f6ff; }
+.option-label.selected { border-color: #4b1c88; background-color: #ede9f6; font-weight: 500; }
+.option-label input { margin-right: 0.75rem; }
+.submit-quiz-button { display: block; width: 100%; padding: 1rem; margin-top: 2rem; background-color: #4b1c88; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; }

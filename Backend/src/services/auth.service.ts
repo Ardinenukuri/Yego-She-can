@@ -585,6 +585,76 @@ export const AuthService = {
             status: mentor.status === 'active' ? 'Active' : 'Pending'
         }));
     },
+
+    getAllLearners: async () => {
+        const query = `
+            SELECT
+                id,
+                first_name,
+                last_name,
+                email,
+                status,
+                profile_picture_url as image,
+                created_at
+            FROM users
+            WHERE role = 'learner'
+            ORDER BY created_at DESC;
+        `;
+        
+        const { rows } = await pool.query(query);
+
+        return rows.map(learner => ({
+            ...learner,
+            status: learner.status === 'active' ? 'Active' : learner.status === 'disabled' ? 'Inactive' : 'Pending'
+        }));
+    },
+
+    getPublicMentors: async () => {
+        const query = `
+            SELECT
+                u.id,
+                u.first_name || ' ' || u.last_name as name,
+                u.bio,
+                u.profile_picture_url as image,
+                -- Aggregate all assigned course names into a single comma-separated string
+                COALESCE(STRING_AGG(c.name, ', '), 'General Mentorship') as expertise
+            FROM 
+                users u
+            LEFT JOIN 
+                course_mentors cm ON u.id = cm.mentor_id
+            LEFT JOIN 
+                courses c ON cm.course_id = c.id
+            WHERE 
+                u.role = 'mentor' AND u.status = 'active'
+            GROUP BY 
+                u.id, u.first_name, u.last_name, u.bio, u.profile_picture_url
+            ORDER BY 
+                name ASC;
+        `;
+        
+        const { rows } = await pool.query(query);
+        return rows;
+    },
+
+    searchEligibleMentors: async (searchQuery: string = '') => {
+        const query = `
+            SELECT id, first_name, last_name, email 
+            FROM users 
+            WHERE 
+                first_name ILIKE $1 OR
+                last_name ILIKE $1 OR
+                email ILIKE $1
+            ORDER BY 
+                first_name, last_name -- Add a predictable order to the results
+            LIMIT 10; -- Limit results for performance
+        `;
+        
+        const searchValue = `%${searchQuery}%`;
+        
+        const { rows } = await pool.query(query, [searchValue]);
+        return rows;
+    },
+
 };
 
 

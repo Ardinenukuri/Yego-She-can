@@ -56,4 +56,34 @@ export const UserController = {
             next(error);
         }
     },
+
+    getAllLearners: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const learners = await AuthService.getAllLearners();
+            res.status(200).json(learners);
+        } catch (error){
+            next(error);
+        }
+    },
+
+    getPublicMentors: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const mentors = await AuthService.getPublicMentors();
+            res.status(200).json(mentors);
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    searchEligibleMentors: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            // Get the search query from the URL, e.g., /api/users/eligible-mentors?q=ardine
+            const searchQuery = (req.query.q as string) || '';
+            const users = await AuthService.searchEligibleMentors(searchQuery);
+            res.status(200).json(users);
+        } catch (error) {
+            next(error);
+        }
+    },
+    
 };

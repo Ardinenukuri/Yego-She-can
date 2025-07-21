@@ -124,11 +124,11 @@ export default function MentorsPage() {
                 <td>
                   <div className="mentor-actions">
                     <button className="view-btn">
-                      <FiEye className="table-icon" /> View
+                      <FiEye className="table-icon" style={{color:'#fff'}} /> View
                     </button>
 
                     <button className="delete-btn" onClick={() => setMentorToDelete(mentor)}>
-                      <FiTrash2 className="table-icon" /> Remove
+                      <FiTrash2 className="table-icon" style={{color:'red'}} /> Remove
                     </button>
                   </div>
                 </td>

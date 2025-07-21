@@ -1,4 +1,3 @@
-/* Base font and layout */
 .courses-page {
   font-family: 'Segoe UI', sans-serif;
   /* padding: 2rem; */
@@ -6,17 +5,38 @@
   color: #333;
 }
 
-/* Hero Section */
-.hero.long-hero {
-  min-height: 90vh;
+.hero-section {
+  position: relative;
+  height: 90vh;
+  width: 100vw;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  text-align: center;
+  margin-bottom: 2rem;
+}
+.hero-image-wrapper {
   position: relative;
-  overflow: hidden;
-  margin-bottom: 5rem;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1;
+}
+.hero-text {
+  position: absolute;
+  z-index: 2;
+  text-align: center;
+  color: white;
+  padding: 0 1rem;
+  max-width: 800px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .hero-content {
@@ -233,4 +253,213 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.course-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #222;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.course-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.course-description {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+.progress-bar-container {
+  width: 100%;
+  background-color: #e0e0e0;
+  border-radius: 20px;
+  overflow: hidden;
+  height: 20px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+  margin-top: 10px;
+  margin-bottom: 1rem;
+  
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(to right, #4c1d95, #7c3aed); /* Purple gradient */
+  color: white;
+  font-weight: 600;
+  text-align: center;
+  line-height: 24px;
+  transition: width 0.4s ease-in-out;
+}
+
+.chapter-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.chapter-card {
+  padding: 1rem 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fafafa;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.03);
+}
+
+.chapter-card h3 {
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.chapter-card p {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 0.8rem;
+}
+
+.chapter-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.chapter-actions label {
+  cursor: pointer;
+  font-weight: 600;
+  user-select: none;
+  color: #222;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.quiz-button {
+  background-color: #7c34ab;
+  border: none;
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.quiz-button:hover {
+  background-color: #6b21a8;
+}
+
+.chapter-actions span {
+  color: #28a745;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.final-quiz-section {
+  margin-top: 2.5rem;
+  padding: 1.5rem;
+  border: 2px solid #7c34ab;
+  border-radius: 8px;
+  background: #e6f0ff;
+  text-align: center;
+}
+
+.final-quiz-button {
+  background-color: #7c34ab;
+  border: none;
+  color: white;
+  padding: 0.6rem 1.4rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.final-quiz-button:hover {
+  background-color: #6b21a8;
+}
+
+/* Modal styles */
+
+.quiz-modal {
+  position: relative;
+  background: white;
+  padding: 2rem;
+  max-width: 500px;
+  margin: 5rem auto;
+  border-radius: 8px;
+  outline: none;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.2);
+}
+
+.quiz-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.quiz-modal h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.quiz-modal p {
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  color: #555;
+}
+
+.close-button {
+  background-color: #ff4c4c;
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.close-button:hover {
+  background-color: #cc3b3b;
+}
+
+.react-hot-toast {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  border-radius: 8px !important;
+  padding: 12px 20px !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  color: #1e293b; 
+}
+
+.react-hot-toast.success {
+  background-color: #d1fae5 !important; 
+  border: 1px solid #10b981 !important; 
+  color: #065f46 !important; 
+}
+
+.react-hot-toast.error {
+  background-color: #fee2e2 !important; 
+  border: 1px solid #ef4444 !important; 
+  color: #991b1b !important; 
 }
