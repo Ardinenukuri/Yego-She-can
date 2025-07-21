@@ -322,7 +322,7 @@ export default function DashboardHome() {
       <h2 className="headig-name">Student Overview</h2>
       <div className="controls">
         <input type="text" placeholder="Search students..." className="search-input" value={studentSearchTerm} onChange={(e) => setStudentSearchTerm(e.target.value)} />
-        <select value={studentFilter} onChange={(e) => setStudentFilter(e.target.value)} className="select-filter"><option value="all">All Progress</option><option value="above50">Progress > 50%</option></select>
+        <select value={studentFilter} onChange={(e) => setStudentFilter(e.target.value)} className="select-filter"><option value="all">All Progress</option><option value="above50">Progress  50%</option></select>
         <select value={studentSort} onChange={(e) => setStudentSort(e.target.value)} className="select-filter"><option value="name">Sort by Name</option><option value="progress">Sort by Progress</option></select>
       </div>
 </div>

@@ -1,0 +1,31 @@
+.dashboard-navbar {
+  height: 64px;
+  background-color: #f8f6f5;
+  border-bottom: 1px solid #ddd;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+.dashboard-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #7c34ab;
+}
+
+.dashboard-user {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #4b4b4b;
+}
+
+.user-icon {
+  font-size: 24px;
+  color: #6b21a8;
+}

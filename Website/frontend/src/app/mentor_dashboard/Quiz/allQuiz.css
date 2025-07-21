@@ -1,0 +1,56 @@
+.quizzes-page-admin {
+  padding: 2rem;
+  background-color: #f9fafb;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.admin-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.courses-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.courses-table th, .courses-table td {
+  padding: 1rem 1.5rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.courses-table th {
+  background-color: #f9fafb;
+  font-weight: 600;
+  color: #374151;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+.passed {
+  color: #10b981; /* green-500 */
+  font-weight: 600;
+}
+
+.failed {
+  color: #ef4444; /* red-500 */
+  font-weight: 600;
+}
+
+.missed {
+  color: #f59e0b; /* amber-500 */
+  font-weight: 600;
+}

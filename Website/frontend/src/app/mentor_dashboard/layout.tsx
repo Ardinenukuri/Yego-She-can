@@ -61,18 +61,21 @@
 //   );
 // }
 
+
 import '../styles/dashboard.css'
-import Sidebar from './components/Sidebar'
-import DashboardNavbar from './components/DashboardNavbar'
+import Navbar_mentor from './components/Navbar_mentor'
+import Sidebar_mentor from './components/Sidebar_mentor'
+
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="dashboard-layout">
-      <Sidebar />
+      <Sidebar_mentor/>
       <div className="dashboard-main">
-        <DashboardNavbar />
+       <Navbar_mentor/>
         <main className="dashboard-content">{children}</main>
       </div>
     </div>
   )
 }
+
