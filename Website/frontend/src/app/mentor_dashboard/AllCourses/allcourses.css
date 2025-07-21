@@ -1,0 +1,94 @@
+.mentor-courses-page {
+  padding: 2rem;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.mentor-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #4b1c88;
+  margin-bottom: 1.5rem;
+}
+
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.course-card {
+  background-color: #fff;
+  border: 1px solid #eee;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.course-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.course-card h2 {
+  font-size: 1.25rem;
+  color: #1f2937;
+}
+
+.course-meta {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.course-description {
+  font-size: 0.95rem;
+  color: #374151;
+  margin-bottom: 1rem;
+}
+
+.course-meta-info {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+
+.mentor-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.edit-btn,
+.upload-btn,
+.view-book-btn {
+  background-color: #4b1c88;
+  color: white;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.3s ease;
+}
+
+.edit-btn:hover,
+.upload-btn:hover,
+.view-book-btn:hover {
+  background-color: #3c146d;
+}
+
+.no-results {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #6b7280;
+  padding: 2rem;
+}
