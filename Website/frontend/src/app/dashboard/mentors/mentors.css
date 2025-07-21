@@ -531,3 +531,47 @@
   box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
   transform: translateY(-2px);
 }
+
+.email-input-container {
+  position: relative; /* Crucial for positioning the suggestions list */
+}
+
+.suggestions-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccc; /* Match input border */
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  list-style: none;
+  padding: 0;
+  margin: -1px 0 0 0;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.suggestions-list li {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.2s;
+}
+
+.suggestions-list li:hover {
+  background-color: #e8f5e9; /* Light green hover for suggestions */
+}
+
+.suggestions-list li strong {
+  font-weight: 600;
+  color: #333;
+}
+
+.suggestions-list li span {
+  font-size: 0.85rem;
+  color: #555;
+}
