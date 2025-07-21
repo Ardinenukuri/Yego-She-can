@@ -1,0 +1,339 @@
+.heroSection {
+  position: relative;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url('../../public/coffee-beans.jpg');
+  background-size: cover;
+  background-position: center;
+  text-align: center;
+  padding: 2rem;
+  animation: fadeInUp 0.8s ease-in-out;
+  color: white;
+  overflow: hidden;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  /* DARK OVERLAY */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  z-index: 1;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+}
+
+.heroContent h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+/* .heroContent span {
+  color: #ffd700;
+} */
+
+.heroContent p {
+  font-size: 1.15rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.heroButtons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.primaryButton,
+.outlineButton {
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.primaryButton {
+  background-color: #7c34ab;
+  color: #fff;
+  border: none;
+}
+
+.primaryButton:hover {
+  background-color: #f3e8ff;
+  color: #7c34ab;
+}
+
+.outlineButton {
+  border: 2px solid white;
+  background: transparent;
+  color: white;
+}
+
+.outlineButton:hover {
+  background: white;
+  color: #7c34ab;
+}
+
+.whyChooseSection {
+  padding: 4rem 2rem;
+}
+.whyChooseSection h2{
+  text-align: center;
+  color:#333;
+}
+.hero-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.hero-left {
+  flex: 1;
+}
+
+.hero-left img {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.hero-right {
+  flex: 2;
+}
+
+.card-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+}
+
+.card {
+  background-color: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+}
+
+.dark-card {
+  background-color: #7c34ab;
+  color: white;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.card-icon {
+  color: #7c34ab;
+}
+
+.dark-card .card-icon {
+  color: white;
+}
+
+.prerequisitesContainer {
+  margin-top: 6rem;
+}
+
+.prerequisitesGrid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  margin-left: 10rem;
+  padding: 2rem;
+}
+.prerequisitesContainer h2{
+text-align: center;
+margin-bottom: 2rem;
+}
+
+.prerequisitesGrid h4 {
+  margin-bottom: 1.5rem;
+}
+.prerequisitesGrid ul{
+  list-style: none;
+}
+.prerequisitesGrid ul li{
+  top: -2px;
+  position: relative;
+  margin-bottom: 0.75rem;
+}
+.checkIcon {
+  color: #7c34ab;
+  margin-right: 0.5rem;
+  top: 5px;
+    position: relative;
+}
+
+/* Programs */
+.programsSection {
+  padding: 4rem 2rem;
+  background-color: #fff;
+}
+
+.programList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.programCard {
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  animation: fadeInUp 0.5s ease-in-out;
+}
+
+.imageContainer {
+  position: relative;
+}
+
+.imageContainer img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+.badge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background-color: #7c34ab;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.programDetails {
+  padding: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+  margin-bottom: 2rem;
+}
+
+.programMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  color: #555;
+}
+
+.skillsSection ul,
+.requirementsSection ul {
+  padding-left: 1.2rem;
+  list-style-type: none;
+}
+
+.skillsSection li::before,
+.requirementsSection li::before {
+  content: "✔";
+  color: #7c34ab;
+  margin-right: 0.5rem;
+
+}
+.skillsSection li, .requirementsSection li{
+  margin-top: 1rem;
+}
+.registerButton {
+  margin-top: auto;
+  margin-top: 1rem;
+  background-color: #7c34ab;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  display: inline-block;
+}
+
+.registerButton:hover {
+  background-color: #6b21a8;
+}
+
+/* CTA Section */
+.ctaSection {
+  padding: 4rem 2rem;
+  background-color: #f3e8ff;
+  text-align: center;
+}
+
+.ctaButtons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+.secondaryButton,
+.outlineLightButton {
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.secondaryButton {
+  background-color: #7c34ab;
+  color: white;
+  border: none;
+}
+
+.secondaryButton:hover {
+  background-color: #6b21a8;
+}
+
+.outlineLightButton {
+  border: 2px solid #7c34ab;
+  background: transparent;
+  color: #7c34ab;
+}
+
+.outlineLightButton:hover {
+  background: #7c34ab;
+  color: white;
+}
+
+/* Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -173,7 +173,7 @@ export const mentorApplicationSchema = z.object({
 });
 
 export const contactFormSchema = z.object({
-  body: z.object({
+  body: z.object({                            
     name: z.string().min(3, 'Full name is required.'),
     email: z.string().email('A valid email address is required.'),
     phone: z.string().optional(), // Phone is optional

@@ -1,0 +1,109 @@
+.lesson-upload-container {
+  max-width: 700px;
+  margin: 2.5rem auto;
+  padding: 1.5rem;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.lesson-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #4b1c88;
+  margin-bottom: 1.5rem;
+}
+
+.lesson-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.lesson-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.lesson-input-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.lesson-file-input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.lesson-upload-icon {
+  font-size: 1.4rem;
+  color: #555;
+}
+
+.lesson-file-name {
+  font-size: 0.85rem;
+  color: #27ae60;
+}
+
+.lesson-upload-button {
+  background-color: #4b1c88;
+  color: white;
+  padding: 0.6rem 1rem;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.lesson-upload-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.lesson-preview-section {
+  margin-top: 2rem;
+}
+
+.lesson-preview-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 1rem;
+}
+
+.lesson-preview-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.lesson-preview-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem;
+  background-color: #f7f7f7;
+  border-left: 4px solid #6c5ce7;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+}
+
+.lesson-duration {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.lesson-save-button {
+  margin-top: 1.5rem;
+  background-color: #2ecc71;
+  color: white;
+  padding: 0.6rem 1rem;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+}
