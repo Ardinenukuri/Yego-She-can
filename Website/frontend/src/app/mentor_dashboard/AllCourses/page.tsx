@@ -1,115 +1,107 @@
-// AllCourses.tsx
-'use client';
-
-import Link from 'next/link';
-import { FiBookOpen, FiEdit, FiUploadCloud, FiEye } from 'react-icons/fi';
-import Image from 'next/image';
-import './allcourses.css';
+'use client'
+import React, { useState } from 'react'
+import './mentorCourses.css'
+import { Plus, Eye, Edit, Trash2 } from 'lucide-react'
 
 const courses = [
-  {
-    id: 1,
-    title: 'Introduction to Agribusiness',
-    description: 'Covers fundamentals of agribusiness and value chains.',
-    bookUrl: 'https://example.com/book1.pdf',
-    createdAt: '2025-07-01',
+  { 
+    id: 1, 
+    title: 'Entrepreneurship Basics', 
+    description: 'Learn how to start and manage your own business.',
+    duration: '6 weeks',
+    mentor: 'Jane',
+    lessons: '5 Lessons',
+    level: 'Advanced',
+    students: 342,
+    rating: 4.9,
+    revenue: 15420,
+    status: 'active',
+    image: 'https://via.placeholder.com/400x250/3B82F6/ffffff?text=React+Development',
+    learningOutcomes: ['Advanced React patterns', 'State management', 'Performance optimization']
+  },
+  { 
+    id: 2,
+    title: 'Soap Making Masterclass',
+    description: 'Craft your own natural soap products from scratch.',
     duration: '4 weeks',
+    mentor: 'Jane',
     lessons: 12,
     level: 'Beginner',
-    imageUrl: '/2148761757.jpg',
-  },
-  {
-    id: 2,
-    title: 'Smart Farming with IoT',
-    description: null,
-    bookUrl: null,
-    createdAt: '2025-06-15',
-    duration: '6 weeks',
-    lessons: 15,
-    level: 'Intermediate',
-    imageUrl: '/2148761757.jpg',
+    students: 578,
+    rating: 4.7,
+    revenue: 20340,
+    status: 'active',
+    image: 'https://via.placeholder.com/400x250/F59E0B/ffffff?text=JavaScript+Fundamentals',
+    learningOutcomes: ['JavaScript syntax', 'DOM manipulation', 'Async programming']
   },
   {
     id: 3,
-    title: 'Exporting Agricultural Products',
-    description: 'Focus on international regulations and packaging.',
-    bookUrl: null,
-    createdAt: '2025-07-10',
-    duration: '5 weeks',
-    lessons: 10,
-    level: 'Advanced',
-    imageUrl: '/2148761757.jpg',
-  },
-];
+    title: 'Marketing Fundamentals',
+    description: 'Explore core marketing strategies and customer insights.',
+    duration: '8 weeks',
+    mentor: 'Jane',
+    lessons: 24,
+    level: 'Intermediate',
+    students: 234,
+    rating: 4.8,
+    revenue: 9520,
+    status: 'draft',
+    image: 'https://via.placeholder.com/400x250/10B981/ffffff?text=Node.js+Backend',
+    learningOutcomes: ['Server architecture', 'API development', 'Database integration']
+  }
+]
 
 export default function MentorCoursesPage() {
+  const [showCourseForm, setShowCourseForm] = useState(false)
+
   return (
-    <main className="mentor-courses-page">
-      <h1 className="mentor-title">📘 My Assigned Courses</h1>
+    <div className="courses-container">
+      <div className="courses-header">
+        <h2>My Courses</h2>
+        {/* <button onClick={() => setShowCourseForm(true)} className="add-course-button">
+          <Plus className="icon-sm" />
+          Add New Course
+        </button> */}
+      </div>
 
-      {courses.length === 0 ? (
-        <p className="no-results">No courses assigned yet.</p>
-      ) : (
-        <section className="courses-grid" aria-label="Assigned courses">
-          {courses.map((course) => (
-            <article key={course.id} className="course-card">
-              <Image
-                src={course.imageUrl}
-                alt={course.title}
-                width={270}
-                height={180}
-                className="course-image"
-              />
-              <header className="course-card-header">
-                <h2>{course.title}</h2>
-                <span className="course-meta" aria-label={`Level ${course.level}`}>
-                  Level: {course.level}
-                </span>
-              </header>
-
-              <p className="course-description">
-                {course.description ?? <em>No description yet.</em>}
-              </p>
-
-              <div className="course-meta-info">
-                <span>
-                  <FiBookOpen aria-hidden="true" /> {course.lessons} Lessons
-                </span>
-                <span>Duration: {course.duration}</span>
-                <time dateTime={course.createdAt} className="course-created-at">
-                  Created on: {new Date(course.createdAt).toLocaleDateString()}
-                </time>
-              </div>
-
-              <nav className="mentor-actions" aria-label={`Actions for ${course.title}`}>
-                <Link href={`/mentor_dashboard/AllCourses/editcourse`} passHref>
-                  <button type="button" className="edit-btn">
-                    <FiEdit aria-hidden="true" /> Edit Course
-                  </button>
-                </Link>
-
-                <Link href={`/mentor-dashboard/courses/${course.id}/upload-book`} passHref>
-                  <button type="button" className="upload-btn">
-                    <FiUploadCloud aria-hidden="true" /> Upload Book
-                  </button>
-                </Link>
-
-                {course.bookUrl && (
-                  <a
-                    href={course.bookUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="view-book-btn"
-                    aria-label={`View book for ${course.title}`}
-                  >
-                    <FiEye aria-hidden="true" /> View Book
-                  </a>
-                )}
-              </nav>
-            </article>
-          ))}
-        </section>
-      )}
-    </main>
-  );
+      <div className="courses-table-wrapper">
+        <table className="courses-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Mentor</th>
+              <th>Duration</th>
+              <th>Lessons</th>
+              <th>Level</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {courses.map(course => (
+              <tr key={course.id}>
+                <td>{course.title}</td>
+                <td>{course.mentor || 'Unassigned'}</td>
+                <td>{course.duration}</td>
+                <td>{course.lessons}</td>
+                <td>{course.level}</td>
+                <td>
+                  <span className={`status-badge ${course.status}`}>
+                    {course.status}
+                  </span>
+                </td>
+                <td>
+                  <div className="action-buttons">
+                    <button title="View"><Eye className="icon-sm" /></button>
+                    <button title="Edit"><Edit className="icon-sm" /></button>
+                    {/* <button title="Delete" className="delete"><Trash2 className="icon-sm" /></button> */}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
 }
