@@ -74,5 +74,16 @@ export const UserController = {
             next(error);
         }
     },
+
+    searchEligibleMentors: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            // Get the search query from the URL, e.g., /api/users/eligible-mentors?q=ardine
+            const searchQuery = (req.query.q as string) || '';
+            const users = await AuthService.searchEligibleMentors(searchQuery);
+            res.status(200).json(users);
+        } catch (error) {
+            next(error);
+        }
+    },
     
 };
