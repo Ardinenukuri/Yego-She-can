@@ -35,7 +35,7 @@ export default function LoginPage() {
         router.push('/user-dashboard');
       }
       else if (user.role === 'mentor') {
-        router.push('/mentor-dashboard');
+        router.push('/mentor_dashboard');
       }
       else {
         router.push('/about');
