@@ -49,8 +49,8 @@ const SidebarMentor = () => {
     <FaClipboardList /> Edit Content
   </Link>
   <Link
-    href="/mentor_dashboard/createQiuz"
-    className={isActive('/mentor_dashboard/createQiuz') ? 'nav-item active' : 'nav-item'}
+    href="/mentor_dashboard/Quiz"
+    className={isActive('/mentor_dashboard/Quiz') ? 'nav-item active' : 'nav-item'}
   >
     <FaClipboardList /> Manage Quizzes
   </Link>
