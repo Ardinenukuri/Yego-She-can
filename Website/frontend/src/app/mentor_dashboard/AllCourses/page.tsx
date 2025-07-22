@@ -2,11 +2,12 @@
 import React, { useState } from 'react'
 import './mentorCourses.css'
 import { Plus, Eye, Edit, Trash2 } from 'lucide-react'
+import Link from 'next/link'
 
 const courses = [
   { 
     id: 1, 
-    title: 'Entrepreneurship Basics', 
+    title: 'Soap Making Masterclass', 
     description: 'Learn how to start and manage your own business.',
     duration: '6 weeks',
     mentor: 'Jane',
@@ -21,7 +22,7 @@ const courses = [
   },
   { 
     id: 2,
-    title: 'Soap Making Masterclass',
+    title: 'Oil Selection and Properties',
     description: 'Craft your own natural soap products from scratch.',
     duration: '4 weeks',
     mentor: 'Jane',
@@ -36,7 +37,7 @@ const courses = [
   },
   {
     id: 3,
-    title: 'Marketing Fundamentals',
+    title: 'Basic Cold Process Technique',
     description: 'Explore core marketing strategies and customer insights.',
     duration: '8 weeks',
     mentor: 'Jane',
@@ -68,12 +69,12 @@ export default function MentorCoursesPage() {
         <table className="courses-table">
           <thead>
             <tr>
-              <th>Title</th>
-              <th>Mentor</th>
+              <th>Chapters</th>
+              {/* <th>Mentor</th> */}
               <th>Duration</th>
               <th>Lessons</th>
               <th>Level</th>
-              <th>Status</th>
+              {/* <th>Status</th> */}
               <th>Actions</th>
             </tr>
           </thead>
@@ -81,18 +82,21 @@ export default function MentorCoursesPage() {
             {courses.map(course => (
               <tr key={course.id}>
                 <td>{course.title}</td>
-                <td>{course.mentor || 'Unassigned'}</td>
+                {/* <td>{course.mentor || 'Unassigned'}</td> */}
                 <td>{course.duration}</td>
                 <td>{course.lessons}</td>
                 <td>{course.level}</td>
-                <td>
+                {/* <td>
                   <span className={`status-badge ${course.status}`}>
                     {course.status}
                   </span>
-                </td>
+                </td> */}
                 <td>
                   <div className="action-buttons">
-                    <button title="View"><Eye className="icon-sm" /></button>
+                    {/* <button title="View"><Eye className="icon-sm" /></button> */}
+                    <Link  title="View" href="/mentor_dashboard/students">
+                        <Eye className="icon-sm"/>
+                    </Link>
                     <button title="Edit"><Edit className="icon-sm" /></button>
                     {/* <button title="Delete" className="delete"><Trash2 className="icon-sm" /></button> */}
                   </div>

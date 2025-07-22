@@ -4,7 +4,7 @@
 
 
 import { Search, Filter } from 'lucide-react';
-import './details.css';
+import './students.css';
 
 const students = [
     { id: 1, name: 'Afua Hamissi', progress: 78, enrolled: '2024-01-15', lastActive: '2 hours ago' },
@@ -13,7 +13,7 @@ const students = [
     { id: 4, name: 'Moreen Iraba', progress: 67, enrolled: '2024-01-12', lastActive: '5 hours ago' }
   ];
 
-export default function DetailssPage() {
+export default function StudentsPage() {
   return (
     <div className="container">
       <div className="header">
