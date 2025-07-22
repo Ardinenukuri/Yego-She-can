@@ -168,3 +168,68 @@
 .action-btn:last-child {
   margin-right: 0;
 }
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.modal h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 18px;
+  color: #1a1a1a;
+}
+
+.modal textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  resize: none;
+  font-size: 14px;
+  margin-bottom: 16px;
+  outline: none;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.send-btn,
+.cancel-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.send-btn {
+  background-color: #6b21a8;
+  color: white;
+}
+
+.cancel-btn {
+  background-color: #f3f4f6;
+  color: #333;
+}
