@@ -114,5 +114,26 @@ export const CourseController = {
         }
     },
 
+    getCoursesForMentor: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const mentorId = (req as any).user.id; // From the 'protect' middleware
+            const courses = await CourseService.getCoursesForMentor(mentorId);
+            res.status(200).json(courses);
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    getChaptersForCourse: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const courseId = parseInt(req.params.id, 10);
+            const mentorId = (req as any).user.id;
+            const chapters = await CourseService.getChaptersForCourse(courseId, mentorId);
+            res.status(200).json(chapters);
+        } catch (error) {
+            next(error);
+        }
+    },
+
     
 };

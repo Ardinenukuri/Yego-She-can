@@ -336,4 +336,68 @@ const chaptersResult = await pool.query(chaptersQuery, [learnerId, courseData.re
         }
 
     },
+
+    getCoursesForMentor: async (mentorId: number) => {
+        // This improved query uses DISTINCT ON to solve the duplication problem.
+        const query = `
+            SELECT DISTINCT ON (c.id)
+                c.id,
+                c.name as title,
+                r.description,
+                r.timeline as duration,
+                r.level,
+                r.image_url as image,
+                u.first_name || ' ' || u.last_name as mentor,
+                (
+                    SELECT COUNT(*) 
+                    FROM chapters ch 
+                    WHERE ch.resource_id = r.id
+                )::int as lessons,
+                'active' as status
+            FROM
+                course_mentors cm
+            JOIN 
+                courses c ON cm.course_id = c.id
+            JOIN 
+                users u ON cm.mentor_id = u.id
+            LEFT JOIN 
+                resources r ON c.id = r.course_id
+            WHERE
+                cm.mentor_id = $1
+            ORDER BY
+                c.id, r.created_at DESC; -- Sort by course, then newest resource first
+        `;
+        
+        const { rows } = await pool.query(query, [mentorId]);
+        return rows;
+    },
+
+    getChaptersForCourse: async (courseId: number, mentorId: number) => {
+        // This query first authorizes the mentor, then finds the latest resource,
+        // and finally fetches the chapters for only that resource.
+        const query = `
+            WITH LatestResource AS (
+                -- Step 1: Find the ID of the most recently uploaded resource for this course.
+                SELECT id FROM resources
+                WHERE course_id = $1
+                ORDER BY created_at DESC
+                LIMIT 1
+            )
+            -- Step 2: Fetch chapters only if the mentor is assigned to the course AND chapters exist for the latest resource.
+            SELECT ch.id, ch.title
+            FROM chapters ch
+            WHERE 
+                ch.resource_id = (SELECT id FROM LatestResource)
+                AND EXISTS (
+                    -- Authorization check
+                    SELECT 1 FROM course_mentors 
+                    WHERE course_id = $1 AND mentor_id = $2
+                )
+            ORDER BY ch.chapter_number;
+        `;
+        const { rows } = await pool.query(query, [courseId, mentorId]);
+        return rows;
+    },
+
+    
 };
