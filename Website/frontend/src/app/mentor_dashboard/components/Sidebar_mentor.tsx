@@ -36,6 +36,14 @@ const SidebarMentor = () => {
         />
       </div>
      <nav className="sidebar-nav">
+
+     <Link
+    href="/mentor_dashboard/dashboard"
+    className={isActive('/mentor_dashboard/dashboard') ? 'nav-item active' : 'nav-item'}
+  >
+    <FaBook /> Dashboard
+  </Link>
+
   <Link
     href="/mentor_dashboard/AllCourses"
     className={isActive('/mentor_dashboard/AllCourses') ? 'nav-item active' : 'nav-item'}

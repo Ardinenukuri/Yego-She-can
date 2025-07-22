@@ -1,9 +1,9 @@
 'use client'
-
 import { useEffect, useState } from 'react'
 import './allQuiz.css'
-import { Link, Plus } from 'lucide-react'
-import { usePathname } from 'next/navigation';
+import { Plus } from 'lucide-react'
+import { usePathname } from 'next/navigation'
+import Link from 'next/link'
 
 type Quiz = {
   title: string
@@ -16,17 +16,13 @@ type Quiz = {
 
 export default function AllQuizzesPage() {
   const [quizzes, setQuizzes] = useState<Quiz[]>([])
-  const pathname = usePathname();
-  const [showCourseForm, setShowCourseForm] = useState(false);
+  const pathname = usePathname()
+  const [showCourseForm, setShowCourseForm] = useState(false)
   
   // Define isActive as a function
   const isActive = (path: string) => {
-    return pathname === path;
-  };
-
-
-
-
+    return pathname === path
+  }
 
   useEffect(() => {
     const saved = localStorage.getItem('quizzes_overview')
@@ -58,25 +54,11 @@ export default function AllQuizzesPage() {
     <div className="quizzes-page-admin">
       <div className="admin-header">
         <h1>Quiz Overview</h1>
-
         
-{/* 
-        <Link href='/mentor_dashboard/createQuiz'>
-        
-        </Link>  */}
-        {/* <button className="add-quiz-button">
+        <Link href="/mentor_dashboard/createQiuz" className="add-quiz-button">
           <Plus className="icon-sm" />
           Add a Quiz
-         </button> */}
-
-
-<Link href="/mentor_dashboard/createQuiz" className="add-quiz-button">
-  <Plus className="icon-sm" />
-  Add a Quiz
-</Link>
-       
-      
-       
+        </Link>
       </div>
 
       <table className="courses-table">
