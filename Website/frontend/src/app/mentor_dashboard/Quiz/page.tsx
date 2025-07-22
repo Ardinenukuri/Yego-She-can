@@ -17,7 +17,7 @@ type Quiz = {
 
 export default function AllQuizzesPage() {
   const [quizzes, setQuizzes] = useState<Quiz[]>([])
-<<<<<<< HEAD
+
   const pathname = usePathname()
   const [showCourseForm, setShowCourseForm] = useState(false)
   
@@ -25,11 +25,11 @@ export default function AllQuizzesPage() {
   const isActive = (path: string) => {
     return pathname === path
   }
-=======
+
 
   const router = useRouter()
 
->>>>>>> 885e1fdcdf865aced12118bd3e99565e45765caf
+
 
   useEffect(() => {
     const saved = localStorage.getItem('quizzes_overview')
@@ -61,20 +61,18 @@ export default function AllQuizzesPage() {
     <div className="quizzes-page-admin">
       <div className="admin-header">
         <h1>Quiz Overview</h1>
-<<<<<<< HEAD
+
         
         <Link href="/mentor_dashboard/createQiuz" className="add-quiz-button">
           <Plus className="icon-sm" />
           Add a Quiz
         </Link>
-=======
 
 
         <button className="create-quiz-btn" onClick={() => router.push('/mentor_dashboard/Overview')}>
            Create New Quiz
         </button>
 
->>>>>>> 885e1fdcdf865aced12118bd3e99565e45765caf
       </div>
 
       <table className="courses-table">

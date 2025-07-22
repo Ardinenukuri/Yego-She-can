@@ -97,7 +97,8 @@ export default function MentorCoursesPage() {
                     <Link  title="View" href="/mentor_dashboard/students">
                         <Eye className="icon-sm"/>
                     </Link>
-                    <button title="Edit"><Edit className="icon-sm" /></button>
+                    {/* <button title="Edit"><Edit className="icon-sm" /></button> */}
+                    <Link title='Edit' href="/mentor_dashboard/AllCourses/editcourse"><Edit className='icon-sm'/></Link>
                     {/* <button title="Delete" className="delete"><Trash2 className="icon-sm" /></button> */}
                   </div>
                 </td>

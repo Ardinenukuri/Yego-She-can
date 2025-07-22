@@ -43,16 +43,12 @@ const SidebarMentor = () => {
      <FaHome /> Overview
   </Link>
      <nav className="sidebar-nav">
-
-<<<<<<< HEAD
      <Link
     href="/mentor_dashboard/dashboard"
     className={isActive('/mentor_dashboard/dashboard') ? 'nav-item active' : 'nav-item'}
   >
     <FaBook /> Dashboard
   </Link>
-=======
->>>>>>> 885e1fdcdf865aced12118bd3e99565e45765caf
 
   <Link
     href="/mentor_dashboard/AllCourses"
