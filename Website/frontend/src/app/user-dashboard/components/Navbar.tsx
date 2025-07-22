@@ -5,7 +5,7 @@ import Image from 'next/image'
 import logo from '../../../../public/yego-shecan-logo.png'
 import { ReactNode } from 'react' 
 import { usePathname } from 'next/navigation'
-import { FaUserCircle } from 'react-icons/fa'
+import { FaUserCircle, FaSignOutAlt } from 'react-icons/fa'
 import '../../../styles/navbar.css'
 import '../../../app/dashboard/components/dashboardNavbar.css'
 import { useAuth } from '@/contexts/AuthContext'
@@ -61,6 +61,9 @@ export default function Navbar() {
                             </div>
                         )}
                     </div>
+                    <Link href="/" className="nav-item logout" style={{color:"red"}}>
+                    <FaSignOutAlt /> Logout
+                </Link>
                 </div>
             </div>
         </nav>
