@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   FaBook,
+   FaHome ,
   FaClipboardList,
   FaUserClock,
   FaCalendarAlt,
@@ -35,7 +36,15 @@ const SidebarMentor = () => {
           }}
         />
       </div>
+      <Link
+    href="/mentor_dashboard/dashboard"
+    className={isActive('/mentor_dashboard/dashboard') ? 'nav-item active' : 'nav-item'}
+  >
+     <FaHome /> Overview
+  </Link>
      <nav className="sidebar-nav">
+
+
   <Link
     href="/mentor_dashboard/AllCourses"
     className={isActive('/mentor_dashboard/AllCourses') ? 'nav-item active' : 'nav-item'}
@@ -49,8 +58,8 @@ const SidebarMentor = () => {
     <FaClipboardList /> Edit Content
   </Link>
   <Link
-    href="/mentor_dashboard/createQiuz"
-    className={isActive('/mentor_dashboard/createQiuz') ? 'nav-item active' : 'nav-item'}
+    href="/mentor_dashboard/Quiz"
+    className={isActive('/mentor_dashboard/Quiz') ? 'nav-item active' : 'nav-item'}
   >
     <FaClipboardList /> Manage Quizzes
   </Link>
