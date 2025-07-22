@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import './allQuiz.css'
+import { Link, Plus } from 'lucide-react'
+import { usePathname } from 'next/navigation';
 
 type Quiz = {
   title: string
@@ -15,7 +17,9 @@ type Quiz = {
 
 export default function AllQuizzesPage() {
   const [quizzes, setQuizzes] = useState<Quiz[]>([])
+
   const router = useRouter()
+
 
   useEffect(() => {
     const saved = localStorage.getItem('quizzes_overview')
@@ -47,9 +51,12 @@ export default function AllQuizzesPage() {
     <div className="quizzes-page-admin">
       <div className="admin-header">
         <h1>Quiz Overview</h1>
+
+
         <button className="create-quiz-btn" onClick={() => router.push('/mentor_dashboard/Overview')}>
            Create New Quiz
         </button>
+
       </div>
 
       <table className="courses-table">

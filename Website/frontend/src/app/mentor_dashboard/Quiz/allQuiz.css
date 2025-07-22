@@ -1,3 +1,23 @@
+.add-quiz-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #6b21a8;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.add-quiz-button:hover {
+  background-color:#6b21a8;
+}
+.icon-sm {
+  width: 16px;
+  height: 16px;
+}
 .quizzes-page-admin {
   padding: 2rem;
   background-color: #f9fafb;
