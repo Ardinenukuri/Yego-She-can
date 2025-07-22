@@ -1,0 +1,103 @@
+.add-quiz-container {
+  max-width: 900px;
+  margin: auto;
+  padding: 2rem;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f9f9fb;
+}
+
+.page-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  color: #2e2e2e;
+}
+
+/* Card style */
+.quiz-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  transition: 0.3s;
+}
+
+.form-header {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #4b1c88;
+}
+
+.form-group {
+  margin-bottom: 1.2rem;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+select {
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline-color: #4b1c88;
+  background-color: #fff;
+}
+
+.generate-btn {
+  background-color: #4b1c88;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 1rem;
+  display: inline-block;
+  border-radius: 6px;
+  transition: background-color 0.3s;
+}
+
+.generate-btn:hover {
+  background-color: #3a1570;
+}
+
+/* Quiz Table (Preview) */
+.quiz-preview {
+  margin-top: 2rem;
+}
+
+.quiz-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.quiz-table th, .quiz-table td {
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.quiz-table th {
+  background-color: #f4f4f4;
+  color: #333;
+}
+.save-btn {
+  background-color:  #3a1570;
+  color: white;
+  padding: 10px 15px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  background-color:  #3a1570;
+}

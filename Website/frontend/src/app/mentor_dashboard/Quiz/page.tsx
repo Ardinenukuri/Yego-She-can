@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import './allQuiz.css'
 import { Link, Plus } from 'lucide-react'
 import { usePathname } from 'next/navigation';
@@ -16,16 +17,8 @@ type Quiz = {
 
 export default function AllQuizzesPage() {
   const [quizzes, setQuizzes] = useState<Quiz[]>([])
-  const pathname = usePathname();
-  const [showCourseForm, setShowCourseForm] = useState(false);
-  
-  // Define isActive as a function
-  const isActive = (path: string) => {
-    return pathname === path;
-  };
 
-
-
+  const router = useRouter()
 
 
   useEffect(() => {
@@ -59,24 +52,11 @@ export default function AllQuizzesPage() {
       <div className="admin-header">
         <h1>Quiz Overview</h1>
 
-        
-{/* 
-        <Link href='/mentor_dashboard/createQuiz'>
-        
-        </Link>  */}
-        {/* <button className="add-quiz-button">
-          <Plus className="icon-sm" />
-          Add a Quiz
-         </button> */}
 
+        <button className="create-quiz-btn" onClick={() => router.push('/mentor_dashboard/Overview')}>
+           Create New Quiz
+        </button>
 
-<Link href="/mentor_dashboard/createQuiz" className="add-quiz-button">
-  <Plus className="icon-sm" />
-  Add a Quiz
-</Link>
-       
-      
-       
       </div>
 
       <table className="courses-table">
