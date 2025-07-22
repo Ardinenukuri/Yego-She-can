@@ -425,3 +425,16 @@ select option {
     font-size: 0.7rem;
   }
 }
+
+/* Add this to your src/styles/dashboard.css file */
+
+.fullscreen-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: #f9fafb;
+  font-family: 'Segoe UI', sans-serif;
+  color: #374151;
+}

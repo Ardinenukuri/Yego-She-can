@@ -1,47 +1,97 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import QuizPreview from '../QuizPreview/page'
+import api from '@/lib/api'
+import toast from 'react-hot-toast'
 
-const mockCourses = [
-  { id: 'course1', title: 'Agribusiness Basics', chapters: ['Intro', 'Market Systems', 'Value Chain'] },
-  { id: 'course2', title: 'Sustainable Farming', chapters: ['Soil', 'Irrigation', 'Pest Control'] },
-]
+// Type Definitions
+interface Course { id: number; title: string; }
+interface Chapter { id: number; title: string; }
+interface QuizQuestion { question: string; options: string[]; correct_answer: string; }
 
 export default function AddQuizForm() {
-  const [selectedCourse, setSelectedCourse] = useState('')
-  const [selectedChapter, setSelectedChapter] = useState('')
-  const [quizScope, setQuizScope] = useState<'chapter' | 'overall' | ''>('')
-  const [questions, setQuestions] = useState<string[]>([])
-  const [savedQuizzes, setSavedQuizzes] = useState<any[]>([])
+  // State for UI control
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [chapters, setChapters] = useState<Chapter[]>([]);
+  const [isLoadingCourses, setIsLoadingCourses] = useState(true);
+  const [isLoadingChapters, setIsLoadingChapters] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
 
-  const handleGenerateQuiz = () => {
-    const generated = quizScope === 'overall'
-      ? Array.from({ length: 10 }, (_, i) => `Overall question ${i + 1} for "${selectedCourse}"`)
-      : Array.from({ length: 5 }, (_, i) => `Question ${i + 1} from chapter "${selectedChapter}"`)
-    setQuestions(generated)
-  }
+  // State for form selections
+  const [selectedCourseId, setSelectedCourseId] = useState<string>('');
+  const [selectedChapterId, setSelectedChapterId] = useState<string>('');
+  const [quizScope, setQuizScope] = useState<'chapter' | 'final' | ''>('');
+  
+  // State for the generated quiz
+  const [questions, setQuestions] = useState<QuizQuestion[]>([]);
 
-  const handleSaveQuiz = () => {
-    if (!selectedCourse || !quizScope || questions.length === 0) {
-      alert('Please generate questions first.')
-      return
+  // Fetch the mentor's assigned courses on component mount
+  useEffect(() => {
+    const fetchMentorCourses = async () => {
+      try {
+        const response = await api.get('/api/mentor/courses');
+        setCourses(response.data);
+      } catch (error) {
+        toast.error("Could not load your assigned courses.");
+      } finally {
+        setIsLoadingCourses(false);
+      }
+    };
+    fetchMentorCourses();
+  }, []);
+
+  // Fetch chapters whenever a new course is selected
+  useEffect(() => {
+    if (selectedCourseId && quizScope === 'chapter') {
+      const fetchChapters = async () => {
+        setIsLoadingChapters(true);
+        setChapters([]);
+        try {
+          const response = await api.get(`/api/mentor/courses/${selectedCourseId}/chapters`);
+          setChapters(response.data);
+        } catch (error) {
+          toast.error("Could not load chapters for this course.");
+        } finally {
+          setIsLoadingChapters(false);
+        }
+      };
+      fetchChapters();
+    } else {
+      setChapters([]); // Clear chapters if scope is not chapter-based
     }
+  }, [selectedCourseId, quizScope]);
 
-    const newQuiz = {
-      course: selectedCourse,
-      scope: quizScope,
-      chapter: quizScope === 'chapter' ? selectedChapter : null,
-      questions,
+  const handleGenerateQuiz = async () => {
+    let endpoint = '';
+    let payload = {};
+
+    if (quizScope === 'final') {
+      endpoint = '/api/quizzes/final';
+      payload = { courseId: parseInt(selectedCourseId) };
+    } else if (quizScope === 'chapter' && selectedChapterId) {
+      endpoint = '/api/quizzes/chapter';
+      payload = { courseId: parseInt(selectedCourseId), chapterId: parseInt(selectedChapterId) };
+    } else {
+      toast.error("Please complete your selection.");
+      return;
     }
+    
+    setIsGenerating(true);
+    const toastId = toast.loading("Generating AI quiz... this may take a moment.");
+    try {
+      const response = await api.post(endpoint, payload);
+      setQuestions(response.data.quiz.questions);
+      toast.success("Quiz questions generated successfully!", { id: toastId });
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || "Failed to generate quiz.";
+      toast.error(errorMessage, { id: toastId });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
-    setSavedQuizzes(prev => [...prev, newQuiz])
-    alert('Quiz saved successfully!')
-    // You can later replace this with backend API call
-    console.log('Saved quiz:', newQuiz)
-  }
-
-  const currentChapters = mockCourses.find(c => c.title === selectedCourse)?.chapters || []
+  const selectedCourse = courses.find(c => c.id === parseInt(selectedCourseId));
 
   return (
     <div className="quiz-card">
@@ -49,30 +99,31 @@ export default function AddQuizForm() {
 
       <div className="form-group">
         <label>Choose a Course:</label>
-        <select value={selectedCourse} onChange={e => {
-          setSelectedCourse(e.target.value)
-          setSelectedChapter('')
-          setQuizScope('')
-          setQuestions([])
-        }}>
-          <option value="">-- Select Course --</option>
-          {mockCourses.map(course => (
-            <option key={course.id} value={course.title}>{course.title}</option>
+        <select value={selectedCourseId} onChange={e => {
+          setSelectedCourseId(e.target.value);
+          // Reset downstream selections
+          setSelectedChapterId('');
+          setQuizScope('');
+          setQuestions([]);
+        }} disabled={isLoadingCourses}>
+          <option value="" disabled>{isLoadingCourses ? "Loading..." : "-- Select Course --"}</option>
+          {courses.map(course => (
+            <option key={course.id} value={course.id}>{course.title}</option>
           ))}
         </select>
       </div>
 
-      {selectedCourse && (
+      {selectedCourseId && (
         <div className="form-group">
           <label>Quiz Scope:</label>
           <select value={quizScope} onChange={e => {
-            setQuizScope(e.target.value as 'chapter' | 'overall')
-            setSelectedChapter('')
-            setQuestions([])
+            setQuizScope(e.target.value as 'chapter' | 'final');
+            setSelectedChapterId('');
+            setQuestions([]);
           }}>
-            <option value="">-- Select Scope --</option>
-            <option value="chapter">Chapter-based</option>
-            <option value="overall">Overall Course</option>
+            <option value="" disabled>-- Select Scope --</option>
+            <option value="chapter">Chapter-based Quiz</option>
+            <option value="final">Final Course Quiz</option>
           </select>
         </div>
       )}
@@ -80,30 +131,28 @@ export default function AddQuizForm() {
       {quizScope === 'chapter' && (
         <div className="form-group">
           <label>Select Chapter:</label>
-          <select value={selectedChapter} onChange={e => {
-            setSelectedChapter(e.target.value)
-            setQuestions([])
-          }}>
-            <option value="">-- Select Chapter --</option>
-            {currentChapters.map((ch, i) => (
-              <option key={i} value={ch}>{ch}</option>
+          <select value={selectedChapterId} onChange={e => {
+            setSelectedChapterId(e.target.value);
+            setQuestions([]);
+          }} disabled={isLoadingChapters}>
+            <option value="" disabled>{isLoadingChapters ? "Loading..." : "-- Select Chapter --"}</option>
+            {chapters.map(ch => (
+              <option key={ch.id} value={ch.id}>{ch.title}</option>
             ))}
           </select>
         </div>
       )}
 
-      {quizScope && (quizScope === 'overall' || selectedChapter) && (
-        <button className="generate-btn" onClick={handleGenerateQuiz}>
-          Generate Questions
+      {quizScope && (quizScope === 'final' || selectedChapterId) && (
+        <button className="generate-btn" onClick={handleGenerateQuiz} disabled={isGenerating}>
+          {isGenerating ? 'Generating...' : 'Generate AI Questions'}
         </button>
       )}
 
       {questions.length > 0 && (
         <>
           <QuizPreview questions={questions} />
-          <button className="save-btn" onClick={handleSaveQuiz}>
-            Save Quiz
-          </button>
+          {/* Save functionality is already part of generation, so no separate save button is needed */}
         </>
       )}
     </div>

@@ -1,80 +1,83 @@
 'use client'
-import React, { useState } from 'react'
-import './mentorCourses.css'
-import { Plus, Eye, Edit, Trash2 } from 'lucide-react'
-import Link from 'next/link'
 
-const courses = [
-  { 
-    id: 1, 
-    title: 'Soap Making Masterclass', 
-    description: 'Learn how to start and manage your own business.',
-    duration: '6 weeks',
-    mentor: 'Jane',
-    lessons: '5 Lessons',
-    level: 'Advanced',
-    students: 342,
-    rating: 4.9,
-    revenue: 15420,
-    status: 'active',
-    image: 'https://via.placeholder.com/400x250/3B82F6/ffffff?text=React+Development',
-    learningOutcomes: ['Advanced React patterns', 'State management', 'Performance optimization']
-  },
-  { 
-    id: 2,
-    title: 'Oil Selection and Properties',
-    description: 'Craft your own natural soap products from scratch.',
-    duration: '4 weeks',
-    mentor: 'Jane',
-    lessons: 12,
-    level: 'Beginner',
-    students: 578,
-    rating: 4.7,
-    revenue: 20340,
-    status: 'active',
-    image: 'https://via.placeholder.com/400x250/F59E0B/ffffff?text=JavaScript+Fundamentals',
-    learningOutcomes: ['JavaScript syntax', 'DOM manipulation', 'Async programming']
-  },
-  {
-    id: 3,
-    title: 'Basic Cold Process Technique',
-    description: 'Explore core marketing strategies and customer insights.',
-    duration: '8 weeks',
-    mentor: 'Jane',
-    lessons: 24,
-    level: 'Intermediate',
-    students: 234,
-    rating: 4.8,
-    revenue: 9520,
-    status: 'draft',
-    image: 'https://via.placeholder.com/400x250/10B981/ffffff?text=Node.js+Backend',
-    learningOutcomes: ['Server architecture', 'API development', 'Database integration']
-  }
-]
+
+import React, { useState, useEffect } from 'react'
+import './mentorCourses.css' // Ensure you have this CSS file
+import { Plus, Eye, Edit, Trash2 } from 'lucide-react'
+import api from '@/lib/api'
+import toast from 'react-hot-toast'
+
+
+// Define a type for the data we expect from the backend
+interface Course {
+  id: number;
+  title: string;
+  description: string;
+  duration: string;
+  mentor: string;
+  lessons: number;
+  level: string;
+  status: 'active' | 'draft';
+  image: string | null;
+}
+
 
 export default function MentorCoursesPage() {
-  const [showCourseForm, setShowCourseForm] = useState(false)
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+
+
+  // Fetch data from the new backend endpoint when the component mounts
+  useEffect(() => {
+    const fetchMentorCourses = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get('/api/mentor/courses');
+        setCourses(response.data);
+      } catch (error) {
+        console.error("Failed to fetch mentor courses:", error);
+        toast.error("Could not load your assigned courses.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+
+    fetchMentorCourses();
+  }, []); // Empty array ensures this runs only once on mount
+
+
+  if (loading) {
+    return (
+        <div className="courses-container">
+            <div className="courses-header">
+                <h2>My Courses</h2>
+            </div>
+            <div className="loading-state">Loading your courses...</div>
+        </div>
+    );
+  }
+
 
   return (
     <div className="courses-container">
       <div className="courses-header">
         <h2>My Courses</h2>
-        {/* <button onClick={() => setShowCourseForm(true)} className="add-course-button">
-          <Plus className="icon-sm" />
-          Add New Course
-        </button> */}
+        {/* You can re-enable this button when you build the "Add Course" page for mentors */}
+        {/* <button className="add-course-button"><Plus className="icon-sm" /> Add New Course</button> */}
       </div>
+
 
       <div className="courses-table-wrapper">
         <table className="courses-table">
           <thead>
             <tr>
-              <th>Chapters</th>
-              {/* <th>Mentor</th> */}
+              <th>Title</th>
+              <th>Mentor</th>
               <th>Duration</th>
               <th>Lessons</th>
               <th>Level</th>
-              {/* <th>Status</th> */}
+              <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -82,23 +85,20 @@ export default function MentorCoursesPage() {
             {courses.map(course => (
               <tr key={course.id}>
                 <td>{course.title}</td>
-                {/* <td>{course.mentor || 'Unassigned'}</td> */}
-                <td>{course.duration}</td>
-                <td>{course.lessons}</td>
-                <td>{course.level}</td>
-                {/* <td>
+                <td>{course.mentor || 'Unassigned'}</td>
+                <td>{course.duration || 'N/A'}</td>
+                <td>{course.lessons || 0}</td>
+                <td>{course.level || 'N/A'}</td>
+                <td>
                   <span className={`status-badge ${course.status}`}>
                     {course.status}
                   </span>
-                </td> */}
+                </td>
                 <td>
                   <div className="action-buttons">
-                    {/* <button title="View"><Eye className="icon-sm" /></button> */}
-                    <Link  title="View" href="/mentor_dashboard/students">
-                        <Eye className="icon-sm"/>
-                    </Link>
+                    <button title="View"><Eye className="icon-sm" /></button>
                     <button title="Edit"><Edit className="icon-sm" /></button>
-                    {/* <button title="Delete" className="delete"><Trash2 className="icon-sm" /></button> */}
+                    {/* The delete button can be added here when the logic is ready */}
                   </div>
                 </td>
               </tr>
@@ -106,6 +106,14 @@ export default function MentorCoursesPage() {
           </tbody>
         </table>
       </div>
+
+
+      {courses.length === 0 && !loading && (
+        <div className="empty-state">
+            <p>You have not been assigned to any courses yet.</p>
+        </div>
+      )}
     </div>
   )
 }
+
