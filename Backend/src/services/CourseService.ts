@@ -399,5 +399,65 @@ const chaptersResult = await pool.query(chaptersQuery, [learnerId, courseData.re
         return rows;
     },
 
+    getCourseDetailsForAdmin: async (courseId: number) => {
+        // Query 1: Get basic course information
+        const courseQuery = 'SELECT id, name FROM courses WHERE id = $1';
+        const courseResult = await pool.query(courseQuery, [courseId]);
+        if (courseResult.rowCount === 0) throw new Error('Course not found.');
+        const course = courseResult.rows[0];
+
+        // Query 2: Get all enrolled learners with their detailed progress for this course
+        const learnersQuery = `
+            SELECT
+                u.id,
+                u.first_name || ' ' || u.last_name as name,
+                u.profile_picture_url as image,
+                to_char(e.enrolled_at, 'YYYY-MM-DD') as enrolled,
+                -- Total lessons for the course (from the most recent resource)
+                (
+                    SELECT COUNT(*) FROM chapters ch
+                    JOIN resources r ON ch.resource_id = r.id
+                    WHERE r.course_id = $1 ORDER BY r.created_at DESC LIMIT 1
+                )::int as "totalLessons",
+                -- Completed lessons (manual + passed quizzes)
+                (
+                    SELECT COUNT(*) FROM (
+                        SELECT ucp.chapter_id FROM user_chapter_progress ucp JOIN chapters ch ON ucp.chapter_id = ch.id JOIN resources r ON ch.resource_id = r.id WHERE ucp.learner_id = u.id AND r.course_id = $1
+                        UNION
+                        SELECT q.chapter_id FROM quiz_attempts qa JOIN quizzes q ON qa.quiz_id = q.id JOIN resources r ON q.resource_id = r.id WHERE qa.learner_id = u.id AND r.course_id = $1 AND qa.passed = TRUE AND q.chapter_id IS NOT NULL
+                    ) AS completed_lessons
+                )::int as "lessonsCompleted",
+                -- Check if the final quiz for this course has been passed
+                EXISTS (
+                    SELECT 1 FROM quiz_attempts qa
+                    JOIN quizzes q ON qa.quiz_id = q.id
+                    JOIN resources r ON q.resource_id = r.id
+                    WHERE qa.learner_id = u.id AND r.course_id = $1 AND q.is_final = TRUE AND qa.passed = TRUE
+                ) as "finalQuizPassed"
+            FROM
+                users u
+            JOIN
+                enrollments e ON u.id = e.learner_id
+            WHERE
+                e.course_id = $1 AND u.role = 'learner'
+            ORDER BY
+                name;
+        `;
+        const learnersResult = await pool.query(learnersQuery, [courseId]);
+        
+        // Calculate progress percentage and certificate eligibility
+        const learners = learnersResult.rows.map(learner => {
+            const progress = learner.totalLessons > 0 ? Math.round((learner.lessonsCompleted / learner.totalLessons) * 100) : 0;
+            const certificateEligible = progress === 100 && learner.finalQuizPassed;
+            return {
+                ...learner,
+                progress,
+                certificateEligible
+            };
+        });
+
+        return { ...course, learners };
+    },
+
     
 };

@@ -135,5 +135,18 @@ export const CourseController = {
         }
     },
 
+    getCourseDetailsForAdmin: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const courseId = parseInt(req.params.id, 10);
+            if (isNaN(courseId)) {
+                return res.status(400).json({ message: 'Invalid Course ID provided.' });
+            }
+            const courseDetails = await CourseService.getCourseDetailsForAdmin(courseId);
+            res.status(200).json(courseDetails);
+        } catch (error) {
+            next(error);
+        }
+    },
+
     
 };

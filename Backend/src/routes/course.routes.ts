@@ -18,4 +18,5 @@ router.get('/admin-list', protect, authorize('program manager'), CourseControlle
 router.get('/my-courses', protect, authorize('learner'), CourseController.getEnrolledCourses);
 router.get('/learn/:id', protect, authorize('learner'), CourseController.getCourseLearningData);
 router.post('/chapters/toggle-completion', protect, authorize('learner'), validateRequest(toggleCompletionSchema), CourseController.toggleChapterCompletion);
+router.get('/:id', protect, authorize('program manager'), CourseController.getCourseDetailsForAdmin);
 export default router;
