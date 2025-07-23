@@ -4,15 +4,18 @@ import { CourseController } from '../controllers/course.controller';
 import { protect } from '../middlewares/auth.middleware';
 import { authorize } from '../middlewares/authorize.middleware';
 import { QuizController } from '../controllers/quiz.controller';
+import { MentorController } from '../controllers/mentor.controller';
+import { validateRequest } from '../middlewares/validateRequest';
+import { messageLearnerSchema } from '../schemas/auth.schema';
 
 const router = Router();
 
-// All routes in this file are for logged-in mentors
 router.use(protect, authorize('mentor'));
 
-// GET /api/mentor/courses - Get all courses assigned to the current mentor
 router.get('/courses', CourseController.getCoursesForMentor);
 router.get('/quizzes/overview', QuizController.getQuizOverview);
 router.get('/courses/:id/chapters', CourseController.getChaptersForCourse);
-
+router.get('/dashboard', MentorController.getDashboardData);
+router.post('/message-learner', validateRequest(messageLearnerSchema), MentorController.messageLearner);
+router.get('/courses/:courseId/details', MentorController.getCourseDetails);
 export default router;
