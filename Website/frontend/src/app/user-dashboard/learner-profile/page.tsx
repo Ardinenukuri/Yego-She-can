@@ -6,9 +6,9 @@ import api from '@/lib/api';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
 import Image from 'next/image';
-import { FiAward, FiEye, FiDownload } from 'react-icons/fi';
+import { FiAward, FiDownload } from 'react-icons/fi';
 import './learner.css';
-import Modal from 'react-modal';
+
 
 interface SettingsFormData {
   username: string;
@@ -20,38 +20,17 @@ interface SettingsFormData {
   profile_picture_url?: string;
 }
 
+
 interface Certificate {
   id: number;
   courseName: string;
-  finalScore: number;
   issuedDate: string;
-  certificateUrl: string;
 }
-
-const dummyCertificates: Certificate[] = [
-  {
-    id: 1,
-    courseName: 'Entrepreneurship Basics',
-    finalScore: 92,
-    issuedDate: '2023-10-15',
-    certificateUrl: '/user-dashboard/certificates/sample-cert-1.pdf',
-  },
-  {
-    id: 2,
-    courseName: 'Soap Making Masterclass',
-    finalScore: 88,
-    issuedDate: '2023-11-01',
-    certificateUrl: '/user-dashboard/certificates/sample-cert-2.pdf',
-  },
-];
 
 export default function SettingsPage() {
   const { user } = useAuth();
-  const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(null);
-
-  const openCertificateModal = (cert: Certificate) => setSelectedCertificate(cert);
-  const closeCertificateModal = () => setSelectedCertificate(null);
-
+  
+  // --- State management for the form ---
   const [formData, setFormData] = useState<SettingsFormData>({
     username: '',
     firstName: '',
@@ -65,12 +44,18 @@ export default function SettingsPage() {
   const [profilePictureFile, setProfilePictureFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  
+  // --- State for certificates ---
   const [certificates, setCertificates] = useState<Certificate[]>([]);
+  const [certsLoading, setCertsLoading] = useState(true);
+  const [isDownloading, setIsDownloading] = useState<number | null>(null); // Track which cert ID is downloading
 
+  // --- Data fetching effect ---
   useEffect(() => {
     if (user) {
-      api
-        .get('/api/auth/profile')
+      // 1. Fetch Profile Data
+      setLoading(true);
+      api.get('/api/auth/profile')
         .then((response) => {
           const { username, first_name, last_name, email, location, bio, profile_picture_url } = response.data;
           setFormData({
@@ -89,10 +74,23 @@ export default function SettingsPage() {
         })
         .finally(() => setLoading(false));
 
-      setCertificates(dummyCertificates);
+      // 2. Fetch Certificates Data
+      setCertsLoading(true);
+      api.get('/api/certificates/my-certificates')
+        .then(response => {
+            setCertificates(response.data);
+        })
+        .catch(err => {
+            console.error("Failed to fetch certificates", err);
+            toast.error("Could not load your certificates.");
+        })
+        .finally(() => {
+            setCertsLoading(false);
+        });
     }
   }, [user]);
 
+  // --- Event Handlers for the form ---
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -145,6 +143,36 @@ export default function SettingsPage() {
     }
   };
 
+  // --- On-Demand PDF Download Handler ---
+  const handleDownloadCertificate = async (cert: Certificate) => {
+    setIsDownloading(cert.id);
+    try {
+        const response = await api.post('/api/certificates/download', {
+            learnerName: `${formData.firstName} ${formData.lastName}`,
+            courseName: cert.courseName,
+            issuedDate: cert.issuedDate,
+        }, {
+            responseType: 'blob',
+        });
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `Certificate-${cert.courseName.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+
+        link.parentNode?.removeChild(link);
+        window.URL.revokeObjectURL(url);
+
+    } catch (error) {
+        console.error("Failed to download certificate", error);
+        toast.error("Could not download certificate. Please try again.");
+    } finally {
+        setIsDownloading(null);
+    }
+  };
+
   if (loading) {
     return (
       <div className="settings-page-container">
@@ -168,12 +196,12 @@ export default function SettingsPage() {
             />
           ) : (
             <div className="profile-avatar-placeholder">
-              <FiAward />
+              <span>{formData.firstName.charAt(0)}{formData.lastName.charAt(0)}</span>
             </div>
           )}
           <div>
             <h1 className="settings-title">My Profile & Settings</h1>
-            <p className="settings-subtitle">Update your personal information, profile, and password.</p>
+            <p className="settings-subtitle">Update your personal information and profile.</p>
           </div>
         </div>
 
@@ -201,42 +229,20 @@ export default function SettingsPage() {
           </div>
           <div className="input-group">
             <label htmlFor="location">Location</label>
-            <input
-              id="location"
-              name="location"
-              placeholder="e.g., Kigali, Rwanda"
-              value={formData.location}
-              onChange={handleChange}
-            />
+            <input id="location" name="location" placeholder="e.g., Kigali, Rwanda" value={formData.location} onChange={handleChange} />
           </div>
           <div className="input-group">
             <label htmlFor="bio">Bio / Expertise</label>
-            <textarea
-              id="bio"
-              name="bio"
-              value={formData.bio}
-              onChange={handleChange}
-              rows={4}
-              placeholder="Tell us a little about yourself..."
-            ></textarea>
+            <textarea id="bio" name="bio" value={formData.bio} onChange={handleChange} rows={4} placeholder="Tell us a little about yourself..."></textarea>
           </div>
           <div className="input-group">
             <label htmlFor="profilePicture">Update Profile Picture</label>
-            <input
-              id="profilePicture"
-              type="file"
-              name="profilePicture"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="file-input"
-            />
+            <input id="profilePicture" type="file" name="profilePicture" accept="image/*" onChange={handleFileChange} className="file-input" />
           </div>
 
           <div className="form-actions">
             <Link href="/user-dashboard/change-password">
-              <button type="button" className="secondary-btn">
-                Change Password
-              </button>
+              <button type="button" className="secondary-btn">Change Password</button>
             </Link>
             <button type="submit" className="primary-btn" disabled={isSaving}>
               {isSaving ? 'Saving...' : 'Save Changes'}
@@ -256,26 +262,31 @@ export default function SettingsPage() {
         </div>
 
         <div className="certificates-list">
-          {certificates.length > 0 ? (
+          {certsLoading ? (
+            <p className="loading-message">Loading certificates...</p>
+          ) : certificates.length > 0 ? (
             certificates.map((cert) => (
               <div key={cert.id} className="certificate-item">
                 <div className="cert-info">
                   <h3 className="cert-course-name">{cert.courseName}</h3>
                   <p className="cert-details">
-                    Final Score: <strong>{cert.finalScore}%</strong> | Issued on:{' '}
-                    {new Date(cert.issuedDate).toLocaleDateString()}
+                    Issued on: {new Date(cert.issuedDate).toLocaleDateString()}
                   </p>
                 </div>
                 <div className="cert-actions">
-                  <Link href={`/user-dashboard/components/${formData.username}`}>
+                  <Link href={`/user-dashboard/components/${encodeURIComponent(formData.firstName + ' ' + formData.lastName)}?courseName=${encodeURIComponent(cert.courseName)}&issuedDate=${cert.issuedDate}`}>
                     <button className="cert-btn view-btn">
                       View Certificate
                     </button>
                   </Link>
 
-                  <a href={cert.certificateUrl} download className="cert-btn download-btn">
-                    <FiDownload /> Download
-                  </a>
+                  <button 
+                    onClick={() => handleDownloadCertificate(cert)} 
+                    className="cert-btn download-btn"
+                    disabled={isDownloading === cert.id}
+                  >
+                    <FiDownload /> {isDownloading === cert.id ? 'Preparing...' : 'Download'}
+                  </button>
                 </div>
               </div>
             ))
@@ -287,5 +298,5 @@ export default function SettingsPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

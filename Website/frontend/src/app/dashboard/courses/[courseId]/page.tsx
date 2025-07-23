@@ -6,9 +6,9 @@ import { Search, Award } from 'lucide-react';
 import '../details.css';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
-import { AxiosError } from 'axios'; // Import AxiosError for better type checking
+import { AxiosError } from 'axios';
 
-// --- Type Definitions for the data from our backend ---
+// --- UPDATED: Simplified Type Definitions ---
 interface Learner {
   id: number;
   name: string;
@@ -17,8 +17,9 @@ interface Learner {
   enrolled: string;
   lessonsCompleted: number;
   totalLessons: number;
-  certificateEligible: boolean;
+  certificateEligible: boolean; // Based on 100% chapter progress
 }
+
 interface CourseDetails {
   id: number;
   name: string;
@@ -29,6 +30,7 @@ export default function CourseDetailsPage() {
   const [course, setCourse] = useState<CourseDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [issuedLearnerIds, setIssuedLearnerIds] = useState<number[]>([]);
 
   const params = useParams();
   const courseId = params.courseId as string;
@@ -38,56 +40,49 @@ export default function CourseDetailsPage() {
         setLoading(false);
         return;
     }
-
     const fetchCourseDetails = async () => {
-      // --- NEW: Log the ID being used for the API call for easy debugging ---
-      console.log(`Attempting to fetch details for courseId: ${courseId}`);
-
       try {
         setLoading(true);
         const response = await api.get(`/api/courses/${courseId}`);
         setCourse(response.data);
       } catch (error) {
-        // --- UPDATED: Enhanced error logging to pinpoint the problem ---
         console.error("Failed to fetch course details:", error);
-        
-        // Check if the error is an Axios error with a response from the server
-        if (error instanceof AxiosError && error.response) {
-          console.error("API Error Response Status:", error.response.status);
-          console.error("API Error Response Data:", error.response.data);
-          
-          if (error.response.status === 403) {
-            toast.error("You do not have permission to view these details.");
-          } else if (error.response.status === 404) {
-            toast.error("This course could not be found.");
-          } else {
-            toast.error("An unexpected error occurred while loading the course.");
-          }
+        if (error instanceof AxiosError && error.response?.status === 404) {
+            toast.error("This course was not found.");
         } else {
-          // Generic error for network issues, etc.
-          toast.error("Could not load course details.");
+            toast.error("Could not load course details.");
         }
-        
         setCourse(null);
       } finally {
         setLoading(false);
       }
     };
-
     fetchCourseDetails();
   }, [courseId]);
 
-  const handleIssueCertificate = (learnerId: number) => {
-    toast.success(`Issuing certificate for learner ID: ${learnerId}...`);
-    // Future API call:
-    // await api.post(`/api/certificates/issue`, { learnerId, courseId });
+  const handleIssueCertificate = async (learnerId: number, courseId: number) => {
+    const toastId = toast.loading(`Issuing certificate for learner ${learnerId}...`);
+    try {
+      await api.post('/api/certificates/issue', { 
+          learnerId, 
+          courseId: Number(courseId)
+      });
+      
+      toast.success(`Certificate issued successfully!`, { id: toastId });
+      setIssuedLearnerIds(prevIds => [...prevIds, learnerId]);
+
+    } catch (error: any) {
+       console.error("Failed to issue certificate:", error);
+       const message = error.response?.data?.message || "Failed to issue certificate.";
+       toast.error(message, { id: toastId });
+    }
   };
 
   if (loading) {
     return (
-      <div className="container">
-        <div className="header">
-            <h2 className="title">Enrolled Learners</h2>
+      <div className="details-container">
+        <div className="details-header">
+            <h2 className="details-title">Enrolled Learners</h2>
         </div>
         <div className="loading-state">Loading course details...</div>
       </div>
@@ -96,11 +91,11 @@ export default function CourseDetailsPage() {
   
   if (!course) {
     return (
-      <div className="container">
-        <div className="header">
-            <h2 className="title">Error</h2>
+      <div className="details-container">
+        <div className="details-header">
+            <h2 className="details-title">Error</h2>
         </div>
-        <div className="empty-state">Course data could not be found. It may have been deleted or you may not have permission to view it.</div>
+        <div className="empty-state">Course data could not be found.</div>
       </div>
     );
   }
@@ -110,9 +105,9 @@ export default function CourseDetailsPage() {
   );
 
   return (
-    <div className="container">
-      <div className="header">
-        <h2 className="title">Enrolled Learners for: <strong>{course.name}</strong></h2>
+    <div className="details-container">
+      <div className="details-header">
+        <h2 className="details-title">Enrolled Learners for: <strong>{course.name}</strong></h2>
         <div className="search-filter">
           <div className="search-input-wrapper">
             <Search className="search-icon" />
@@ -135,7 +130,7 @@ export default function CourseDetailsPage() {
                 <th>Student</th>
                 <th>Progress</th>
                 <th>Lessons Completed</th>
-                <th>Enrolled</th>
+                <th>Enrolled On</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -159,17 +154,27 @@ export default function CourseDetailsPage() {
                       <div className="progress-bar-bg">
                         <div className="progress-bar-fill" style={{ width: `${learner.progress}%` }}></div>
                       </div>
-                      <span>{learner.progress}%</span>
+                      <span className="progress-text">{learner.progress}%</span>
                     </div>
                   </td>
                   <td>{learner.lessonsCompleted} / {learner.totalLessons}</td>
-                  <td>{learner.enrolled}</td>
+                  <td>{new Date(learner.enrolled).toLocaleDateString()}</td>
                   <td>
+
                     {learner.certificateEligible ? (
-                      <button className="action-btn issue-cert" onClick={() => handleIssueCertificate(learner.id)}>
-                        <Award className="icon-sm" /> Issue Certificate
-                      </button>
+
+                      issuedLearnerIds.includes(learner.id) ? (
+                        <button className="action-btn" disabled>Issued ✓</button>
+                      ) : (
+                        <button 
+                          className="action-btn issue-cert" 
+                          onClick={() => handleIssueCertificate(learner.id, course.id)}
+                        >
+                          <Award className="icon-sm" /> Issue Certificate
+                        </button>
+                      )
                     ) : (
+
                       <button className="action-btn" disabled>
                         In Progress
                       </button>
