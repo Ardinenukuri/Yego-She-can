@@ -443,12 +443,13 @@ export const AuthService = {
         return { success: true };
     },
 
-    getEnrolledLearnersForCourse: async (mentorId: number, courseId: number) => {
+     getEnrolledLearnersForCourse: async (mentorId: number, courseId: number) => {
+
         const assignmentCheck = await pool.query(
-            'SELECT * FROM course_mentors WHERE mentor_id = $1 AND course_id = $2',
+            'SELECT 1 FROM course_mentors WHERE mentor_id = $1 AND course_id = $2',
             [mentorId, courseId]
         );
-        if (assignmentCheck.rowCount === 0) {
+        if ((assignmentCheck.rowCount ?? 0) === 0) {
             throw new Error('Forbidden: You are not a mentor for this course.');
         }
 
@@ -458,12 +459,51 @@ export const AuthService = {
                 u.first_name,
                 u.last_name,
                 u.email,
-                e.enrolled_at
-            FROM users u
-            JOIN enrollments e ON u.id = e.learner_id
-            WHERE e.course_id = $1 AND u.role = 'learner'
-            ORDER BY e.enrolled_at DESC
+                e.enrolled_at,
+                -- Subquery to calculate progress for each user 'u'
+                (
+                    SELECT ROUND(
+                        (
+                            -- Count unique completed chapters (manual + quiz)
+                            COUNT(DISTINCT completed.chapter_id) * 100.0
+                        ) / 
+                        -- Divide by total chapters, preventing division by zero
+                        NULLIF(
+                            (
+                                SELECT COUNT(*) 
+                                FROM chapters ch 
+                                WHERE ch.resource_id = (SELECT id FROM resources WHERE course_id = e.course_id ORDER BY created_at DESC LIMIT 1)
+                            ), 0
+                        )
+                    )
+                    FROM 
+                        (
+                            -- Get manually completed chapters
+                            SELECT ucp.chapter_id 
+                            FROM user_chapter_progress ucp 
+                            JOIN chapters ch ON ucp.chapter_id = ch.id 
+                            WHERE ucp.learner_id = u.id AND ch.resource_id = (SELECT id FROM resources WHERE course_id = e.course_id ORDER BY created_at DESC LIMIT 1)
+                            
+                            UNION -- Combines and removes duplicates
+                            
+                            -- Get quiz-passed chapters
+                            SELECT q.chapter_id 
+                            FROM quiz_attempts qa 
+                            JOIN quizzes q ON qa.quiz_id = q.id 
+                            WHERE qa.learner_id = u.id AND q.resource_id = (SELECT id FROM resources WHERE course_id = e.course_id ORDER BY created_at DESC LIMIT 1) 
+                              AND qa.passed = TRUE AND q.chapter_id IS NOT NULL
+                        ) as completed
+                )::int AS progress
+            FROM
+                users u
+            JOIN
+                enrollments e ON u.id = e.learner_id
+            WHERE
+                e.course_id = $1 AND u.role = 'learner'
+            ORDER BY
+                u.first_name, u.last_name;
         `;
+        
         const { rows } = await pool.query(query, [courseId]);
         return rows;
     },
