@@ -1,9 +1,13 @@
 'use client';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import { FiEdit, FiTrash2, FiBookOpen, FiUsers, FiLayers, FiCheckCircle } from 'react-icons/fi';
 =======
+=======
+
+>>>>>>> bceb1667f7c2cfa09b3e77a4ea043d9abb62112e
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
@@ -14,7 +18,11 @@ import {
   FiLayers,
   FiCheckCircle,
 } from 'react-icons/fi';
+<<<<<<< HEAD
 >>>>>>> 202e618a5f7dbe495d9730b255a6656c32670532
+=======
+
+>>>>>>> bceb1667f7c2cfa09b3e77a4ea043d9abb62112e
 import './mentor_dashboard.css';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
@@ -42,6 +50,9 @@ export default function MentorOverviewPage() {
   const [loading, setLoading] = useState(true);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bceb1667f7c2cfa09b3e77a4ea043d9abb62112e
   // Fetch all dashboard data from the new backend endpoint
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -58,6 +69,7 @@ export default function MentorOverviewPage() {
       }
     };
 
+<<<<<<< HEAD
     fetchDashboardData();
   }, []);
 
@@ -70,6 +82,8 @@ export default function MentorOverviewPage() {
     );
   }
 =======
+=======
+>>>>>>> bceb1667f7c2cfa09b3e77a4ea043d9abb62112e
   const [quizzes] = useState([
     {
       title: 'Quiz 1: Soil Fertility',
@@ -109,17 +123,27 @@ export default function MentorOverviewPage() {
   const totalCourses = courses.length;
   const totalStudents = courses.reduce((acc, course) => acc + course.studentsEnrolled, 0);
   const totalChapters = courses.reduce((acc, course) => acc + course.chapters, 0);
+<<<<<<< HEAD
 >>>>>>> 202e618a5f7dbe495d9730b255a6656c32670532
+=======
+
+>>>>>>> bceb1667f7c2cfa09b3e77a4ea043d9abb62112e
 
   return (
     <div className="mentor-dashboard">
       <h1 className="page-title">Mentor Dashboard</h1>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
       {/* --- Dynamic Stats Cards --- */}
 =======
       {/* Overview Cards */}
 >>>>>>> 202e618a5f7dbe495d9730b255a6656c32670532
+=======
+
+      {/* Overview Cards */}
+
+>>>>>>> bceb1667f7c2cfa09b3e77a4ea043d9abb62112e
       <div className="stats-cards">
         <div className="card">
           <FiBookOpen className="card-icon" />
@@ -152,9 +176,15 @@ export default function MentorOverviewPage() {
       </div>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
       {/* Courses Table */}
 >>>>>>> 202e618a5f7dbe495d9730b255a6656c32670532
+=======
+
+      {/* Courses Table */}
+
+>>>>>>> bceb1667f7c2cfa09b3e77a4ea043d9abb62112e
       <div className="course-table-section">
         <h2><FiBookOpen /> Your Courses</h2>
         <table className="course-table">
