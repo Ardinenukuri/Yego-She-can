@@ -4,22 +4,23 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import api from '@/lib/api';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast'; 
+
 
 interface User {
   id: number;
   username: string;
-  email: string;firstName: string; // Add these fields
-  lastName: string;
+  email: string;
+  firstName: string; 
+  lastName: string; 
   profile_picture_url?: string;
   role: string;
-
-  // Add other user fields like role, firstName, etc., if needed
 }
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (token: string, userData: User) => void;
+  login: (token: string, userData: any) => void; 
   logout: () => void;
 }
 
@@ -35,9 +36,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          // Validate the token by fetching the user profile
           const response = await api.get('/api/auth/profile');
-          setUser(response.data);
+          const profileData = response.data;
+
+          setUser({
+              ...profileData,
+              firstName: profileData.first_name,
+              lastName: profileData.last_name,
+              profile_picture_url: profileData.profile_picture_url,
+          });
         } catch (error) {
           console.error("Session expired or token is invalid");
           localStorage.removeItem('token');
@@ -49,16 +56,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     initializeAuth();
   }, []);
 
-  const login = (token: string, userData: User) => {
+  const login = (token: string, userData: any) => {
     localStorage.setItem('token', token);
-    setUser(userData);
-    router.push('/dashboard/profile'); // Redirect to profile page after login
+
+    setUser({
+        ...userData,
+        firstName: userData.first_name,
+        lastName: userData.last_name,
+        profile_picture_url: userData.profile_picture_url,
+    });
+    
+
+    if (userData.role === 'program manager' || userData.role === 'mentor') {
+        router.push('/dashboard');
+    } else {
+        router.push('/user-dashboard');
+    }
   };
 
   const logout = () => {
     localStorage.removeItem('token');
     setUser(null);
-    router.push('/auth/login'); // Redirect to login page after logout
+    toast.success("You have been logged out.");
+    router.push('/auth/login');
   };
 
   return (

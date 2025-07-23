@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import logo from "/public/yego-shecan-logo.png";
-import "./certificate.css";
+import "./certificate.css"; 
 
 interface CertificateProps {
   learnerName: string;
@@ -41,7 +41,7 @@ export default function Certificate({
         <h2 className="cert-name">{learnerName}</h2>
 
         <p className="cert-body">
-          AT PARTICIPATING IN <br />
+          FOR SUCCESSFULLY COMPLETING THE COURSE <br />
           <strong>{courseName}</strong>
         </p>
 

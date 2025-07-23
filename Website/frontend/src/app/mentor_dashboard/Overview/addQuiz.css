@@ -101,3 +101,86 @@ select {
 .save-btn:hover {
   background-color:  #3a1570;
 }
+
+
+/* Add these styles to your addQuiz.css file */
+
+/* --- Quiz Preview Section --- */
+.quiz-preview {
+  margin-top: 2rem;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 2rem;
+}
+
+.preview-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  text-align: center;
+}
+
+.preview-subtitle {
+  text-align: center;
+  color: #6b7280;
+  margin-top: 0.25rem;
+  margin-bottom: 2rem;
+}
+
+.questions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.preview-question-card {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+}
+
+.preview-question-text {
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 1rem;
+}
+
+.preview-options-list {
+  list-style-type: none;
+  padding-left: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two columns for options */
+  gap: 0.75rem;
+}
+
+.preview-options-list li {
+  padding: 0.5rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background-color: white;
+  color: #374151;
+  font-size: 0.9rem;
+}
+
+/* Style for the correct answer */
+.preview-options-list li.correct-answer {
+  background-color: #d1fae5; /* Light green */
+  border-color: #10b981; /* Green */
+  color: #065f46; /* Dark green */
+  font-weight: 600;
+  position: relative;
+}
+
+.preview-options-list li.correct-answer::after {
+  content: '✓';
+  font-weight: bold;
+  color: #065f46;
+  margin-left: 0.5rem;
+}
+
+/* Responsive adjustment for options */
+@media (max-width: 640px) {
+  .preview-options-list {
+    grid-template-columns: 1fr; /* Stack options on small screens */
+  }
+}

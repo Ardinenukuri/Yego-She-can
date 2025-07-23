@@ -61,11 +61,47 @@
 //   );
 // }
 
-import '../styles/dashboard.css'
-import Sidebar from './components/Sidebar'
-import DashboardNavbar from './components/DashboardNavbar'
+// src/app/dashboard/layout.tsx
+'use client'; // This is now a client component because it uses hooks
+
+import { useEffect } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
+
+// Your existing presentational components
+import '../styles/dashboard.css';
+import Sidebar from './components/Sidebar';
+import DashboardNavbar from './components/DashboardNavbar';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  // --- AUTHENTICATION GATEKEEPER LOGIC ---
+  const { user, loading, logout } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    // This effect runs whenever the auth state changes
+    if (!loading && !user) {
+      // If loading is finished and there is still no user, the session is invalid.
+      toast.error("Your session has expired. Please log in again.");
+      logout(); // The logout function will handle redirecting to the login page
+    }
+  }, [user, loading, router, logout]); // Dependencies for the effect
+
+  // --- LOADING STATE ---
+  // While the AuthContext is checking the token, show a full-screen loading message.
+  // This prevents child pages from rendering and making API calls prematurely.
+  if (loading || !user) {
+    return (
+      <div className="fullscreen-loader">
+        <h2>Authenticating Session...</h2>
+        {/* You can add a spinner or animation here */}
+      </div>
+    );
+  }
+
+  // --- AUTHENTICATED VIEW ---
+  // If loading is complete AND a user exists, render the actual dashboard layout.
   return (
     <div className="dashboard-layout">
       <Sidebar />
@@ -74,5 +110,5 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <main className="dashboard-content">{children}</main>
       </div>
     </div>
-  )
+  );
 }
