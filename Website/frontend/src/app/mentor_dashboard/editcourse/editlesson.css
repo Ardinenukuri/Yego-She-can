@@ -1,8 +1,8 @@
 /* editlesson.css */
 
 .upload-resource-container {
-  max-width: 600px;
-  margin: 3rem auto;
+  max-width: 800px;
+  margin: 1rem auto;
   padding: 2rem;
   background-color: #ffffff;
   border-radius: 12px;
@@ -28,8 +28,14 @@
   flex-direction: column;
   font-weight: 600;
   color: #333;
+  margin-top: 1rem;
 }
 
+.upload-resource-form select,
+.upload-resource-form input,
+.upload-resource-form textarea {
+margin-bottom: -1rem;
+}
 .upload-resource-form input[type="text"],
 .upload-resource-form input[type="file"],
 .upload-resource-form textarea {
@@ -49,12 +55,13 @@
 .upload-resource-form button {
   padding: 0.8rem;
   font-size: 1rem;
-  background-color: #a290b8;
+  background-color: #6b21a8;
   color: #fff;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin-top: 1rem;
 }
 
 .upload-resource-form button:hover {
