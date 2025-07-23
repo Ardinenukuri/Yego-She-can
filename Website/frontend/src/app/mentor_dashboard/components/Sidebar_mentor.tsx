@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   FaBook,
-   FaHome ,
+  FaHome,
   FaClipboardList,
   FaUserClock,
   FaCalendarAlt,
@@ -36,55 +36,62 @@ const SidebarMentor = () => {
           }}
         />
       </div>
-      <Link
-    href="/mentor_dashboard"
-    className={isActive('/mentor_dashboard') ? 'nav-item active' : 'nav-item'}
-  >
-     <FaHome /> Overview
-  </Link>
-     <nav className="sidebar-nav">
+      <nav className="sidebar-nav">
 
+        <Link
+          href="/mentor_dashboard"
+          className={pathname === '/mentor_dashboard' ? 'nav-item active' : 'nav-item'}
+        >
+          <FaHome /> Overview
+        </Link>
 
-  <Link
-    href="/mentor_dashboard/AllCourses"
-    className={isActive('/mentor_dashboard/AllCourses') ? 'nav-item active' : 'nav-item'}
-  >
-    <FaBook /> My Courses
-  </Link>
-  <Link
-    href="/mentor_dashboard/AllCourses/editcourse"
-    className={isActive('/mentor_dashboard/editcourse') ? 'nav-item active' : 'nav-item'}
-  >
-    <FaClipboardList /> Edit Content
-  </Link>
-  <Link
-    href="/mentor_dashboard/Quiz"
-    className={isActive('/mentor_dashboard/Quiz') ? 'nav-item active' : 'nav-item'}
-  >
-    <FaClipboardList /> Manage Quizzes
-  </Link>
-  <Link
-    href="/mentor_dashboard/availability"
-    className={isActive('/mentor_dashboard/availability') ? 'nav-item active' : 'nav-item'}
-  >
-    <FaCalendarAlt /> My Availability
-  </Link>
-  <Link
-    href="/mentor_dashboard/bookings"
-    className={isActive('/mentor_dashboard/bookings') ? 'nav-item active' : 'nav-item'}
-  >
-    <FaUserClock /> Bookings
-  </Link>
-  <Link
-    href="/mentor_dashboard/settings"
-    className={isActive('/mentor_dashboard/settings') ? 'nav-item active' : 'nav-item'}
-  >
-    <FaUserEdit /> Profile Settings
-  </Link>
-  <Link href="/" className="nav-item logout">
-    <FaSignOutAlt /> Logout
-  </Link>
-</nav>
+        <Link
+          href="/mentor_dashboard/AllCourses"
+          className={pathname.startsWith('/mentor_dashboard/AllCourses') ? 'nav-item active' : 'nav-item'}
+        >
+          <FaBook /> My Courses
+        </Link>
+
+        <Link
+          href="/mentor_dashboard/editcourse"
+          className={pathname === '/mentor_dashboard/editcourse' ? 'nav-item active' : 'nav-item'}
+        >
+          <FaClipboardList /> Edit Content
+        </Link>
+
+        <Link
+          href="/mentor_dashboard/Quiz"
+          className={pathname === '/mentor_dashboard/Quiz' ? 'nav-item active' : 'nav-item'}
+        >
+          <FaClipboardList /> Manage Quizzes
+        </Link>
+
+        <Link
+          href="/mentor_dashboard/availability"
+          className={pathname === '/mentor_dashboard/availability' ? 'nav-item active' : 'nav-item'}
+        >
+          <FaCalendarAlt /> My Availability
+        </Link>
+
+        <Link
+          href="/mentor_dashboard/bookings"
+          className={pathname === '/mentor_dashboard/bookings' ? 'nav-item active' : 'nav-item'}
+        >
+          <FaUserClock /> Bookings
+        </Link>
+
+        <Link
+          href="/mentor_dashboard/settings"
+          className={pathname === '/mentor_dashboard/settings' ? 'nav-item active' : 'nav-item'}
+        >
+          <FaUserEdit /> Profile Settings
+        </Link>
+
+        <Link href="/" className="nav-item logout">
+          <FaSignOutAlt /> Logout
+        </Link>
+
+      </nav>
 
     </aside>
   );

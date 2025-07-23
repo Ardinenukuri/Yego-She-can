@@ -107,7 +107,8 @@ export default function UploadCourseResourcePage() {
       
       <form className="upload-resource-form" onSubmit={handleSubmit}>
         <label>
-          Course Title *
+          Course Title *        </label>
+
           <select 
             name="courseId" 
             value={courseId} 
@@ -124,10 +125,10 @@ export default function UploadCourseResourcePage() {
               </option>
             ))}
           </select>
-        </label>
 
         <label>
-          Description *
+          Description *        </label>
+
           <textarea 
             name="description" 
             value={description} 
@@ -135,10 +136,10 @@ export default function UploadCourseResourcePage() {
             required 
             disabled={isUploading} 
           />
-        </label>
 
         <label>
-          Timeline *
+          Timeline *         </label>
+
           <input 
             type="text" 
             name="timeline" 
@@ -148,10 +149,10 @@ export default function UploadCourseResourcePage() {
             placeholder="e.g., 4 Weeks"
             disabled={isUploading} 
           />
-        </label>
 
         <label>
-          Level *
+          Level *         </label>
+
           <select 
             name="level" 
             value={level} 
@@ -164,10 +165,10 @@ export default function UploadCourseResourcePage() {
             <option value="Intermediate">Intermediate</option>
             <option value="Advanced">Advanced</option>
           </select>
-        </label>
 
         <label>
-          Resource File (PDF, DOCX) *
+          Resource File (PDF, DOCX) *         </label>
+
           <input 
             type="file" 
             name="resourceFile" 
@@ -176,10 +177,10 @@ export default function UploadCourseResourcePage() {
             accept=".pdf,.doc,.docx"
             disabled={isUploading} 
           />
-        </label>
 
         <label>
-          Course Image *
+          Course Image *         </label>
+
           <input 
             type="file" 
             name="courseImage" 
@@ -188,7 +189,6 @@ export default function UploadCourseResourcePage() {
             accept="image/*"
             disabled={isUploading} 
           />
-        </label>
 
         <button type="submit" disabled={isUploading}>
           {isUploading ? 'Uploading...' : 'Upload Resource'}
