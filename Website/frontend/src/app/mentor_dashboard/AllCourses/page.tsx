@@ -6,6 +6,7 @@ import './mentorCourses.css' // Ensure you have this CSS file
 import { Plus, Eye, Edit, Trash2 } from 'lucide-react'
 import api from '@/lib/api'
 import toast from 'react-hot-toast'
+import Link from 'next/link'
 
 
 // Define a type for the data we expect from the backend
@@ -96,7 +97,9 @@ export default function MentorCoursesPage() {
                 </td>
                 <td>
                   <div className="action-buttons">
-                    <button title="View"><Eye className="icon-sm" /></button>
+                    <Link href={`/mentor_dashboard/AllCourses/${course.id}`} className="action-btn-link" title="View Students">
+                      <Eye className="icon-sm" />
+                    </Link>
                     <button title="Edit"><Edit className="icon-sm" /></button>
                     {/* The delete button can be added here when the logic is ready */}
                   </div>
