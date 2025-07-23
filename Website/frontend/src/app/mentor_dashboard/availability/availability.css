@@ -1,0 +1,237 @@
+/* AvailabilityManager.css */
+
+.availability-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  font-family: 'Segoe UI', sans-serif;
+  color: #333;
+}
+
+.availability-container h2,
+.availability-container h3 {
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 1.5rem;
+}
+
+.availability-container h2 {
+  font-size: 2rem;
+  text-align: center;
+}
+
+.availability-container h3 {
+  font-size: 1.5rem;
+}
+
+/* Date picker aligned right */
+.date-picker-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.date-picker,
+.filter-dropdown {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  width: 200px;
+  text-align: center;
+}
+
+/* Time slots grid */
+.slots-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+  justify-items: center;
+}
+
+.slot-button {
+  background: #f6f2fb;
+  border: 1.5px solid #7c34ab;
+  color: #7c34ab;
+  padding: 0.5rem 0.75rem;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-size: 0.9rem;
+  width: 100%;
+  max-width: 110px;
+  text-align: center;
+  user-select: none;
+}
+
+.slot-button:hover {
+  background-color: #7c34ab;
+  color: #fff;
+}
+
+.slot-button.selected {
+  background-color: #4b1c88;
+  color: #fff;
+  border-color: #4b1c88;
+}
+
+.save-button {
+  display: block;
+  margin: 0 auto 2rem auto;
+  background-color: #7c34ab;
+  color: white;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.save-button:disabled {
+  background-color: #bba6d6;
+  cursor: not-allowed;
+}
+
+.save-button:not(:disabled):hover {
+  background-color: #4b1c88;
+}
+
+/* Filter bar: title left, dropdown right */
+.filter-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 0 0.5rem;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.filter-bar h3 {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #4b1c88;
+  margin: 0;
+}
+
+.filter-bar select {
+  width: 200px;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  text-align: center;
+}
+
+/* Table styling matching your .course-table */
+
+.slots-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  margin-bottom: 3rem;
+}
+
+.slots-table thead {
+  background-color: #f6effd;
+}
+
+.slots-table th {
+  padding: 1rem 1.25rem;
+  font-weight: 700;
+  color: #4b1c88;
+  text-align: left;
+  border-bottom: 2px solid #e4d7f5;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.slots-table td {
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid #eee;
+  vertical-align: middle;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.slots-table tbody tr:nth-child(odd) {
+  background-color: #faf6ff;
+}
+
+.slots-table tr:hover {
+  background-color: #f0e8ff;
+  transition: background-color 0.3s ease;
+}
+
+/* Buttons in table */
+
+.cancel-button,
+.delete-button {
+  border: none;
+  padding: 0.3rem 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  user-select: none;
+}
+
+.cancel-button {
+  background-color: #f1e4ff;
+  color: #4b1c88;
+}
+
+.cancel-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.cancel-button:not(:disabled):hover {
+  background-color: #4b1c88;
+  color: #fff;
+}
+
+.delete-button {
+  background-color: #fddede;
+  color: #d00000;
+}
+
+.delete-button:hover {
+  background-color: #a10000;
+  color: #fff;
+}
+
+/* Responsive */
+
+@media (max-width: 600px) {
+  .slots-container {
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  }
+  .slot-button {
+    max-width: 90px;
+    font-size: 0.8rem;
+  }
+  .date-picker-container {
+    justify-content: center;
+  }
+  .filter-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .filter-bar select {
+    width: 100%;
+  }
+}
