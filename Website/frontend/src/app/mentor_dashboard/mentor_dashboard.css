@@ -58,6 +58,8 @@
   gap: 0.5rem;
 }
 
+
+
 .course-table {
   width: 100%;
   border-collapse: separate;
@@ -138,4 +140,13 @@
   50% { transform: rotate(3deg); }
   75% { transform: rotate(-2deg); }
   100% { transform: rotate(0); }
+}
+
+.course-table-section h2 {
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.course-table tbody tr td {
+  vertical-align: middle;
 }
