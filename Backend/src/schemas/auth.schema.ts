@@ -187,4 +187,12 @@ export const toggleCompletionSchema = z.object({
   body: z.object({
     chapterId: z.number().int().positive(),
   }),
-})
+});
+
+export const messageLearnerSchema = z.object({
+  body: z.object({
+    learnerId: z.number().int().positive(),
+    courseId: z.number().int().positive(), 
+    message: z.string().min(10, 'Message must be at least 10 characters long.'),
+  }),
+});

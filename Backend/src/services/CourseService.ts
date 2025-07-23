@@ -462,5 +462,22 @@ const chaptersResult = await pool.query(chaptersQuery, [learnerId, courseData.re
     return { ...course, learners };
 },
 
+getCourseDetailsForMentor: async (courseId: number, mentorId: number) => {
+        const query = `
+            SELECT c.id, c.name
+            FROM courses c
+            JOIN course_mentors cm ON c.id = cm.course_id
+            WHERE c.id = $1 AND cm.mentor_id = $2;
+        `;
+        
+        const result = await pool.query(query, [courseId, mentorId]);
+
+        if (result.rowCount === 0) {
+            throw new Error('Course not found or you are not authorized to view it.');
+        }
+
+        return result.rows[0];
+    },
+
     
 };
