@@ -20,13 +20,11 @@ export default function Certificate({
   return (
     <div className="certificate-container">
       <div className="certificate">
-        {/* Corner Decorations */}
         <div className="corner top-left"></div>
         <div className="corner top-right"></div>
         <div className="corner bottom-right"></div>
         <div className="corner bottom-left"></div>
 
-        {/* Logo */}
         <Image
           src={logo}
           alt="Yego SheCan Logo"
@@ -35,7 +33,6 @@ export default function Certificate({
           height={80}
         />
 
-        {/* Certificate Content */}
         <h1 className="cert-title">CERTIFICATE OF EXCELLENCE</h1>
         <p className="cert-presented-to">IS PROUDLY PRESENTED TO</p>
         <h2 className="cert-name">{learnerName}</h2>
