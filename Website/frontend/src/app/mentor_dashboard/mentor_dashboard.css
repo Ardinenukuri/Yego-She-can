@@ -3,6 +3,7 @@
   max-width: 1200px;
   margin: 0 auto;
   font-family: 'Segoe UI', sans-serif;
+  
 }
 
 .page-title {
@@ -142,6 +143,12 @@
   100% { transform: rotate(0); }
 }
 
+.course-table-section {
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+ }
+
+
 .course-table-section h2 {
   font-size: 1.25rem;
   margin-bottom: 0.75rem;
@@ -149,4 +156,32 @@
 
 .course-table tbody tr td {
   vertical-align: middle;
+}
+
+.table-controls {
+  display: flex;
+  gap: 1rem;
+  margin: 0.5rem 0 1rem 0;
+}
+
+.table-controls input,
+.table-controls select {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.table-controls.right-aligned {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  justify-content: flex-end;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* margin-bottom: 1rem;
+  padding: 1rem 0rem; */
 }

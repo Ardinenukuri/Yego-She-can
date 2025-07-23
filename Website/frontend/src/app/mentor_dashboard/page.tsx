@@ -1,15 +1,6 @@
 'use client';
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-import React, { useState, useEffect } from 'react';
-import { FiEdit, FiTrash2, FiBookOpen, FiUsers, FiLayers, FiCheckCircle } from 'react-icons/fi';
-=======
-=======
-
->>>>>>> bceb1667f7c2cfa09b3e77a4ea043d9abb62112e
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect, useMemo, ReactNode } from 'react';
 import {
   FiEdit,
   FiTrash2,
@@ -18,16 +9,11 @@ import {
   FiLayers,
   FiCheckCircle,
 } from 'react-icons/fi';
-<<<<<<< HEAD
->>>>>>> 202e618a5f7dbe495d9730b255a6656c32670532
-=======
-
->>>>>>> bceb1667f7c2cfa09b3e77a4ea043d9abb62112e
 import './mentor_dashboard.css';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
 
-// --- Type Definitions ---
+
 interface Course {
   id: number;
   title: string;
@@ -35,7 +21,22 @@ interface Course {
   duration: string;
   chapters: number;
   studentsEnrolled: number;
-  status: string;
+}
+interface Quiz {
+  id: number;
+  title: string;
+  course: string;
+  expected: number;
+  attempted: number;
+  passed: number;
+  failed: number;
+}
+interface Booking {
+  id: number;
+  student: string;
+  course: string;
+  time: string;
+  topic: string;
 }
 interface Kpis {
   totalCourses: number;
@@ -45,22 +46,30 @@ interface Kpis {
 }
 
 export default function MentorOverviewPage() {
+
   const [courses, setCourses] = useState<Course[]>([]);
+  const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [kpis, setKpis] = useState<Kpis | null>(null);
   const [loading, setLoading] = useState(true);
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> bceb1667f7c2cfa09b3e77a4ea043d9abb62112e
-  // Fetch all dashboard data from the new backend endpoint
+  const [courseSearch, setCourseSearch] = useState('');
+  const [courseLevel, setCourseLevel] = useState('');
+  const [quizSearch, setQuizSearch] = useState('');
+  const [quizFilter, setQuizFilter] = useState('');
+  const [bookingSearch, setBookingSearch] = useState('');
+  const [bookingFilter, setBookingFilter] = useState('');
+
+
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        setLoading(true);
         const response = await api.get('/api/mentor/dashboard');
-        setCourses(response.data.courses);
-        setKpis(response.data.kpis);
+        const data = response.data;
+        setKpis(data.kpis);
+        setCourses(data.courses);
+        setQuizzes(data.quizzes);
+        setBookings(data.bookings);
       } catch (error) {
         console.error("Failed to fetch mentor dashboard data:", error);
         toast.error("Could not load your dashboard data.");
@@ -69,124 +78,69 @@ export default function MentorOverviewPage() {
       }
     };
 
-<<<<<<< HEAD
     fetchDashboardData();
-  }, []);
+  }, []); 
+
+
+  const filteredCourses = useMemo(() => courses.filter(
+    (c) =>
+      c.title.toLowerCase().includes(courseSearch.toLowerCase()) &&
+      (!courseLevel || c.level === courseLevel)
+  ), [courses, courseSearch, courseLevel]);
+
+  const filteredQuizzes = useMemo(() => quizzes.filter(
+    (q) =>
+      q.title.toLowerCase().includes(quizSearch.toLowerCase()) &&
+      (!quizFilter || q.course === quizFilter)
+  ), [quizzes, quizSearch, quizFilter]);
+
+  const filteredBookings = useMemo(() => bookings.filter(
+    (b) =>
+      b.student.toLowerCase().includes(bookingSearch.toLowerCase()) &&
+      (!bookingFilter || b.course === bookingFilter)
+  ), [bookings, bookingSearch, bookingFilter]);
 
   if (loading) {
     return (
-        <div className="mentor-dashboard">
-            <h1 className="page-title">Mentor Dashboard</h1>
-            <div className="loading-state">Loading your dashboard...</div>
-        </div>
+      <div className="mentor-dashboard">
+        <h1 className="page-title">Mentor Dashboard</h1>
+        <div className="loading-state">Loading your dashboard data...</div>
+      </div>
     );
   }
-=======
-=======
->>>>>>> bceb1667f7c2cfa09b3e77a4ea043d9abb62112e
-  const [quizzes] = useState([
-    {
-      title: 'Quiz 1: Soil Fertility',
-      course: 'Smart Farming Basics',
-      expectedStudents: 15,
-      totalStudents: 10,
-      passed: 7,
-      failed: 3,
-    },
-    {
-      title: 'Quiz 2: IoT Applications',
-      course: 'Advanced IoT in Agriculture',
-      expectedStudents: 12,
-      totalStudents: 8,
-      passed: 6,
-      failed: 2,
-    },
-  ]);
-
-  const [bookings] = useState([
-    {
-      studentName: 'John Doe',
-      courseTitle: 'Smart Farming Basics',
-      timeSlot: 'Monday, 10:00 AM - 10:30 AM',
-      meetingTopic: 'Understanding Soil Fertility',
-    },
-    {
-      studentName: 'Jane Smith',
-      courseTitle: 'Advanced IoT in Agriculture',
-      timeSlot: 'Tuesday, 2:00 PM - 2:30 PM',
-      meetingTopic: 'Sensor Setup Walkthrough',
-    },
-  ]);
-
-  const router = useRouter();
-
-  const totalCourses = courses.length;
-  const totalStudents = courses.reduce((acc, course) => acc + course.studentsEnrolled, 0);
-  const totalChapters = courses.reduce((acc, course) => acc + course.chapters, 0);
-<<<<<<< HEAD
->>>>>>> 202e618a5f7dbe495d9730b255a6656c32670532
-=======
-
->>>>>>> bceb1667f7c2cfa09b3e77a4ea043d9abb62112e
 
   return (
     <div className="mentor-dashboard">
       <h1 className="page-title">Mentor Dashboard</h1>
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-      {/* --- Dynamic Stats Cards --- */}
-=======
-      {/* Overview Cards */}
->>>>>>> 202e618a5f7dbe495d9730b255a6656c32670532
-=======
 
-      {/* Overview Cards */}
-
->>>>>>> bceb1667f7c2cfa09b3e77a4ea043d9abb62112e
       <div className="stats-cards">
-        <div className="card">
-          <FiBookOpen className="card-icon" />
-          <div>
-            <h3>Total Courses</h3>
-            <p>{kpis?.totalCourses ?? 0}</p>
-          </div>
-        </div>
-        <div className="card">
-          <FiUsers className="card-icon" />
-          <div>
-            <h3>Total Students</h3>
-            <p>{kpis?.totalStudents ?? 0}</p>
-          </div>
-        </div>
-        <div className="card">
-          <FiLayers className="card-icon" />
-          <div>
-            <h3>Total Chapters</h3>
-            <p>{kpis?.totalChapters ?? 0}</p>
-          </div>
-        </div>
-        <div className="card">
-          <FiCheckCircle className="card-icon" />
-          <div>
-            <h3>Completed Courses</h3>
-            <p>{kpis?.completedCourses ?? 0}</p>
-          </div>
-        </div>
+        <StatCard icon={<FiBookOpen />} title="Total Courses" value={kpis?.totalCourses ?? 0} />
+        <StatCard icon={<FiUsers />} title="Total Students" value={kpis?.totalStudents ?? 0} />
+        <StatCard icon={<FiLayers />} title="Total Chapters" value={kpis?.totalChapters ?? 0} />
+        <StatCard icon={<FiCheckCircle />} title="Completed Courses" value={kpis?.completedCourses ?? 0} />
       </div>
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-      {/* Courses Table */}
->>>>>>> 202e618a5f7dbe495d9730b255a6656c32670532
-=======
-
-      {/* Courses Table */}
-
->>>>>>> bceb1667f7c2cfa09b3e77a4ea043d9abb62112e
-      <div className="course-table-section">
-        <h2><FiBookOpen /> Your Courses</h2>
+      <Section
+        icon={<FiBookOpen />}
+        title="Your Courses"
+        filters={
+          <>
+            <input
+              type="text"
+              placeholder="Search by title..."
+              value={courseSearch}
+              onChange={(e) => setCourseSearch(e.target.value)}
+            />
+            <select value={courseLevel} onChange={(e) => setCourseLevel(e.target.value)}>
+              <option value="">All Levels</option>
+              <option value="Beginner">Beginner</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Advanced">Advanced</option>
+            </select>
+          </>
+        }
+      >
         <table className="course-table">
           <thead>
             <tr>
@@ -194,44 +148,56 @@ export default function MentorOverviewPage() {
               <th>Level</th>
               <th>Duration</th>
               <th>Chapters</th>
-              <th>Enrolled Students</th>
+              <th>Students</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {courses.map((course) => (
+            {filteredCourses.map((course) => (
               <tr key={course.id}>
                 <td>{course.title}</td>
-                <td>{course.level || 'N/A'}</td>
-                <td>{course.duration || 'N/A'}</td>
-                <td>{course.chapters || 0}</td>
+                <td>{course.level}</td>
+                <td>{course.duration}</td>
+                <td>{course.chapters}</td>
                 <td><FiUsers /> {course.studentsEnrolled}</td>
                 <td>
                   <div className="action-buttons">
-                    <button title="Edit"><FiEdit /></button>
-                    {/* Add delete functionality here later */}
-                    <button title="Delete" className="delete"><FiTrash2 /></button>
+                    <button className="action-btn edit"><FiEdit /></button>
+                    <button className="action-btn delete"><FiTrash2 /></button>
                   </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-        {courses.length === 0 && !loading && (
-            <div className="empty-state">
-                <p>You are not assigned to any courses yet.</p>
-            </div>
-        )}
-      </div>
+        {filteredCourses.length === 0 && <p className="empty-state">No courses match your filters.</p>}
+      </Section>
 
-      {/* Student Quiz Overview */}
-      <div className="course-table-section">
-        <h2 style={{ marginTop: "2rem" }}><FiUsers /> Student Quiz Overview</h2>
+      <Section
+        icon={<FiUsers />}
+        title="Student Quiz Overview"
+        filters={
+          <>
+            <input
+              type="text"
+              placeholder="Search by quiz title..."
+              value={quizSearch}
+              onChange={(e) => setQuizSearch(e.target.value)}
+            />
+            <select value={quizFilter} onChange={(e) => setQuizFilter(e.target.value)}>
+              <option value="">All Courses</option>
+              {courses.map((c) => (
+                <option key={c.id} value={c.title}>{c.title}</option>
+              ))}
+            </select>
+          </>
+        }
+      >
         <table className="course-table">
           <thead>
             <tr>
               <th>Quiz Title</th>
-              <th>Course Title</th>
+              <th>Course</th>
               <th>Expected</th>
               <th>Attempted</th>
               <th>Passed</th>
@@ -240,48 +206,105 @@ export default function MentorOverviewPage() {
             </tr>
           </thead>
           <tbody>
-            {quizzes.map((quiz, index) => {
-              const missed = quiz.expectedStudents - quiz.totalStudents;
-              return (
-                <tr key={index}>
-                  <td>{quiz.title}</td>
-                  <td>{quiz.course}</td>
-                  <td>{quiz.expectedStudents}</td>
-                  <td>{quiz.totalStudents}</td>
-                  <td className="passed">{quiz.passed}</td>
-                  <td className="failed">{quiz.failed}</td>
-                  <td className="missed">{missed}</td>
-                </tr>
-              );
-            })}
+            {filteredQuizzes.map((q, i) => (
+              <tr key={q.id || i}>
+                <td>{q.title}</td>
+                <td>{q.course}</td>
+                <td>{q.expected}</td>
+                <td>{q.attempted}</td>
+                <td className="passed">{q.passed}</td>
+                <td className="failed">{q.failed}</td>
+                <td className="missed">{q.expected - q.attempted > 0 ? q.expected - q.attempted : 0}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
-      </div>
+        {filteredQuizzes.length === 0 && <p className="empty-state">No quizzes match your filters.</p>}
+      </Section>
 
-      {/* Student Booking Overview */}
-      <div className="course-table-section">
-        <h2 style={{ marginTop: "2rem" }}><FiUsers /> Booked Meetings Overview</h2>
+
+      <Section
+        icon={<FiUsers />}
+        title="Booked Meetings Overview"
+        filters={
+          <>
+            <input
+              type="text"
+              placeholder="Search by student name..."
+              value={bookingSearch}
+              onChange={(e) => setBookingSearch(e.target.value)}
+            />
+            <select value={bookingFilter} onChange={(e) => setBookingFilter(e.target.value)}>
+              <option value="">All Courses</option>
+              {courses.map((c) => (
+                <option key={c.id} value={c.title}>{c.title}</option>
+              ))}
+            </select>
+          </>
+        }
+      >
         <table className="course-table">
           <thead>
             <tr>
-              <th>Student Name</th>
-              <th>Course Title</th>
+              <th>Student</th>
+              <th>Course</th>
               <th>Time Slot</th>
               <th>Meeting Topic</th>
             </tr>
           </thead>
           <tbody>
-            {bookings.map((booking, index) => (
-              <tr key={index}>
-                <td>{booking.studentName}</td>
-                <td>{booking.courseTitle}</td>
-                <td>{booking.timeSlot}</td>
-                <td>{booking.meetingTopic}</td>
+            {filteredBookings.map((b, i) => (
+              <tr key={b.id || i}>
+                <td>{b.student}</td>
+                <td>{b.course}</td>
+                <td>{b.time}</td>
+                <td>{b.topic}</td>
               </tr>
             ))}
           </tbody>
         </table>
+        {filteredBookings.length === 0 && <p className="empty-state">No bookings match your filters.</p>}
+      </Section>
+    </div>
+  );
+}
+
+
+type StatCardProps = {
+  icon: ReactNode;
+  title: string;
+  value: number | string;
+};
+
+function StatCard({ icon, title, value }: StatCardProps) {
+  return (
+    <div className="card">
+      <div className="card-icon">{icon}</div>
+      <div>
+        <h3>{title}</h3>
+        <p>{value}</p>
       </div>
+    </div>
+  );
+}
+
+type SectionProps = {
+  icon: ReactNode;
+  title: string;
+  filters: ReactNode;
+  children: ReactNode;
+};
+
+function Section({ icon, title, filters, children }: SectionProps) {
+  return (
+    <div className="course-table-section">
+      <div className="section-header">
+        <h2>{icon} {title}</h2>
+        <div className="table-controls right-aligned">
+          {filters}
+        </div>
+      </div>
+      {children}
     </div>
   );
 }
