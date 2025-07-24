@@ -166,5 +166,46 @@ export const QuizService = {
         ]);
 
         return rows[0];
-    }
+    },
+
+    
+
+    getQuizOverviewForMentor: async (mentorId: number) => {
+        const query = `
+            SELECT
+                q.id as "quizId",
+                CASE
+                    WHEN q.is_final THEN c.name || ' - Final Quiz'
+                    ELSE ch.title
+                END as title,
+                c.name as course,
+                (SELECT COUNT(*) FROM enrollments e WHERE e.course_id = c.id)::int as "expectedStudents",
+                COALESCE(attempt_stats."totalStudents", 0)::int as "totalStudents",
+                COALESCE(attempt_stats.passed, 0)::int as passed,
+                COALESCE(attempt_stats.failed, 0)::int as failed
+            FROM 
+                course_mentors cm
+            -- Start from the mentor's assignments to guarantee authorization
+            JOIN courses c ON cm.course_id = c.id
+            JOIN resources r ON c.id = r.course_id
+            JOIN quizzes q ON r.id = q.resource_id
+            LEFT JOIN chapters ch ON q.chapter_id = ch.id
+            LEFT JOIN (
+                SELECT quiz_id, COUNT(DISTINCT learner_id) as "totalStudents", SUM(CASE WHEN passed THEN 1 ELSE 0 END) as passed, SUM(CASE WHEN NOT passed THEN 1 ELSE 0 END) as failed
+                FROM quiz_attempts GROUP BY quiz_id
+            ) AS attempt_stats ON q.id = attempt_stats.quiz_id
+            WHERE cm.mentor_id = $1
+            -- We add this to only show quizzes from the LATEST resource of each course
+            AND r.id = (
+                SELECT id FROM resources 
+                WHERE course_id = c.id 
+                ORDER BY created_at DESC 
+                LIMIT 1
+            )
+            ORDER BY c.name, q.is_final, ch.id;
+        `;
+        
+        const { rows } = await pool.query(query, [mentorId]);
+        return rows;
+    },
 };

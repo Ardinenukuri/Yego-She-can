@@ -235,7 +235,7 @@ export const CourseService = {
     },
 
     getCourseLearningData: async (courseId: number, learnerId: number) => {
-        // 1. Authorize: Ensure the learner is enrolled in this course.
+
         const enrollmentCheck = await pool.query(
             'SELECT * FROM enrollments WHERE course_id = $1 AND learner_id = $2',
             [courseId, learnerId]
@@ -244,7 +244,7 @@ export const CourseService = {
             throw new Error('Forbidden: You are not enrolled in this course.');
         }
 
-        // 2. Get the main course and resource details.
+
         const courseQuery = `
             SELECT 
                 c.id, c.name as title, r.description, r.id as "resourceId"
@@ -257,7 +257,7 @@ export const CourseService = {
         if (courseResult.rowCount === 0) throw new Error('Course content not found.');
         const courseData = courseResult.rows[0];
 
-        // 3. Get all chapters and their quiz status/progress for this learner.
+
         const chaptersQuery = `
     SELECT
         ch.id,
@@ -281,7 +281,7 @@ export const CourseService = {
 `;
 const chaptersResult = await pool.query(chaptersQuery, [learnerId, courseData.resourceId]);
         
-        // 4. Get the final quiz and its status for this learner.
+
         const finalQuizQuery = `
             SELECT 
                 q.id as "quizId",
@@ -336,4 +336,148 @@ const chaptersResult = await pool.query(chaptersQuery, [learnerId, courseData.re
         }
 
     },
+
+    getCoursesForMentor: async (mentorId: number) => {
+
+        const query = `
+            SELECT DISTINCT ON (c.id)
+                c.id,
+                c.name as title,
+                r.description,
+                r.timeline as duration,
+                r.level,
+                r.image_url as image,
+                u.first_name || ' ' || u.last_name as mentor,
+                (
+                    SELECT COUNT(*) 
+                    FROM chapters ch 
+                    WHERE ch.resource_id = r.id
+                )::int as lessons,
+                'active' as status
+            FROM
+                course_mentors cm
+            JOIN 
+                courses c ON cm.course_id = c.id
+            JOIN 
+                users u ON cm.mentor_id = u.id
+            LEFT JOIN 
+                resources r ON c.id = r.course_id
+            WHERE
+                cm.mentor_id = $1
+            ORDER BY
+                c.id, r.created_at DESC; -- Sort by course, then newest resource first
+        `;
+        
+        const { rows } = await pool.query(query, [mentorId]);
+        return rows;
+    },
+
+    getChaptersForCourse: async (courseId: number, mentorId: number) => {
+        const query = `
+            WITH LatestResource AS (
+                -- Step 1: Find the ID of the most recently uploaded resource for this course.
+                SELECT id FROM resources
+                WHERE course_id = $1
+                ORDER BY created_at DESC
+                LIMIT 1
+            )
+            -- Step 2: Fetch chapters only if the mentor is assigned to the course AND chapters exist for the latest resource.
+            SELECT ch.id, ch.title
+            FROM chapters ch
+            WHERE 
+                ch.resource_id = (SELECT id FROM LatestResource)
+                AND EXISTS (
+                    -- Authorization check
+                    SELECT 1 FROM course_mentors 
+                    WHERE course_id = $1 AND mentor_id = $2
+                )
+            ORDER BY ch.chapter_number;
+        `;
+        const { rows } = await pool.query(query, [courseId, mentorId]);
+        return rows;
+    },
+
+    getCourseDetailsForAdmin: async (courseId: number) => {
+    const courseQuery = 'SELECT id, name FROM courses WHERE id = $1';
+    const courseResult = await pool.query(courseQuery, [courseId]);
+    if ((courseResult.rowCount ?? 0) === 0) {
+        const error = new Error('Course not found.');
+        error.name = 'NotFoundError';
+        throw error;
+    }
+    const course = courseResult.rows[0];
+
+    const learnersQuery = `
+        SELECT
+            u.id,
+            u.first_name || ' ' || u.last_name as name,
+            u.profile_picture_url as image,
+            e.enrolled_at as enrolled,
+
+            (
+                SELECT COUNT(ch.id) FROM chapters ch
+                WHERE ch.resource_id = (
+                    SELECT r.id FROM resources r
+                    WHERE r.course_id = $1
+                    ORDER BY r.created_at DESC LIMIT 1
+                )
+            )::int as "totalLessons",
+
+            (
+                SELECT COUNT(ucp.chapter_id) FROM user_chapter_progress ucp
+                JOIN chapters ch ON ucp.chapter_id = ch.id
+                WHERE ucp.learner_id = u.id AND ch.resource_id = (
+                    SELECT r.id FROM resources r
+                    WHERE r.course_id = $1
+                    ORDER BY r.created_at DESC LIMIT 1
+                )
+            )::int as "lessonsCompleted"
+
+            -- The "finalQuizPassed" EXISTS check has been REMOVED from this query.
+        FROM
+            users u
+        JOIN
+            enrollments e ON u.id = e.learner_id
+        WHERE
+            e.course_id = $1 AND u.role = 'learner'
+        ORDER BY
+            name;
+    `;
+    const learnersResult = await pool.query(learnersQuery, [courseId]);
+    
+
+    const learners = learnersResult.rows.map(learner => {
+        const progress = learner.totalLessons > 0 ? Math.round((learner.lessonsCompleted / learner.totalLessons) * 100) : 0;
+        
+
+        const certificateEligible = progress >= 100;
+
+        return {
+            ...learner,
+            progress,
+            certificateEligible
+        };
+    });
+
+    return { ...course, learners };
+},
+
+getCourseDetailsForMentor: async (courseId: number, mentorId: number) => {
+        const query = `
+            SELECT c.id, c.name
+            FROM courses c
+            JOIN course_mentors cm ON c.id = cm.course_id
+            WHERE c.id = $1 AND cm.mentor_id = $2;
+        `;
+        
+        const result = await pool.query(query, [courseId, mentorId]);
+
+        if (result.rowCount === 0) {
+            throw new Error('Course not found or you are not authorized to view it.');
+        }
+
+        return result.rows[0];
+    },
+
+    
 };

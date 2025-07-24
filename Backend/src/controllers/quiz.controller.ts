@@ -47,4 +47,14 @@ export const QuizController = {
             next(error);
         }
     },
+
+    getQuizOverview: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const mentorId = (req as any).user.id;
+            const quizzes = await QuizService.getQuizOverviewForMentor(mentorId);
+            res.status(200).json(quizzes);
+        } catch (error) {
+            next(error);
+        }
+    },
 };
