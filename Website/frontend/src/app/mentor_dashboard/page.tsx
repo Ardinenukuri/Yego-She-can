@@ -1,8 +1,6 @@
 'use client';
 
-
 import React, { useState, useEffect, useMemo, ReactNode } from 'react';
-
 import {
   FiEdit,
   FiTrash2,
@@ -47,68 +45,13 @@ interface Kpis {
   completedCourses: number;
 }
 
-const courses = [
-  {
-    id: 1,
-    title: 'Smart Farming Basics',
-    level: 'Beginner',
-    duration: '4 weeks',
-    chapters: 5,
-    studentsEnrolled: 24,
-  },
-  {
-    id: 2,
-    title: 'Advanced IoT in Agriculture',
-    level: 'Advanced',
-    duration: '6 weeks',
-    chapters: 8,
-    studentsEnrolled: 18,
-  },
-  {
-    id: 3,
-    title: 'Sustainable Farming Techniques',
-    level: 'Intermediate',
-    duration: '5 weeks',
-    chapters: 6,
-    studentsEnrolled: 30,
-  },
-];
-
-const quizzes = [
-  {
-    title: 'Quiz 1: Soil Fertility',
-    course: 'Smart Farming Basics',
-    expected: 15,
-    attempted: 10,
-    passed: 7,
-    failed: 3,
-  },
-  {
-    title: 'Quiz 2: IoT Applications',
-    course: 'Advanced IoT in Agriculture',
-    expected: 12,
-    attempted: 8,
-    passed: 6,
-    failed: 2,
-  },
-];
-
-const bookings = [
-  {
-    student: 'John Doe',
-    course: 'Smart Farming Basics',
-    time: 'Monday, 10:00 AM - 10:30 AM',
-    topic: 'Understanding Soil Fertility',
-  },
-  {
-    student: 'Jane Smith',
-    course: 'Advanced IoT in Agriculture',
-    time: 'Tuesday, 2:00 PM - 2:30 PM',
-    topic: 'Sensor Setup Walkthrough',
-  },
-];
-
 export default function MentorOverviewPage() {
+
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [kpis, setKpis] = useState<Kpis | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const [courseSearch, setCourseSearch] = useState('');
   const [courseLevel, setCourseLevel] = useState('');
@@ -116,6 +59,7 @@ export default function MentorOverviewPage() {
   const [quizFilter, setQuizFilter] = useState('');
   const [bookingSearch, setBookingSearch] = useState('');
   const [bookingFilter, setBookingFilter] = useState('');
+
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -165,20 +109,17 @@ export default function MentorOverviewPage() {
     );
   }
 
-
   return (
     <div className="mentor-dashboard">
       <h1 className="page-title">Mentor Dashboard</h1>
 
 
       <div className="stats-cards">
-
         <StatCard icon={<FiBookOpen />} title="Total Courses" value={kpis?.totalCourses ?? 0} />
         <StatCard icon={<FiUsers />} title="Total Students" value={kpis?.totalStudents ?? 0} />
         <StatCard icon={<FiLayers />} title="Total Chapters" value={kpis?.totalChapters ?? 0} />
         <StatCard icon={<FiCheckCircle />} title="Completed Courses" value={kpis?.completedCourses ?? 0} />
       </div>
-
 
       <Section
         icon={<FiBookOpen />}
@@ -229,7 +170,6 @@ export default function MentorOverviewPage() {
             ))}
           </tbody>
         </table>
-
         {filteredCourses.length === 0 && <p className="empty-state">No courses match your filters.</p>}
       </Section>
 
@@ -267,24 +207,18 @@ export default function MentorOverviewPage() {
           </thead>
           <tbody>
             {filteredQuizzes.map((q, i) => (
-
               <tr key={q.id || i}>
-
                 <td>{q.title}</td>
                 <td>{q.course}</td>
                 <td>{q.expected}</td>
                 <td>{q.attempted}</td>
                 <td className="passed">{q.passed}</td>
                 <td className="failed">{q.failed}</td>
-
                 <td className="missed">{q.expected - q.attempted > 0 ? q.expected - q.attempted : 0}</td>
-
               </tr>
             ))}
           </tbody>
         </table>
-
-
         {filteredQuizzes.length === 0 && <p className="empty-state">No quizzes match your filters.</p>}
       </Section>
 
@@ -320,8 +254,7 @@ export default function MentorOverviewPage() {
           </thead>
           <tbody>
             {filteredBookings.map((b, i) => (
-
-
+              <tr key={b.id || i}>
                 <td>{b.student}</td>
                 <td>{b.course}</td>
                 <td>{b.time}</td>
@@ -330,17 +263,15 @@ export default function MentorOverviewPage() {
             ))}
           </tbody>
         </table>
-
         {filteredBookings.length === 0 && <p className="empty-state">No bookings match your filters.</p>}
-
       </Section>
     </div>
   );
 }
 
+
 type StatCardProps = {
   icon: ReactNode;
-
   title: string;
   value: number | string;
 };
@@ -352,10 +283,7 @@ function StatCard({ icon, title, value }: StatCardProps) {
       <div>
         <h3>{title}</h3>
         <p>{value}</p>
-
-
       </div>
-      {children}
     </div>
   );
 }
