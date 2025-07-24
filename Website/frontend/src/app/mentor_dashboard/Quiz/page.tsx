@@ -60,9 +60,8 @@ export default function AllQuizzesPage() {
     <div className="quizzes-page-admin">
       <div className="admin-header">
         <h1>Quiz Overview</h1>
-        {/* This button now correctly links to the page for creating resources/quizzes */}
         <button className="create-quiz-btn" onClick={() => router.push('/mentor_dashboard/Overview')}>
-           Create Quizzes
+           +Create Quizzes
         </button>
       </div>
 
