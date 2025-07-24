@@ -75,8 +75,8 @@ const SidebarMentor = () => {
     <FaCalendarAlt /> My Availability
   </Link>
   <Link
-    href="/mentor_dashboard/bookings"
-    className={isActive('/mentor_dashboard/bookings') ? 'nav-item active' : 'nav-item'}
+    href="/mentor_dashboard/booking"
+    className={isActive('/mentor_dashboard/booking') ? 'nav-item active' : 'nav-item'}
   >
     <FaUserClock /> Bookings
   </Link>
