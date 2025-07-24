@@ -5,9 +5,8 @@ import './availability.css';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
 
-
 interface Slot {
-  id: number; 
+  id: number;
   date: string;
   time: string;
   status: 'Available' | 'Booked' | 'Cancelled';
@@ -35,16 +34,15 @@ export default function AvailabilityManager() {
   const [loading, setLoading] = useState(true);
 
   const timeSlots = useMemo(() => generateTimeSlots(), []);
-  
-  
+
   const fetchAvailability = async () => {
     try {
-        const response = await api.get('/api/mentor/availability');
-        setAllSlots(response.data);
+      const response = await api.get('/api/mentor/availability');
+      setAllSlots(response.data);
     } catch (error) {
-        toast.error("Could not load your availability.");
+      toast.error('Could not load your availability.');
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -52,7 +50,6 @@ export default function AvailabilityManager() {
     fetchAvailability();
   }, []);
 
-  
   const handleSlotClick = (time: string) => {
     setSelectedSlots(prev => prev.includes(time) ? prev.filter(t => t !== time) : [...prev, time]);
   };
@@ -61,36 +58,36 @@ export default function AvailabilityManager() {
     if (!selectedDate || selectedSlots.length === 0) return;
     const toastId = toast.loading('Saving slots...');
     try {
-        await api.post('/api/mentor/availability', { date: selectedDate, times: selectedSlots });
-        toast.success("Availability saved!", { id: toastId });
-        fetchAvailability(); 
-        setSelectedSlots([]); 
+      await api.post('/api/mentor/availability', { date: selectedDate, times: selectedSlots });
+      toast.success('Availability saved!', { id: toastId });
+      fetchAvailability();
+      setSelectedSlots([]);
     } catch (error) {
-        toast.error("Failed to save slots.", { id: toastId });
+      toast.error('Failed to save slots.', { id: toastId });
     }
   };
 
   const cancelSlot = async (id: number) => {
     const toastId = toast.loading('Cancelling slot...');
     try {
-        await api.put(`/api/mentor/availability/${id}`, { status: 'cancelled' });
-        toast.success("Slot cancelled.", { id: toastId });
-        fetchAvailability();
+      await api.put(`/api/mentor/availability/${id}`, { status: 'cancelled' });
+      toast.success('Slot cancelled.', { id: toastId });
+      fetchAvailability();
     } catch (error) {
-        toast.error("Failed to cancel slot.", { id: toastId });
+      toast.error('Failed to cancel slot.', { id: toastId });
     }
   };
 
   const deleteSlot = async (id: number) => {
-    if (window.confirm("Are you sure you want to permanently delete this slot?")) {
-        const toastId = toast.loading('Deleting slot...');
-        try {
-            await api.delete(`/api/mentor/availability/${id}`);
-            toast.success("Slot deleted.", { id: toastId });
-            fetchAvailability();
-        } catch (error) {
-            toast.error("Failed to delete slot.", { id: toastId });
-        }
+    if (window.confirm('Are you sure you want to permanently delete this slot?')) {
+      const toastId = toast.loading('Deleting slot...');
+      try {
+        await api.delete(`/api/mentor/availability/${id}`);
+        toast.success('Slot deleted.', { id: toastId });
+        fetchAvailability();
+      } catch (error) {
+        toast.error('Failed to delete slot.', { id: toastId });
+      }
     }
   };
 
@@ -104,7 +101,7 @@ export default function AvailabilityManager() {
     <div className="availability-container">
       <h2>Set Your Weekly Availability</h2>
       <div className="date-picker-container">
-        <input type="date" value={selectedDate} onChange={e => setSelectedDate(e.target.value)} className="date-picker"/>
+        <input type="date" value={selectedDate} onChange={e => setSelectedDate(e.target.value)} className="date-picker" />
       </div>
       {selectedDate && (
         <div className="slots-container">
@@ -153,4 +150,5 @@ export default function AvailabilityManager() {
       </table>
     </div>
   );
-};
+}
+
