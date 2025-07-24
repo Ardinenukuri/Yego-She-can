@@ -43,4 +43,37 @@ export const MentorController = {
             next(error);
         }
     },
+
+    getAvailability: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const mentorId = (req as any).user.id;
+            const slots = await MentorService.getAvailability(mentorId);
+            res.status(200).json(slots);
+        } catch (error) { next(error); }
+    },
+    addAvailability: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const mentorId = (req as any).user.id;
+            const { date, times } = req.body;
+            const newSlots = await MentorService.addAvailability(mentorId, date, times);
+            res.status(201).json({ message: `${newSlots.length} slot(s) saved successfully.`, slots: newSlots });
+        } catch (error) { next(error); }
+    },
+    updateSlotStatus: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const mentorId = (req as any).user.id;
+            const slotId = parseInt(req.params.id, 10);
+            const { status } = req.body;
+            await MentorService.updateSlotStatus(mentorId, slotId, status);
+            res.status(200).json({ message: 'Slot status updated.' });
+        } catch (error) { next(error); }
+    },
+    deleteSlot: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const mentorId = (req as any).user.id;
+            const slotId = parseInt(req.params.id, 10);
+            await MentorService.deleteSlot(mentorId, slotId);
+            res.status(200).json({ message: 'Slot deleted successfully.' });
+        } catch (error) { next(error); }
+    },
 };

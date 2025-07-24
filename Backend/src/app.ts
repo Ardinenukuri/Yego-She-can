@@ -12,6 +12,8 @@ import quizRoutes from './routes/quiz.routes';
 import dashboardRoutes from './routes/dashboard.routes';
 import mentorRoutes from './routes/mentor.routes';
 import certificateRoutes from './routes/certificateRoutes';
+import publicRoutes from './routes/public.routes';
+import learnerRoutes from './routes/learner.routes';
 
 
 
@@ -39,7 +41,8 @@ app.use('/api/quizzes', quizRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/mentor', mentorRoutes);
 app.use('/api/certificates', certificateRoutes);
-
+app.use('/api/public', publicRoutes);
+app.use('/api/learner', learnerRoutes);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
