@@ -18,4 +18,8 @@ router.get('/courses/:id/chapters', CourseController.getChaptersForCourse);
 router.get('/dashboard', MentorController.getDashboardData);
 router.post('/message-learner', validateRequest(messageLearnerSchema), MentorController.messageLearner);
 router.get('/courses/:courseId/details', MentorController.getCourseDetails);
+router.get('/availability', MentorController.getAvailability);
+router.post('/availability', MentorController.addAvailability);
+router.put('/availability/:id', MentorController.updateSlotStatus);
+router.delete('/availability/:id', MentorController.deleteSlot);
 export default router;

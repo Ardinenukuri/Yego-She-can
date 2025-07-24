@@ -1,4 +1,3 @@
-// src/routes/quiz.routes.ts
 import { Router } from 'express';
 import { QuizController } from '../controllers/quiz.controller';
 import { protect } from '../middlewares/auth.middleware';

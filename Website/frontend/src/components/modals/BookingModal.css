@@ -1,0 +1,117 @@
+.modal-overlay {
+  position: fixed; 
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(17, 24, 39, 0.65); 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; 
+  animation: modal-fade-in 0.3s ease; 
+}
+
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px; 
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  animation: modal-slide-up 0.3s ease-out; 
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  font-size: 1.5rem;
+  color: #111827;
+  font-weight: 600;
+}
+
+.modal-content .slot-details {
+  background-color: #f3f4f6; 
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin: 1.25rem 0;
+  line-height: 1.6;
+  color: #374151;
+  border-left: 4px solid #4c1d95; 
+}
+
+.modal-content label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.modal-content textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 1rem;
+  resize: vertical;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.modal-content textarea:focus {
+  outline: none;
+  border-color: #4c1d95;
+  box-shadow: 0 0 0 3px rgba(76, 29, 149, 0.15);
+}
+
+.modal-buttons {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.modal-buttons button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.modal-buttons button:active {
+  transform: translateY(1px);
+}
+
+.modal-buttons .cancel-btn {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+.modal-buttons .send-btn {
+  background-color: #4c1d95;
+  color: white;
+}
+
+.modal-buttons .send-btn:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@keyframes modal-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modal-slide-up {
+  from { 
+    opacity: 0;
+    transform: translateY(15px); 
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

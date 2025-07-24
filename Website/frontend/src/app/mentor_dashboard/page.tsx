@@ -226,8 +226,11 @@ export default function MentorOverviewPage() {
                 <td>{q.expectedStudents}</td>
                 <td>{q.totalStudents}</td>
                 <td className="passed">{q.passed}</td>
-                <td className="failed">{q.failed}</td>
-                <td className="missed">{q.expectedStudents - q.totalStudents > 0 ? q.expectedStudents - q.totalStudents : 0}</td>
+<td className="failed">{q.failed}</td>
+<td className="missed">
+  {q.expectedStudents - q.totalStudents > 0 ? q.expectedStudents - q.totalStudents : 0}
+</td>
+
               </tr>
             ))}
           </tbody>

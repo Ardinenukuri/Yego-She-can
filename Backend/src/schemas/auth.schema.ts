@@ -196,3 +196,10 @@ export const messageLearnerSchema = z.object({
     message: z.string().min(10, 'Message must be at least 10 characters long.'),
   }),
 });
+
+export const createBookingSchema = z.object({
+  body: z.object({
+    slotId: z.number().int().positive(),
+    topic: z.string().min(10, 'Please provide a brief topic for the meeting.'),
+  }),
+});
