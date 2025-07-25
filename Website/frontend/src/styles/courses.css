@@ -128,11 +128,10 @@
 /* Courses grid */
 .courses-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
   margin-top: 1rem;
-  margin-left: 9rem;
-  margin-right: 9rem;
+  margin-left: 5rem;
+  margin-right: 4rem;
 }
 
 /* Course Card */
@@ -145,7 +144,7 @@
   display: flex;
   flex-direction: column;
   animation: fadeInUp 0.5s ease-in-out;
-  width: 400px;
+  width: 360px;
   margin-bottom: 2rem;
 }
 
@@ -214,6 +213,9 @@
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  width: 12rem;
+
+
 }
 
 .course-btn:hover {
