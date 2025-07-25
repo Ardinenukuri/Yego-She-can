@@ -122,7 +122,7 @@ export default function CoursesPage() {
               
                     {course.isEnrolled ? (
                         <Link href={`/user-dashboard/your-courses/${course.id}`}>
-                            <button className="course-btn enrolled">Continue Learning</button>
+                            <button className="course-btn">Continue Learning</button>
                         </Link>
                     ) : (
                         <button className="course-btn" onClick={() => handleEnroll(course.id)}>
