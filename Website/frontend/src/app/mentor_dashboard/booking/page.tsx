@@ -1,20 +1,17 @@
-"use client";
+'use client'
 
-import React, { useState } from 'react';
-import {
-  Calendar,
-  Video,
-  MessageCircle,
-  XCircle,
-} from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Calendar, Video, MessageCircle, XCircle } from 'lucide-react';
 import './booking.css';
+import api from '@/lib/api';
+import toast from 'react-hot-toast';
 
-type BookingStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled';
+
+type BookingStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled' | 'scheduled';
 
 interface Booking {
   id: number;
-  menteeId: string;
-  menteeName: string;
+  menteeName: string; 
   date: string;
   time: string;
   status: BookingStatus;
@@ -22,51 +19,52 @@ interface Booking {
   notes?: string;
 }
 
-const BookingPage: React.FC = () => {
-  const [bookings, setBookings] = useState<Booking[]>([
-    {
-      id: 1,
-      menteeId: 'Afua-Hamissi',
-      menteeName: 'Afua Hamissi',
-      date: '2025-07-28',
-      time: '02:00 PM - 03:00 PM',
-      status: 'confirmed',
-      topic: 'Soap Making',
-      notes: 'Looking for help with how to make soaps',
-    },
-    {
-      id: 2,
-      menteeId: 'Diane-Ingabire',
-      menteeName: 'Ingabire Diane',
-      date: '2025-07-25',
-      time: '03:00 PM - 04:00 PM',
-      status: 'confirmed',
-      topic: 'Entrepreneur Skills',
-      notes: 'My Balance Sheet review and feedback',
-    },
-    {
-      id: 3,
-      menteeId: 'Ardine-Nukuri',
-      menteeName: 'Ardine Nukuri',
-      date: '2025-07-23',
-      time: '09:00 AM - 10:00 AM',
-      status: 'completed',
-      topic: 'Marketing Strategy',
-      notes: 'Transitioning from Entrepreneur Skills to Marketing Strategy',
-    },
-  ]);
+const GOOGLE_MEET_LINK = 'https://meet.google.com/mqt-yygo-jeo';
 
-  const updateBookingStatus = (bookingId: number, newStatus: BookingStatus): void => {
+export default function BookingPage() {
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState(true);
+
+
+  const fetchBookings = async () => {
+    try {
+        const response = await api.get('/api/bookings');
+        setBookings(response.data);
+    } catch (error) {
+        console.error("Failed to fetch bookings:", error);
+        toast.error("Could not load your bookings.");
+    } finally {
+        setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBookings();
+  }, []);
+
+  const updateBookingStatus = async (bookingId: number, newStatus: 'cancelled' | 'completed') => {
+    const originalBookings = [...bookings];
+
     setBookings(prev =>
       prev.map(booking =>
         booking.id === bookingId ? { ...booking, status: newStatus } : booking
       )
     );
+
+    try {
+        await api.put(`/api/bookings/${bookingId}/status`, { status: newStatus });
+        toast.success(`Session marked as ${newStatus}.`);
+    } catch (error) {
+        toast.error(`Failed to update session status.`);
+        
+        setBookings(originalBookings);
+    }
   };
 
   const getStatusClass = (status: BookingStatus): string => {
     switch (status) {
       case 'confirmed':
+      case 'scheduled':
         return 'badge badge-green';
       case 'pending':
         return 'badge badge-blue';
@@ -79,16 +77,26 @@ const BookingPage: React.FC = () => {
     }
   };
 
+  if (loading) {
+    return (
+        <div className="container">
+            <h1>Bookings</h1>
+            <div className="loading-state">Loading your booked sessions...</div>
+        </div>
+    );
+  }
+
   return (
     <div className="container">
       <h1>Bookings</h1>
 
       <div className="slot-list">
-        {bookings.map((booking) => (
+        {bookings.length > 0 ? bookings.map((booking) => (
           <div key={booking.id} className="slot-card">
             <div style={{ display: 'flex', gap: '10px' }}>
               <div className="mentee-avatar">
-                <span>{booking.menteeName.split(' ').map(n => n[0]).join('')}</span>
+
+                <span>{booking.menteeName?.split(' ').map(n => n[0]).join('') || '?'}</span>
               </div>
 
               <div>
@@ -111,9 +119,11 @@ const BookingPage: React.FC = () => {
             </div>
 
             <div className="slot-actions">
-              {booking.status === 'confirmed' && (
+              {(booking.status === 'confirmed' || booking.status === 'scheduled') && (
                 <>
-                  <button className="primary-btn">Join Session</button>
+                  <a href={GOOGLE_MEET_LINK} target="_blank" rel="noopener noreferrer" className="primary-btn">
+                    Join Session
+                  </a>
                   <button
                     className="danger-btn"
                     onClick={() => updateBookingStatus(booking.id, 'cancelled')}
@@ -126,12 +136,18 @@ const BookingPage: React.FC = () => {
               {booking.status === 'cancelled' && (
                 <span className="badge badge-red">Session Cancelled</span>
               )}
+               {booking.status === 'completed' && (
+                <span className="badge badge-gray">Session Completed</span>
+              )}
             </div>
           </div>
-        ))}
+        )) : (
+            <div className="empty-state">
+                <p>You have no scheduled bookings.</p>
+            </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default BookingPage;
