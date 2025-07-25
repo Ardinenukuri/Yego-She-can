@@ -26,8 +26,8 @@ interface Quiz {
   id: number;
   title: string;
   course: string;
-  expected: number;
-  attempted: number;
+  expectedStudents: number;
+  totalStudents: number;
   passed: number;
   failed: number;
 }
@@ -68,7 +68,6 @@ export default function MentorOverviewPage() {
         const data = response.data;
         setKpis(data.kpis);
         setCourses(data.courses);
-        setQuizzes(data.quizzes);
         setBookings(data.bookings);
       } catch (error) {
         console.error("Failed to fetch mentor dashboard data:", error);
@@ -81,20 +80,34 @@ export default function MentorOverviewPage() {
     fetchDashboardData();
   }, []); 
 
-
+  useEffect(() => {
+    const fetchQuizOverview = async () => {
+        try {
+            setLoading(true);
+            const response = await api.get('/api/mentor/quizzes/overview');
+            setQuizzes(response.data);
+        } catch (error) {
+            console.error("Failed to fetch quiz overview:", error);
+            toast.error("Could not load quiz overview data.");
+        } finally {
+            setLoading(false);
+        }
+    };
+    fetchQuizOverview();
+  }, []);
   const filteredCourses = useMemo(() => courses.filter(
     (c) =>
       c.title.toLowerCase().includes(courseSearch.toLowerCase()) &&
       (!courseLevel || c.level === courseLevel)
   ), [courses, courseSearch, courseLevel]);
 
-  const filteredQuizzes = useMemo(() => quizzes.filter(
+  const filteredQuizzes = useMemo(() => (quizzes || []).filter(
     (q) =>
       q.title.toLowerCase().includes(quizSearch.toLowerCase()) &&
       (!quizFilter || q.course === quizFilter)
   ), [quizzes, quizSearch, quizFilter]);
 
-  const filteredBookings = useMemo(() => bookings.filter(
+  const filteredBookings = useMemo(() => (bookings || []).filter(
     (b) =>
       b.student.toLowerCase().includes(bookingSearch.toLowerCase()) &&
       (!bookingFilter || b.course === bookingFilter)
@@ -210,11 +223,14 @@ export default function MentorOverviewPage() {
               <tr key={q.id || i}>
                 <td>{q.title}</td>
                 <td>{q.course}</td>
-                <td>{q.expected}</td>
-                <td>{q.attempted}</td>
+                <td>{q.expectedStudents}</td>
+                <td>{q.totalStudents}</td>
                 <td className="passed">{q.passed}</td>
-                <td className="failed">{q.failed}</td>
-                <td className="missed">{q.expected - q.attempted > 0 ? q.expected - q.attempted : 0}</td>
+<td className="failed">{q.failed}</td>
+<td className="missed">
+  {q.expectedStudents - q.totalStudents > 0 ? q.expectedStudents - q.totalStudents : 0}
+</td>
+
               </tr>
             ))}
           </tbody>
