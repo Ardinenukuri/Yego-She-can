@@ -123,10 +123,6 @@ const BookingPage: React.FC = () => {
                 </>
               )}
 
-              {booking.status === 'completed' && (
-                <button className="badge badge-gray">View Notes</button>
-              )}
-
               {booking.status === 'cancelled' && (
                 <span className="badge badge-red">Session Cancelled</span>
               )}
