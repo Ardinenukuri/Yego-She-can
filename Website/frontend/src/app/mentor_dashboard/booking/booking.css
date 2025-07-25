@@ -1,105 +1,149 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-    padding: 20px;
-  }
-  
-  .container {
-    max-width: 900px;
-    margin: auto;
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-  }
-  
-  h1 {
-    font-size: 24px;
-    margin-bottom: 16px;
-  }
-  
-  .primary-btn, .success-btn, .danger-btn {
-    padding: 8px 12px;
-    border: none;
-    cursor: pointer;
-    margin-top: 10px;
-    border-radius: 4px;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-  }
-  
-  .primary-btn { background: #6b21a8; color: white; }
-  .success-btn { background:#6b21a8; color: white; }
-  .danger-btn { background: #6b21a8; color: white; }
-  /* .badge-gray{ background: #6b21a8; color: white;} */
-  
-  .form-container {
-    margin: 20px 0;
-    padding: 10px;
-    background: #eef2f5;
-    border-radius: 6px;
-  }
-  
-  .form-grid {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  
-  .slot-list {
-    margin-top: 20px;
-    display: grid;
-    gap: 10px;
-  }
-  
-  .slot-card {
-    border: 1px solid #ddd;
-    padding: 10px;
-    border-radius: 6px;
-    background: #fafafa;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .badge {
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    margin-right: 5px;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-  }
-  
-  .badge-blue { background: #e2e3e5; color: #6b21a8; }
-  .badge-gray { background: #e2e3e5; color:  #6b21a8; }
-  .badge-green { background:#e2e3e5; color: #6b21a8; }
-  .badge-red { background: #e2e3e5; color:#6b21a8;}
-  
-  .slot-actions {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
+/* Container layout */
+.container {
+  max-width: 1200px;
+  margin: 1rem auto;
+  padding: 1.5rem;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fafafa;
+}
 
-  .booking-img {
-    width: 60px;
-    height: 40px;
-    object-fit: cover;
-    border-radius: 4px;
-  }
-  .mentee-avatar {
-    width: 40px;
-    height: 40px;
-    background-color: #e8d6f7;
-    color: #6b21a8;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    font-size: 14px;
-  }
-  
+/* Page title */
+.container h1 {
+  font-size: 2.2rem;
+  color: #4c1d95;
+  margin-bottom: 2rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Slot cards */
+.slot-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.slot-card {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 10px rgba(76, 29, 149, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  transition: 0.2s ease;
+}
+
+.slot-card:hover {
+  box-shadow: 0 6px 15px rgba(76, 29, 149, 0.1);
+}
+
+/* Mentee Avatar */
+.mentee-avatar {
+  width: 50px;
+  height: 50px;
+  background-color: #ede9fe;
+  color: #4c1d95;
+  font-weight: bold;
+  font-size: 1.1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}
+
+/* Booking content */
+.slot-card h4 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #4c1d95;
+}
+
+.slot-card .small {
+  font-size: 0.9rem;
+  color: #4b5563;
+  margin: 0.3rem 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.slot-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Status badges */
+.badge {
+  font-size: 0.75rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+  display: inline-block;
+  margin-top: 0.25rem;
+}
+
+.badge-green {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.badge-blue {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.badge-gray {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+.badge-red {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* Buttons */
+button {
+  all: unset;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: background-color 0.2s ease;
+}
+
+.success-btn {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.success-btn:hover {
+  background-color: #a7f3d0;
+}
+
+.danger-btn {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.danger-btn:hover {
+  background-color: #fecaca;
+}
+
+.primary-btn {
+  background-color: #4c1d95;
+  color: white;
+}
+
+.primary-btn:hover {
+  background-color: #5b21b6;
+}
