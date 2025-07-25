@@ -1,4 +1,4 @@
-/* AvailabilityManager.css */
+
 
 .availability-container {
   max-width: 1200px;
@@ -41,7 +41,6 @@
   text-align: center;
 }
 
-/* Time slots grid */
 .slots-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
@@ -100,7 +99,7 @@
   background-color: #4b1c88;
 }
 
-/* Filter bar: title left, dropdown right */
+
 .filter-bar {
   display: flex;
   justify-content: space-between;
@@ -128,7 +127,7 @@
   text-align: center;
 }
 
-/* Table styling matching your .course-table */
+
 
 .slots-table {
   width: 100%;
@@ -173,7 +172,7 @@
   transition: background-color 0.3s ease;
 }
 
-/* Buttons in table */
+
 
 .cancel-button,
 .delete-button {
@@ -213,7 +212,7 @@
   color: #fff;
 }
 
-/* Responsive */
+
 
 @media (max-width: 600px) {
   .slots-container {
