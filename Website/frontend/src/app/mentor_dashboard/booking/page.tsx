@@ -5,14 +5,11 @@ import {
   Calendar,
   Video,
   MessageCircle,
-  CheckCircle,
   XCircle,
 } from 'lucide-react';
 import './booking.css';
 
-
 type BookingStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled';
-type BookingType = 'video' | 'chat';
 
 interface Booking {
   id: number;
@@ -43,9 +40,9 @@ const BookingPage: React.FC = () => {
       menteeName: 'Ingabire Diane',
       date: '2025-07-25',
       time: '03:00 PM - 04:00 PM',
-      status: 'pending',
-      topic: 'Entreprenuer Skills',
-      notes: '  My Balance Sheet review and feedback',
+      status: 'confirmed',
+      topic: 'Entrepreneur Skills',
+      notes: 'My Balance Sheet review and feedback',
     },
     {
       id: 3,
@@ -55,7 +52,7 @@ const BookingPage: React.FC = () => {
       time: '09:00 AM - 10:00 AM',
       status: 'completed',
       topic: 'Marketing Strategy',
-      notes: 'Transitioning from Entreprenuer Skills to Marketing Strategy',
+      notes: 'Transitioning from Entrepreneur Skills to Marketing Strategy',
     },
   ]);
 
@@ -90,12 +87,11 @@ const BookingPage: React.FC = () => {
         {bookings.map((booking) => (
           <div key={booking.id} className="slot-card">
             <div style={{ display: 'flex', gap: '10px' }}>
-            <div className="mentee-avatar">
-                  <span>{booking.menteeName.split(' ').map(n => n[0]).join('')}</span>
-                  </div>
+              <div className="mentee-avatar">
+                <span>{booking.menteeName.split(' ').map(n => n[0]).join('')}</span>
+              </div>
 
               <div>
-              
                 <h4>{booking.menteeName}</h4>
                 <span className={getStatusClass(booking.status)}>
                   {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
@@ -104,7 +100,7 @@ const BookingPage: React.FC = () => {
                   <Calendar size={14} /> {booking.date} at {booking.time}
                 </p>
                 <p className="small">
-                  <Video size={14} /> {booking.topic} -{' '}
+                  <Video size={14} /> {booking.topic}
                 </p>
                 {booking.notes && (
                   <p className="small">
@@ -115,29 +111,24 @@ const BookingPage: React.FC = () => {
             </div>
 
             <div className="slot-actions">
-              {booking.status === 'pending' && (
+              {booking.status === 'confirmed' && (
                 <>
-                  <button
-                    className="success-btn"
-                    onClick={() => updateBookingStatus(booking.id, 'confirmed')}
-                  >
-                    <CheckCircle size={14} /> Accept
-                  </button>
+                  <button className="primary-btn">Join Session</button>
                   <button
                     className="danger-btn"
                     onClick={() => updateBookingStatus(booking.id, 'cancelled')}
                   >
-                    <XCircle size={14} /> Decline
+                    <XCircle size={14} /> Cancel
                   </button>
                 </>
               )}
 
-              {booking.status === 'confirmed' && (
-                <button className="primary-btn">Join Session</button>
-              )}
-
               {booking.status === 'completed' && (
                 <button className="badge badge-gray">View Notes</button>
+              )}
+
+              {booking.status === 'cancelled' && (
+                <span className="badge badge-red">Session Cancelled</span>
               )}
             </div>
           </div>
