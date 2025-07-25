@@ -14,6 +14,7 @@ import mentorRoutes from './routes/mentor.routes';
 import certificateRoutes from './routes/certificateRoutes';
 import publicRoutes from './routes/public.routes';
 import learnerRoutes from './routes/learner.routes';
+import bookingRoutes from './routes/booking.routes';
 
 
 
@@ -43,6 +44,7 @@ app.use('/api/mentor', mentorRoutes);
 app.use('/api/certificates', certificateRoutes);
 app.use('/api/public', publicRoutes);
 app.use('/api/learner', learnerRoutes);
+app.use('/api/bookings', bookingRoutes);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
