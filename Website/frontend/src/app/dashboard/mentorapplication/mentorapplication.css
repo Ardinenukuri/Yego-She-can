@@ -1,61 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato&family=Poppins:wght@400;600;700&display=swap');
+
+/* Base */
+body {
+  font-family: 'Lato', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 .mentor-app-container {
-  padding: 2rem;
+  padding: 2rem 1rem;
   max-width: 1200px;
   margin: 0 auto;
-  color: #4c1d95; /* Purple shade */
+  color: #4c1d95;
 }
 
 .page-title {
-  font-size: 2rem;
-  font-weight: bold;
+  font-size: 2.5rem;
+  font-weight: 700;
   margin-bottom: 2rem;
-  color: #4c1d95;
   text-align: center;
+  color: #4c1d95;
 }
 
 .session-cards {
   display: grid;
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
 }
 
 .session-card {
   background-color: #f9f9ff;
   border: 1px solid #e0d7f8;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 2px 5px rgba(76, 29, 149, 0.05);
+  /* box-shadow: 0 4px 12px rgba(76, 29, 149, 0.1); */
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.session-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(76, 29, 149, 0.15);
 }
 
 .student-name {
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   font-weight: 600;
   color: #4c1d95;
+  margin-bottom: 0.5rem;
 }
 
 .session-detail {
-  margin: 0.4rem 0;
-  color: #333;
+  margin: 0.3rem 0;
+  color: #444;
+  font-size: 0.95rem;
+  margin-top: 1rem;
 }
 
 .session-message {
   margin-top: 1rem;
   font-style: italic;
-  color: #555;
+  color: #666;
+  font-size: 0.95rem;
 }
 
 .action-buttons {
   margin-top: 1.5rem;
   display: flex;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: 0.8rem;
 }
 
 .approve-btn,
-.decline-btn {
+.decline-btn,
+.cv-btn {
   padding: 0.5rem 1.2rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-weight: 500;
   cursor: pointer;
+  font-size: 0.95rem;
+  transition: background-color 0.2s, transform 0.2s;
 }
 
 .approve-btn {
@@ -64,25 +88,32 @@
 }
 .approve-btn:hover {
   background-color: #36146a;
+  transform: scale(1.03);
 }
+
 .decline-btn {
   background-color: #f87171;
   color: white;
 }
-
 .decline-btn:hover {
-  background-color: #ff4848;
-}
-.cv-btn {
-  padding: 0.5rem 1.2rem;
-  background-color: green;
-  color: #fff;
-  border-radius: 6px;
-  text-decoration: none;
-  font-weight: 500;
-  transition: background-color 0.2s;
+  background-color: #e63946;
+  transform: scale(1.03);
 }
 
+.cv-btn {
+  background-color: #10b981;
+  color: #fff;
+  text-decoration: none;
+}
 .cv-btn:hover {
-  background-color: rgb(1, 93, 1);
+  background-color: #059669;
+  transform: scale(1.03);
+}
+
+/* Optional loading spinner styling */
+.loading-text {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #4c1d95;
+  margin-top: 2rem;
 }

@@ -90,7 +90,7 @@ export default function UploadCourseResourcePage() {
 
       toast.success('Course resource uploaded successfully!', { id: toastId });
       // Redirect back to the main mentor courses page on success
-      router.push('mentor_dashboard/AllCourses');
+      router.push('/AllCourses');
       
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || 'Upload failed. Please check your inputs.';
