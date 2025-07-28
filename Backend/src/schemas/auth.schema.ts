@@ -167,7 +167,10 @@ export const mentorApplicationSchema = z.object({
   body: z.object({
     name: z.string().min(3, 'Full name is required.'),
     email: z.string().email('A valid email address is required.'),
+    phone: z.string().min(10, 'A valid phone number is required.'),
     expertise: z.string().min(5, 'Please specify your field of expertise.'),
+    education: z.string().min(10, 'Please provide your educational background.'),
+    experience: z.string().min(20, 'Please describe your work experience.'),
     message: z.string().min(20, 'Please tell us more about why you want to be a mentor.'),
   }),
 });

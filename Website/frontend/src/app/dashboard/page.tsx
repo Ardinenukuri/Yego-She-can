@@ -144,8 +144,12 @@ export default function DashboardHome() {
     return result;
   }, [courses, searchTerm, courseFilter, courseSort]);
 
+
   const filteredMentors = useMemo(() => {
-    return mentors.filter(mentor => mentor.name.toLowerCase().includes(mentorSearchTerm.toLowerCase()));
+    return mentors.filter((mentor) =>
+
+      mentor.name && mentor.name.toLowerCase().includes(mentorSearchTerm.toLowerCase())
+    );
   }, [mentors, mentorSearchTerm]);
 
   const filteredStudents = useMemo(() => {

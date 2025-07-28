@@ -1,54 +1,76 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './mentorapplication.css'
+import api from '@/lib/api'
+import toast from 'react-hot-toast'
 
-const dummyApplications = [
-  {
-    mentorName: 'Diana K.',
-    email: 'diana.k@example.com',
-    education: 'BSc in Business Administration, University of Rwanda',
-    experience: '5 years running a soap-making business and conducting local training workshops.',
-    expertise: 'Soap Making & Marketing',
-    motivation: 'I believe I can help young entrepreneurs avoid common pitfalls and grow confidently.',
-    cvLink: '/cvs/diana-k.pdf',
-  },
-  {
-    mentorName: 'Beatrice A.',
-    email: 'beatrice.a@example.com',
-    education: 'MBA in Agribusiness, Makerere University',
-    experience: '7 years in cooperative management and global coffee export projects.',
-    expertise: 'Coffee Processing & Export',
-    motivation: 'I want to give back by mentoring young women in sustainable coffee businesses.',
-    cvLink: '/cvs/beatrice-a.pdf',
-  },
-  {
-    mentorName: 'Nancy B.',
-    email: 'nancy.b@example.com',
-    education: 'BA in Marketing, University of Nairobi',
-    experience: '6+ years in local and international digital marketing campaigns.',
-    expertise: 'Digital Marketing',
-    motivation: 'I want to help women scale their products using affordable online tools.',
-    cvLink: '/cvs/nancy-b.pdf',
-  },
-]
+// --- Type Definition ---
+interface Application {
+    id: number;
+    name: string;
+    email: string;
+    education: string;
+    experience: string;
+    expertise: string;
+    motivation: string;
+    cv_path: string;
+}
 
 const MentorApplicationPage = () => {
-  const [applications, setApplications] = useState(dummyApplications)
+  const [applications, setApplications] = useState<Application[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleDecision = (index: number, action: 'approve' | 'decline') => {
-    const mentor = applications[index].mentorName
-    alert(`You have ${action}d ${mentor}'s application.`)
-    setApplications(prev => prev.filter((_, i) => i !== index))
+  // --- Data Fetching ---
+  const fetchApplications = async () => {
+    try {
+        const response = await api.get('/api/pm/applications');
+        setApplications(response.data);
+    } catch (error) {
+        toast.error("Could not load mentor applications.");
+    } finally {
+        setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchApplications();
+  }, []);
+
+  // --- Action Handler ---
+  const handleDecision = async (applicationId: number, applicantName: string, decision: 'approved' | 'declined') => {
+    if (!window.confirm(`Are you sure you want to ${decision} the application for ${applicantName}?`)) {
+        return;
+    }
+    
+    const toastId = toast.loading(`Processing application...`);
+    try {
+        await api.put(`/api/pm/applications/${applicationId}/process`, { decision });
+        toast.success(`Application for ${applicantName} has been ${decision}.`, { id: toastId });
+        // Remove the processed application from the list for an instant UI update
+        setApplications(prev => prev.filter(app => app.id !== applicationId));
+    } catch (error: any) {
+        const message = error.response?.data?.message || "Failed to process application.";
+        toast.error(message, { id: toastId });
+    }
+  }
+
+  if (loading) {
+    return (
+        <div className="mentor-app-container">
+            <h1 className="page-title">Mentor Applications</h1>
+            <div className="loading-state">Loading applications...</div>
+        </div>
+    );
   }
 
   return (
     <div className="mentor-app-container">
       <h1 className="page-title">Mentor Applications</h1>
       <div className="session-cards">
-        {applications.map((app, index) => (
-          <div key={index} className="session-card">
-            <h2 className="student-name">{app.mentorName}</h2>
+        {applications.length > 0 ? applications.map((app) => (
+          <div key={app.id} className="session-card">
+            <h2 className="student-name">{app.name}</h2>
             <p className="session-detail"><strong>Email:</strong> {app.email}</p>
             <p className="session-detail"><strong>Educational Background:</strong> {app.education}</p>
             <p className="session-detail"><strong>Work Experience:</strong> {app.experience}</p>
@@ -57,7 +79,7 @@ const MentorApplicationPage = () => {
 
             <div className="action-buttons">
               <a
-                href={app.cvLink}
+                href={`${process.env.NEXT_PUBLIC_API_URL}${app.cv_path}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="cv-btn"
@@ -66,19 +88,23 @@ const MentorApplicationPage = () => {
               </a>
               <button
                 className="approve-btn"
-                onClick={() => handleDecision(index, 'approve')}
+                onClick={() => handleDecision(app.id, app.name, 'approved')}
               >
                 Approve
               </button>
               <button
                 className="decline-btn"
-                onClick={() => handleDecision(index, 'decline')}
+                onClick={() => handleDecision(app.id, app.name, 'declined')}
               >
                 Decline
               </button>
             </div>
           </div>
-        ))}
+        )) : (
+            <div className="empty-state">
+                <p>There are no pending mentor applications.</p>
+            </div>
+        )}
       </div>
     </div>
   )
