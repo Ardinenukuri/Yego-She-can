@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import "../../../styles/PhysicalProgramsPage.css";
 import {
@@ -14,6 +14,36 @@ import {
 } from "lucide-react";
 
 export default function PhysicalProgramsPage() {
+  const [countdown, setCountdown] = useState("");
+
+  useEffect(() => {
+    const targetDate = new Date();
+    targetDate.setDate(targetDate.getDate() + 18); 
+
+    const updateCountdown = () => {
+      const now = new Date().getTime();
+      const distance = targetDate.getTime() - now;
+
+      if (distance <= 0) {
+        setCountdown("The lesson has started!");
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor(
+        (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+      );
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      setCountdown(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   const programs = [
     {
       id: 1,
@@ -22,9 +52,8 @@ export default function PhysicalProgramsPage() {
         "Learn the art of handcrafted soap making from natural ingredients",
       duration: "20 days",
       schedule: "Weekends",
-      // capacity: "12 participants",
       price: "Free",
-      nextSession: "Comming soon",
+      nextSession: " 15 August",
       location: "Yego SheCan Training Center",
       image:
         "https://c.ndtvimg.com/2020-01/vu8rka3g_soap_625x300_08_January_20.jpg",
@@ -50,7 +79,6 @@ export default function PhysicalProgramsPage() {
         "Master coffee processing, roasting, and business development",
       duration: "3 days",
       schedule: "Weekends",
-      // capacity: "10 participants",
       price: "Free",
       nextSession: "Coming soon",
       location: "Yego SheCan Training Center",
@@ -76,29 +104,37 @@ export default function PhysicalProgramsPage() {
   return (
     <div className="page-wrapper">
       <div className="pageWrapper">
-<section className="heroSection">
-  <div className="heroOverlay">
-    <div className="heroContent">
-      <h1>
-        Hands-On <span>Training</span> Programs
-      </h1>
-      <p>
-        Learn practical skills through our intensive hands-on workshops.
-        Master soap making and coffee processing while building the
-        foundation for your own business.
-      </p>
-      <div className="heroButtons">
-        <Link href="#programs" className="primaryButton">
-          View Programs
-        </Link>
-        <Link href="/register" className="outlineButton">
-          Register Now
-        </Link>
-      </div>
-    </div>
-  </div>
-</section>
+        <section className="heroSection">
+          <div className="heroOverlay">
+            <div className="heroContent">
+              <h1>
+                Hands-On <span>Training</span> Programs
+              </h1>
+              <p>
+                Learn practical skills through our intensive hands-on workshops.
+                Master soap making and coffee processing while building the
+                foundation for your own business.
+              </p>
 
+              {/* Countdown Timer */}
+              <div className="countdown-timer">
+                <strong>Soap Making Lesson starts in:</strong>
+                <div style={{ fontSize: "1.5rem", marginTop: "0.5rem" }}>
+                  {countdown}
+                </div>
+              </div>
+
+              <div className="heroButtons">
+                <Link href="#programs" className="primaryButton">
+                  View Programs
+                </Link>
+                <Link href="/register" className="outlineButton">
+                  Register Now
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
 
         <section className="whyChooseSection">
           <h2>Why Choose Our Physical Programs?</h2>
