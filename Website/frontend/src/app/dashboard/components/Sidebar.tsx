@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { FaHome, FaBook, FaUserFriends, FaCog, FaSignOutAlt } from 'react-icons/fa'
+import { FaHome, FaBook, FaUserFriends, FaCog, FaSignOutAlt, FaClipboardList  } from 'react-icons/fa'
 import './sidebar.css'
 import Image from 'next/image'
 import logo from '../../../../public/yego-shecan-logo.png'
@@ -33,6 +33,9 @@ const Sidebar = () => {
                 </Link>
                 <Link href="/dashboard/mentors" className={isActive('/dashboard/mentors') ? 'nav-item active' : 'nav-item'}>
                     <FaUserFriends /> Mentors
+                </Link>
+                <Link href="/dashboard/mentorapplication" className={isActive('/dashboard/mentorapplication') ? 'nav-item active' : 'nav-item'}>
+                    <FaClipboardList  /> Mentor's Application
                 </Link>
                 <Link href="/dashboard/users" className={isActive('/dashboard/users') ? 'nav-item active' : 'nav-item'}>
                     <FaUserFriends /> Learners
