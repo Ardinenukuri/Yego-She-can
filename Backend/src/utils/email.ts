@@ -5,6 +5,11 @@ interface EmailOptions {
     subject: string;
     text: string;
     html: string;
+    attachments?: { 
+        filename: string;
+        content: Buffer;
+        contentType: string;
+    }[]; 
 }
 
 const sendEmail = async (options: EmailOptions) => {
@@ -34,6 +39,7 @@ const sendEmail = async (options: EmailOptions) => {
         subject: options.subject,
         text: options.text,
         html: options.html,
+        attachments: options.attachments,
     };
 
     const info = await transporter.sendMail(mailOptions);

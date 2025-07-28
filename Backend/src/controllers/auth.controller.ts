@@ -203,12 +203,20 @@ export const AuthController = {
     applyToBeMentor: async (req: Request, res: Response, next: NextFunction) => {
         try {
             const applicationData = req.body;
-            await AuthService.applyToBeMentor(applicationData);
-            res.status(200).json({ message: 'Your application has been submitted successfully. Our team will review it and get back to you.' });
+            const cvFile = req.file; 
+
+            console.log("[Controller] Received file object:", cvFile);
+            if (!cvFile) {
+                console.error("[Controller] WARNING: CV file is undefined. Check the frontend field name and multer config.");
+            }
+
+            await AuthService.applyToBeMentor(applicationData, cvFile);
+            res.status(200).json({ message: 'Your application has been submitted successfully.' });
         } catch (error) {
             next(error);
         }
     },
+
 
     handleContactForm: async (req: Request, res: Response, next: NextFunction) => {
         try {

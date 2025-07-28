@@ -6,6 +6,7 @@ import { protect } from '../middlewares/auth.middleware';
 import { upload } from '../middlewares/upload.middleware';
 import { authorize } from '../middlewares/authorize.middleware';
 import { inviteMentorSchema } from '../schemas/auth.schema';
+import { cvUpload } from '../middlewares/cvUpload.middleware';
 
 const router = Router();
 
@@ -15,7 +16,7 @@ router.get('/verify/:token', AuthController.verifyEmail);
 router.post('/forgot-password', validateRequest(forgotPasswordSchema), AuthController.forgotPassword);
 router.put('/reset-password/:token', validateRequest(resetPasswordSchema), AuthController.resetPassword);
 router.put('/complete-registration/:token', validateRequest(completeRegistrationSchema), AuthController.completeRegistration);
-router.post('/apply-mentor', validateRequest(mentorApplicationSchema), AuthController.applyToBeMentor);
+router.post('/apply-mentor', cvUpload.single('cv'), validateRequest(mentorApplicationSchema),AuthController.applyToBeMentor);
 router.post('/contact', validateRequest(contactFormSchema), AuthController.handleContactForm);
 
 

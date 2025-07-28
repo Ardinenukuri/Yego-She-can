@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import fs from 'fs/promises';
 import pool from '../config/db';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -7,6 +8,18 @@ import sendEmail from '../utils/email';
 import { UserRegistrationData } from '../types/user.types';
 import { RegisterBody } from '../schemas/auth.schema';
 import { CourseService } from './CourseService';
+import path from 'path';
+
+
+interface MentorApplicationData {
+    name: string;
+    email: string;
+    phone: string;
+    expertise: string;
+    education: string;
+    experience: string;
+    message: string;
+}
 
 export const AuthService = {
     register: async (userData: RegisterBody, req: Request) => {
@@ -539,8 +552,31 @@ export const AuthService = {
         return rows;
     },
 
-    applyToBeMentor: async (applicationData: { name: string; email: string; expertise: string; message: string }) => {
-        const { name, email, expertise, message } = applicationData;
+    applyToBeMentor: async (applicationData: MentorApplicationData, cvFile?: Express.Multer.File) => {
+        const { name, email, phone, expertise, education, experience, message } = applicationData;
+
+        let cvPath: string | undefined = undefined;
+        if (cvFile) {
+            // Save the CV to a public directory
+            const uploadDir = 'uploads/cvs';
+            await fs.mkdir(uploadDir, { recursive: true });
+            const filename = `cv-${Date.now()}-${cvFile.originalname}`;
+            const fullPath = path.join(uploadDir, filename);
+            await fs.writeFile(fullPath, cvFile.buffer);
+            cvPath = `/${uploadDir}/${filename}`; // Web-accessible path
+        }
+        
+        // Use ON CONFLICT to update an existing application if the email is the same
+        const insertQuery = `
+            INSERT INTO mentor_applications (name, email, phone, expertise, education, experience, message, cv_path, status)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'pending')
+            ON CONFLICT (email) DO UPDATE SET
+                name = EXCLUDED.name, phone = EXCLUDED.phone, expertise = EXCLUDED.expertise,
+                education = EXCLUDED.education, experience = EXCLUDED.experience, message = EXCLUDED.message,
+                cv_path = EXCLUDED.cv_path, status = 'pending', submitted_at = NOW();
+        `;
+        await pool.query(insertQuery, [name, email, phone, expertise, education, experience, message, cvPath]);
+
 
         const { rows: programManagers } = await pool.query(
             "SELECT email FROM users WHERE role = 'program manager' AND status = 'active'"
@@ -553,32 +589,55 @@ export const AuthService = {
 
         const recipientEmails = programManagers.map(pm => pm.email);
         const subject = `New Mentor Application: ${name}`;
+        
         const emailBody = `
             <h1>New Mentor Application Received</h1>
-            <p>A new candidate has applied to become a mentor on the YegoSheCan platform.</p>
+            <p>A new candidate has applied to become a mentor on the YegoSheCan platform. Their CV is attached to this email.</p>
             <hr>
             <h2>Applicant Details:</h2>
-            <ul>
-                <li><strong>Name:</strong> ${name}</li>
-                <li><strong>Email:</strong> ${email}</li>
-                <li><strong>Field of Expertise:</strong> ${expertise}</li>
-            </ul>
-            <h2>Message:</h2>
+            <table style="width:100%; border-collapse: collapse;">
+                <tr style="background-color:#f9f9f9;"><td style="padding:8px;border:1px solid #ddd;"><strong>Name:</strong></td><td style="padding:8px;border:1px solid #ddd;">${name}</td></tr>
+                <tr><td style="padding:8px;border:1px solid #ddd;"><strong>Email:</strong></td><td style="padding:8px;border:1px solid #ddd;">${email}</td></tr>
+                <tr style="background-color:#f9f9f9;"><td style="padding:8px;border:1px solid #ddd;"><strong>Phone:</strong></td><td style="padding:8px;border:1px solid #ddd;">${phone}</td></tr>
+                <tr><td style="padding:8px;border:1px solid #ddd;"><strong>Field of Expertise:</strong></td><td style="padding:8px;border:1px solid #ddd;">${expertise}</td></tr>
+                <tr style="background-color:#f9f9f9;"><td style="padding:8px;border:1px solid #ddd;"><strong>Education:</strong></td><td style="padding:8px;border:1px solid #ddd;">${education}</td></tr>
+            </table>
+            
+            <h2>Work Experience:</h2>
+            <p style="white-space: pre-wrap; background-color: #f9f9f9; padding: 15px; border-radius: 5px;">${experience}</p>
+
+            <h2>Motivation Message:</h2>
             <p style="white-space: pre-wrap; background-color: #f9f9f9; padding: 15px; border-radius: 5px;">${message}</p>
             <hr>
             <p><strong>Next Steps:</strong> To invite this person as a mentor, please log in to your Program Manager dashboard and use the "Invite Mentor" feature with their email address.</p>
         `;
+        
+        console.log("[Service] Received file object:", cvFile);
+
+        const attachments = [];
+        if (cvFile) {
+            attachments.push({
+                filename: cvFile.originalname,
+                content: cvFile.buffer,
+                contentType: cvFile.mimetype,
+            });
+            console.log("[Service] Attachment object created:", attachments[0]);
+        } else {
+            console.warn("[Service] No CV file was provided to the service.");
+        
+        }
 
         await sendEmail({
-            to: recipientEmails.join(','), 
+            to: recipientEmails.join(','),
             subject: subject,
-            text: `New mentor application from ${name} (${email}). Expertise: ${expertise}. Message: ${message}`,
+            text: `New mentor application from ${name} (${email}). Their CV is attached.`,
             html: emailBody,
+            attachments: attachments, 
         });
 
         return { success: true };
     },
-
+    
     handleContactForm: async (contactData: { name: string; email: string; phone?: string; category: string; message: string }) => {
         const { name, email, phone, category, message } = contactData;
 
