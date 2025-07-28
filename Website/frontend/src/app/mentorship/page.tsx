@@ -1,85 +1,83 @@
-'use client'
+'use client';
 
-import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react'
-import Image from 'next/image'
-import { CheckCircle } from 'lucide-react'
-import { FaUserCheck, FaCalendarAlt, FaHandsHelping } from 'react-icons/fa'
-import toast from 'react-hot-toast'
-import api from '@/lib/api'
-import './mentorship.css'
-import heroImage from '../../../public/mentorship.jpg'
-
-
-interface Course {
-    id: number;
-    title: string;
-}
+import React, { useState, ChangeEvent, FormEvent } from 'react';
+import Image from 'next/image';
+import { CheckCircle } from 'lucide-react';
+import { FaUserCheck, FaCalendarAlt, FaHandsHelping } from 'react-icons/fa';
+import toast from 'react-hot-toast';
+import api from '@/lib/api';
+import './mentorship.css';
+import heroImage from '../../../public/mentorship.jpg';
 
 const MentorshipPage = () => {
     const [form, setForm] = useState({
         name: '',
         email: '',
-        expertise: '', 
+        phone: '',
+        expertise: '',
+        education: '',
+        experience: '',
         message: '',
+        cv: null as File | null,
     });
+
     const [loading, setLoading] = useState(false);
 
-
-    const [courses, setCourses] = useState<Course[]>([]);
-    const [isLoadingCourses, setIsLoadingCourses] = useState(true);
-
-
-    useEffect(() => {
-        const fetchCourses = async () => {
-            try {
-                const response = await api.get('/api/courses/public');
-                setCourses(response.data);
-            } catch (error) {
-                console.error("Failed to fetch courses for the form:", error);
-            } finally {
-                setIsLoadingCourses(false);
-            }
-        };
-        fetchCourses();
-    }, []);
-
-
-    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+    const handleChange = (
+        e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+        const { name, value } = e.target;
+        setForm({ ...form, [name]: value });
     };
 
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setForm({ ...form, cv: e.target.files[0] });
+        }
+    };
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
         if (!form.expertise) {
-            toast.error("Please select your field of expertise from the dropdown.");
-            return; 
+            toast.error('Please enter your field of expertise.');
+            return;
         }
+
+        const formData = new FormData();
+        Object.entries(form).forEach(([key, value]) => {
+            if (value) formData.append(key, value as string | Blob);
+        });
 
         setLoading(true);
         const toastId = toast.loading('Submitting your application...');
-        
+
         try {
-            const response = await api.post('/api/auth/apply-mentor', form);
+            const response = await api.post('/api/auth/apply-mentor', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
+
             toast.success(response.data.message || 'Application submitted successfully!', { id: toastId });
-            
-            
+
             setForm({
                 name: '',
                 email: '',
+                phone: '',
                 expertise: '',
+                education: '',
+                experience: '',
                 message: '',
+                cv: null,
             });
-
         } catch (error: any) {
-            const errorMessage = error.response?.data?.errors?.[0]?.message || 'Submission failed. Please try again.';
+            const errorMessage =
+                error.response?.data?.errors?.[0]?.message || 'Submission failed. Please try again.';
             toast.error(errorMessage, { id: toastId });
         } finally {
             setLoading(false);
         }
     };
-    
+
     return (
         <main className="mentorship-page">
             <section className="hero">
@@ -90,24 +88,13 @@ const MentorshipPage = () => {
                             Find Your <span className="highlight">Mentor</span>
                         </h1>
                         <p>
-                            Connect with successful women entrepreneurs who understand your journey.
-                            Get personalized guidance, support, and advice to help you grow your business.
+                            Connect with successful women entrepreneurs who understand your journey. Get personalized guidance, support, and advice to help you grow your business.
                         </p>
                         <div className="hero-buttons">
-                            <button
-                                className="btn-primary"
-                                onClick={() => {
-                                    document.getElementById('become-mentor-form')?.scrollIntoView({ behavior: 'smooth' });
-                                }}
-                            >
+                            <button className="btn-primary" onClick={() => document.getElementById('become-mentor-form')?.scrollIntoView({ behavior: 'smooth' })}>
                                 Book a Session
                             </button>
-                            <button
-                                className="btn-outline"
-                                onClick={() => {
-                                    document.getElementById('become-mentor-form')?.scrollIntoView({ behavior: 'smooth' });
-                                }}
-                            >
+                            <button className="btn-outline" onClick={() => document.getElementById('become-mentor-form')?.scrollIntoView({ behavior: 'smooth' })}>
                                 Become a Mentor
                             </button>
                         </div>
@@ -121,23 +108,17 @@ const MentorshipPage = () => {
                     <div className="card">
                         <FaUserCheck className="card-icon" />
                         <h3>Choose Your Mentor</h3>
-                        <p>
-                            Browse our network of experienced women entrepreneurs and select a mentor whose expertise matches your needs.
-                        </p>
+                        <p>Browse our network of experienced women entrepreneurs and select a mentor whose expertise matches your needs.</p>
                     </div>
                     <div className="card">
                         <FaCalendarAlt className="card-icon" />
                         <h3>Schedule Sessions</h3>
-                        <p>
-                            Book one-on-one sessions at times that work for both you and your mentor. Sessions are conducted via video call.
-                        </p>
+                        <p>Book one-on-one sessions at times that work for both you and your mentor. Sessions are conducted via video call.</p>
                     </div>
                     <div className="card">
                         <FaHandsHelping className="card-icon" />
                         <h3>Get Guidance</h3>
-                        <p>
-                            Receive personalized advice, feedback on your business plans, and ongoing support to help you succeed.
-                        </p>
+                        <p>Receive personalized advice, feedback on your business plans, and ongoing support to help you succeed.</p>
                     </div>
                 </div>
             </section>
@@ -147,16 +128,16 @@ const MentorshipPage = () => {
                 <div className="why-columns">
                     <div className="why-column">
                         <ul>
-                            <li><CheckCircle /> <strong style={{fontSize:'1rem'}}>Completely Free:</strong> All sessions are free as part of our commitment to support.</li>
-                            <li><CheckCircle /> <strong style={{fontSize:'1rem'}}>Experienced Mentors:</strong> Real-world experts across industries.</li>
-                            <li><CheckCircle /> <strong style={{fontSize:'1rem'}}>Flexible Scheduling:</strong> Sessions available evenings and weekends.</li>
+                            <li><CheckCircle /> <strong style={{ fontSize: '1rem' }}>Completely Free:</strong> All sessions are free as part of our commitment to support.</li>
+                            <li><CheckCircle /> <strong style={{ fontSize: '1rem' }}>Experienced Mentors:</strong> Real-world experts across industries.</li>
+                            <li><CheckCircle /> <strong style={{ fontSize: '1rem' }}>Flexible Scheduling:</strong> Sessions available evenings and weekends.</li>
                         </ul>
                     </div>
                     <div className="why-column">
                         <ul>
-                            <li><CheckCircle /> <strong style={{fontSize:'1rem'}}>Personalized Guidance:</strong> Tailored advice for your business challenges.</li>
-                            <li><CheckCircle /> <strong style={{fontSize:'1rem'}}>Ongoing Support:</strong> Build long-term mentor relationships.</li>
-                            <li><CheckCircle /> <strong style={{fontSize:'1rem'}}>Network Access:</strong> Connect with a strong women-led business community.</li>
+                            <li><CheckCircle /> <strong style={{ fontSize: '1rem' }}>Personalized Guidance:</strong> Tailored advice for your business challenges.</li>
+                            <li><CheckCircle /> <strong style={{ fontSize: '1rem' }}>Ongoing Support:</strong> Build long-term mentor relationships.</li>
+                            <li><CheckCircle /> <strong style={{ fontSize: '1rem' }}>Network Access:</strong> Connect with a strong women-led business community.</li>
                         </ul>
                     </div>
                 </div>
@@ -185,25 +166,46 @@ const MentorshipPage = () => {
                             disabled={loading}
                         />
                     </div>
-                    
-                    <select
+
+                    <input
+                        type="text"
+                        name="phone"
+                        placeholder="Phone Number *"
+                        required
+                        value={form.phone}
+                        onChange={handleChange}
+                        disabled={loading}
+                    />
+
+                    <input
+                        type="text"
                         name="expertise"
+                        placeholder="Your Field of Expertise *"
                         required
                         value={form.expertise}
                         onChange={handleChange}
-                        disabled={loading || isLoadingCourses}
-                        className="expertise-select"
-                    >
-                        <option value="" disabled>
-                            {isLoadingCourses ? "Loading available courses..." : "Select your field of expertise *"}
-                        </option>
-                        {courses.map(course => (
-                            <option key={course.id} value={course.title}>
-                                {course.title}
-                            </option>
-                        ))}
-                        <option value="Other">Other (Please specify in message)</option>
-                    </select>
+                        disabled={loading}
+                    />
+
+                    <input
+                        type="text"
+                        name="education"
+                        placeholder="Educational Background *"
+                        required
+                        value={form.education}
+                        onChange={handleChange}
+                        disabled={loading}
+                    />
+
+                    <textarea
+                        name="experience"
+                        placeholder="Work Experience *"
+                        rows={3}
+                        required
+                        value={form.experience}
+                        onChange={handleChange}
+                        disabled={loading}
+                    ></textarea>
 
                     <textarea
                         name="message"
@@ -214,13 +216,23 @@ const MentorshipPage = () => {
                         onChange={handleChange}
                         disabled={loading}
                     ></textarea>
+
+                    <input
+                        type="file"
+                        name="cv"
+                        placeholder="Upload your CV *"
+                        accept=".pdf,.doc,.docx"
+                        onChange={handleFileChange}
+                        disabled={loading}
+                    />
+
                     <button type="submit" className="btn-primary" disabled={loading}>
                         {loading ? 'Submitting...' : 'Submit Request'}
                     </button>
                 </form>
             </section>
         </main>
-    )
-}
+    );
+};
 
 export default MentorshipPage;
