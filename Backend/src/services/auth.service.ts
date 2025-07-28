@@ -294,13 +294,47 @@ export const AuthService = {
             throw new Error('Course not found.');
         }
 
-        
-        const existingUser = await pool.query('SELECT id, status FROM users WHERE email = $1', [email]);
-        if (existingUser.rows.length > 0 && existingUser.rows[0].status === 'active') {
-            throw new Error('An active user with this email already exists.');
+        const existingUserResult = await pool.query('SELECT id, status, role FROM users WHERE email = $1', [email]);
+        const existingUser = existingUserResult.rows[0];
+
+        if (existingUser && existingUser.status === 'active') {
+            if (existingUser.role !== 'mentor') {
+                throw new Error(`An active user with the role '${existingUser.role}' already exists with this email.`);
+            }
+
+            const mentorId = existingUser.id;
+
+            const assignmentCheck = await pool.query(
+                'SELECT 1 FROM course_mentors WHERE course_id = $1 AND mentor_id = $2',
+                [courseId, mentorId]
+            );
+             if ((assignmentCheck.rowCount ?? 0) > 0) {
+                throw new Error('This mentor is already assigned to this course.');
+            }
+
+            await pool.query(
+                'INSERT INTO course_mentors (course_id, mentor_id) VALUES ($1, $2)',
+                [courseId, mentorId]
+            );
+            
+            const dashboardUrl = `${process.env.FRONTED_URL || 'http://localhost:3000'}/dashboard/mentor/courses`;
+            const message = `
+                <h1>You Have a New Course Assignment!</h1>
+                <p>Hello,</p>
+                <p>You have been assigned to mentor a new course on the YegoSheCan platform: <strong>${course.name}</strong>.</p>
+                <p>You can view your assigned courses by visiting your mentor dashboard.</p>
+                <a href="${dashboardUrl}" style="display:inline-block;background-color:#4c1d95;color:white;padding:10px 15px;text-decoration:none;border-radius:5px;">Go to Dashboard</a>
+            `;
+            await sendEmail({
+                to: email,
+                subject: `New Course Assignment: ${course.name}`,
+                html: message,
+                text: ''
+            });
+
+            return { id: mentorId, email, message: "Existing mentor successfully assigned to new course." };
         }
 
-        
         const client = await pool.connect();
         try {
             await client.query('BEGIN');
@@ -308,45 +342,42 @@ export const AuthService = {
             const invitationToken = crypto.randomBytes(32).toString('hex');
             const hashedToken = crypto.createHash('sha256').update(invitationToken).digest('hex');
 
-            
-            const userInsertQuery = `
+            const userQuery = `
                 INSERT INTO users (email, verification_token, role, status)
                 VALUES ($1, $2, 'mentor', 'pending')
-                ON CONFLICT (email) DO UPDATE SET verification_token = EXCLUDED.verification_token
+                ON CONFLICT (email) DO UPDATE SET 
+                    verification_token = EXCLUDED.verification_token,
+                    role = 'mentor', -- Ensure role is set to mentor
+                    status = 'pending' -- Reset to pending if they were, e.g., disabled
                 RETURNING id
             `;
-            const userResult = await client.query(userInsertQuery, [email, hashedToken]);
-            const newMentorId = userResult.rows[0].id;
-            
+            const userResult = await client.query(userQuery, [email, hashedToken]);
+            const mentorId = userResult.rows[0].id;
             
             const assignmentQuery = `
                 INSERT INTO course_mentors (course_id, mentor_id)
                 VALUES ($1, $2)
                 ON CONFLICT (course_id, mentor_id) DO NOTHING
             `;
-            await client.query(assignmentQuery, [courseId, newMentorId]);
+            await client.query(assignmentQuery, [courseId, mentorId]);
             
             await client.query('COMMIT');
             
-            
             const completeRegistrationURL = `${process.env.FRONTED_URL || 'http://localhost:3000'}/auth/complete-registration/${invitationToken}`;
-
             const message = `
                 <h1>You've been invited to be a Mentor at YegoSheCan!</h1>
                 <p>You have been invited to mentor the course: <strong>${course.name}</strong>.</p>
                 <p>Please click the link below to complete your registration and set up your account:</p>
-                <a href="${completeRegistrationURL}" style="background-color: #008CBA; color: white; padding: 14px 25px; text-align: center; text-decoration: none; display: inline-block; border-radius: 8px;">Complete Your Registration</a>
-                <p>This link is valid for a limited time.</p>
+                <a href="${completeRegistrationURL}" style="display:inline-block;background-color:#008CBA;color:white;padding:14px 25px;text-decoration:none;border-radius:8px;">Complete Your Registration</a>
             `;
-
             await sendEmail({
                 to: email,
                 subject: `Invitation to Mentor at YegoSheCan for ${course.name}`,
-                text: `Complete your registration by visiting this URL: ${completeRegistrationURL}`,
                 html: message,
+                text: ''
             });
 
-            return { id: newMentorId, email, role: 'mentor', status: 'pending' };
+            return { id: mentorId, email, role: 'mentor', status: 'pending' };
 
         } catch (error) {
             await client.query('ROLLBACK');
