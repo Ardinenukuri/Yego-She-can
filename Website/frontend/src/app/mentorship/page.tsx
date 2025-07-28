@@ -33,24 +33,36 @@ const MentorshipPage = () => {
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             setForm({ ...form, cv: e.target.files[0] });
+        } else {
+            setForm({ ...form, cv: null });
         }
     };
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
-        if (!form.expertise) {
-            toast.error('Please enter your field of expertise.');
+        if (!form.cv) {
+            toast.error('Please upload your CV to submit the application.');
             return;
         }
 
-        const formData = new FormData();
-        Object.entries(form).forEach(([key, value]) => {
-            if (value) formData.append(key, value as string | Blob);
-        });
-
         setLoading(true);
         const toastId = toast.loading('Submitting your application...');
+
+
+        const formData = new FormData();
+
+
+        formData.append('name', form.name);
+        formData.append('email', form.email);
+        formData.append('phone', form.phone);
+        formData.append('expertise', form.expertise);
+        formData.append('education', form.education);
+        formData.append('experience', form.experience);
+        formData.append('message', form.message);
+        
+
+        formData.append('cv', form.cv);
 
         try {
             const response = await api.post('/api/auth/apply-mentor', formData, {
@@ -58,6 +70,7 @@ const MentorshipPage = () => {
             });
 
             toast.success(response.data.message || 'Application submitted successfully!', { id: toastId });
+
 
             setForm({
                 name: '',
@@ -69,6 +82,10 @@ const MentorshipPage = () => {
                 message: '',
                 cv: null,
             });
+
+            const fileInput = document.querySelector('input[name="cv"]') as HTMLInputElement;
+            if (fileInput) fileInput.value = '';
+
         } catch (error: any) {
             const errorMessage =
                 error.response?.data?.errors?.[0]?.message || 'Submission failed. Please try again.';
@@ -80,6 +97,7 @@ const MentorshipPage = () => {
 
     return (
         <main className="mentorship-page">
+
             <section className="hero">
                 <Image src={heroImage} alt="Mentorship" className="hero-img" priority />
                 <div className="hero-overlay">
@@ -217,10 +235,11 @@ const MentorshipPage = () => {
                         disabled={loading}
                     ></textarea>
 
+
                     <input
                         type="file"
                         name="cv"
-                        placeholder="Upload your CV *"
+                        required
                         accept=".pdf,.doc,.docx"
                         onChange={handleFileChange}
                         disabled={loading}
