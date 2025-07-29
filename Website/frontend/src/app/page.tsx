@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import AOS from 'aos'
@@ -12,12 +12,40 @@ import {
   FaShoppingBasket,
 } from 'react-icons/fa'
 import { FiAward, FiUsers, FiTarget } from 'react-icons/fi'
-import heroImage from '../../public/home.jpg'
+import heroImage from '../../public/homepag.jpg'
 import './home.css'
 
 export default function Home() {
   useEffect(() => {
     AOS.init({ duration: 1000 })
+  }, [])
+
+  const [countdown, setCountdown] = useState('')
+
+  useEffect(() => {
+    const eventDate = new Date('2025-08-15T09:00:00')
+    const interval = setInterval(() => {
+  const countdownDate = new Date("2025-08-15T09:00:00").getTime(); 
+const now = new Date().getTime(); 
+const difference = countdownDate - now;
+
+      if (difference <= 0) {
+        setCountdown('Program started!')
+        clearInterval(interval)
+        return
+      }
+
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24))
+      const hours = Math.floor((difference / (1000 * 60 * 60)) % 24)
+      const minutes = Math.floor((difference / (1000 * 60)) % 60)
+      const seconds = Math.floor((difference / 1000) % 60)
+
+      setCountdown(
+        `${days}d ${hours}h ${minutes}m ${seconds}s until soap making physical program`
+      )
+    }, 1000)
+
+    return () => clearInterval(interval)
   }, [])
 
   const values = [
@@ -59,6 +87,9 @@ export default function Home() {
             <p>
               Yego SheCan uplifts underserved women through business training, mentorship, and access to digital markets.
             </p>
+            <div className="countdown-timer">
+              <strong>{countdown}</strong>
+            </div>
             <div className="hero-buttons">
               <Link href="/mentorship">
                 <button className="btn-primary">Find a Mentor</button>
@@ -204,6 +235,12 @@ export default function Home() {
             Get Started
           </button>
         </Link>
+         <div className="countdown-timers ">
+              <strong>{countdown}</strong><br />
+              <button className="btn-primary" style={{ marginTop: '2rem' }}>
+            Enroll Now
+          </button>
+            </div>
       </section>
     </div>
   )

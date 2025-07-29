@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import api from '@/lib/api';
 import './mentorship.css';
 import heroImage from '../../../public/mentorship.jpg';
+import Link from 'next/link'
 
 const MentorshipPage = () => {
     const [form, setForm] = useState({
@@ -60,7 +61,7 @@ const MentorshipPage = () => {
         formData.append('education', form.education);
         formData.append('experience', form.experience);
         formData.append('message', form.message);
-        
+
 
         formData.append('cv', form.cv);
 
@@ -109,9 +110,9 @@ const MentorshipPage = () => {
                             Connect with successful women entrepreneurs who understand your journey. Get personalized guidance, support, and advice to help you grow your business.
                         </p>
                         <div className="hero-buttons">
-                            <button className="btn-primary" onClick={() => document.getElementById('become-mentor-form')?.scrollIntoView({ behavior: 'smooth' })}>
-                                Book a Session
-                            </button>
+                            <Link href="/register">
+                                <button className="btn-primary"> Book a Session</button>
+                            </Link>
                             <button className="btn-outline" onClick={() => document.getElementById('become-mentor-form')?.scrollIntoView({ behavior: 'smooth' })}>
                                 Become a Mentor
                             </button>

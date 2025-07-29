@@ -1,10 +1,22 @@
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Lato&family=Poppins:wght@400;600;700&display=swap');
+
+/* Base */
+body {
+  font-family: 'Lato', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Hero Section */
 .heroSection {
   position: relative;
   min-height: 90vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: url('../../public/coffee-beans.jpg');
+  background-image: url('../../public/arabica-coffee.jpg');
   background-size: cover;
   background-position: center;
   text-align: center;
@@ -17,8 +29,8 @@
 .heroOverlay {
   position: absolute;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.6);
-  /* DARK OVERLAY */
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8));
+  backdrop-filter: blur(2px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -34,19 +46,19 @@
 
 .heroContent h1 {
   font-size: 3rem;
+  font-family: 'Poppins', sans-serif;
   margin-bottom: 1rem;
+  letter-spacing: 1px;
+  /* text-transform: uppercase; */
 }
-
-/* .heroContent span {
-  color: #ffd700;
-} */
 
 .heroContent p {
-  font-size: 1.15rem;
+  font-size: 1.2rem;
+  line-height: 1.7;
   margin-bottom: 2rem;
-  line-height: 1.6;
 }
 
+/* Hero Buttons */
 .heroButtons {
   display: flex;
   justify-content: center;
@@ -60,7 +72,8 @@
   border-radius: 6px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.4s ease;
+  box-shadow: 0 4px 14px rgba(124, 52, 171, 0.3);
 }
 
 .primaryButton {
@@ -70,6 +83,7 @@
 }
 
 .primaryButton:hover {
+  transform: scale(1.05);
   background-color: #f3e8ff;
   color: #7c34ab;
 }
@@ -81,17 +95,25 @@
 }
 
 .outlineButton:hover {
+  transform: scale(1.05);
   background: white;
   color: #7c34ab;
 }
 
+/* Why Choose Section */
 .whyChooseSection {
-  padding: 4rem 2rem;
+  padding: 5rem 2rem;
+  background-color: #f9f9f9;
+  border-radius: 20px;
+  margin-bottom: 3rem;
 }
-.whyChooseSection h2{
+
+.whyChooseSection h2 {
   text-align: center;
-  color:#333;
+  color: #333;
 }
+
+/* Hero Details */
 .hero-details {
   display: flex;
   flex-wrap: wrap;
@@ -120,7 +142,7 @@
 }
 
 .card {
-  background-color: white;
+  background: linear-gradient(to bottom right, #fff, #f9f5ff);
   border-radius: 10px;
   padding: 1.5rem;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
@@ -132,7 +154,7 @@
 }
 
 .dark-card {
-  background-color: #7c34ab;
+  background: linear-gradient(to bottom right, #7c34ab, #531888);
   color: white;
 }
 
@@ -144,15 +166,26 @@
 }
 
 .card-icon {
+  background-color: #f3e8ff;
   color: #7c34ab;
+  border-radius: 50%;
+  padding: 0.5rem;
+  font-size: 1.5rem;
 }
 
 .dark-card .card-icon {
-  color: white;
+  background-color: white;
+  color: #7c34ab;
 }
 
+/* Prerequisites */
 .prerequisitesContainer {
   margin-top: 6rem;
+}
+
+.prerequisitesContainer h2 {
+  text-align: center;
+  margin-bottom: 2rem;
 }
 
 .prerequisitesGrid {
@@ -162,38 +195,37 @@
   margin-left: 10rem;
   padding: 2rem;
 }
-.prerequisitesContainer h2{
-text-align: center;
-margin-bottom: 2rem;
-}
 
 .prerequisitesGrid h4 {
   margin-bottom: 1.5rem;
 }
-.prerequisitesGrid ul{
+
+.prerequisitesGrid ul {
   list-style: none;
+  padding-left: 0;
 }
-.prerequisitesGrid ul li{
-  top: -2px;
-  position: relative;
+
+.prerequisitesGrid ul li {
   margin-bottom: 0.75rem;
+  position: relative;
 }
+
 .checkIcon {
   color: #7c34ab;
   margin-right: 0.5rem;
+  position: relative;
   top: 5px;
-    position: relative;
 }
 
-/* Programs */
+/* Programs Section */
 .programsSection {
-  padding: 4rem 2rem;
+  padding: 5rem 2rem;
   background-color: #fff;
 }
 
 .programList {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
   margin-top: 2rem;
 }
@@ -214,8 +246,21 @@ margin-bottom: 2rem;
 
 .imageContainer img {
   width: 100%;
-  height: 220px;
+  height: 300px;
   object-fit: cover;
+}
+
+.imageContainer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+  opacity: 0;
+}
+
+.imageContainer:hover::after {
+  opacity: 1;
 }
 
 .badge {
@@ -248,8 +293,8 @@ margin-bottom: 2rem;
 
 .skillsSection ul,
 .requirementsSection ul {
-  padding-left: 1.2rem;
   list-style-type: none;
+  padding-left: 1.2rem;
 }
 
 .skillsSection li::before,
@@ -257,13 +302,14 @@ margin-bottom: 2rem;
   content: "✔";
   color: #7c34ab;
   margin-right: 0.5rem;
-
 }
-.skillsSection li, .requirementsSection li{
+
+.skillsSection li,
+.requirementsSection li {
   margin-top: 1rem;
 }
+
 .registerButton {
-  margin-top: auto;
   margin-top: 1rem;
   background-color: #7c34ab;
   color: white;
@@ -336,4 +382,48 @@ margin-bottom: 2rem;
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+  .heroContent h1 {
+    font-size: 2rem;
+  }
+
+  .heroContent p {
+    font-size: 1rem;
+  }
+
+  .heroSection {
+    padding: 1rem;
+  }
+
+  .prerequisitesGrid {
+    margin-left: 0;
+  }
+}
+/* .countdownTimer {
+  margin: 1rem 0;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 1.1rem;
+  text-align: center;
+}
+.countdownTimer h3 {
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+} */
+.countdown-timer strong {
+  color: #b74cff;
+}
+.countdown-timer {
+  padding: 1rem;
+  margin-top: 1rem;
+  border-radius: 8px;
+  color: #fff;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
 }

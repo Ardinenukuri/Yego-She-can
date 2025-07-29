@@ -2,19 +2,14 @@
 'use client'
 
 import Image from 'next/image'
-import aboutImg from '../../../public/2148761757.jpg'
+import aboutImg from '../../../public/homep.jpg'
 import { useEffect } from 'react'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import './about.css'
 import { FaBullseye, FaEye } from 'react-icons/fa'
 import { FaUsers, FaHeart } from 'react-icons/fa'
-import { FaBookOpen } from 'react-icons/fa'
 import { FiAward, FiUsers, FiTarget } from 'react-icons/fi'
-import afua from '../../../public/afua.jpg'
-import ardine from '../../../public/ardine.jpg'
-import diane from '../../../public/diane.jpg'
-import morin from '../../../public/morin.jpg'
 
 export default function About() {
   useEffect(() => {
@@ -176,37 +171,6 @@ export default function About() {
               <div className="card-icon-wrapper">{icon}</div>
               <h3>{title}</h3>
               <p>{description}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-      <section className="team-section" data-aos="fade-up">
-        <h2 className="team-title">Our Team</h2>
-        <div className="team-grid">
-          {[
-            { name: "Yeetah", role: "Founder & CEO" },
-            { name: "Ardine Martine NUKURI", role: " Backend Developer", image: ardine },
-            { name: "Afua HAMISSI", role: "UI&UX Designer / Mobile Developer", image: afua },
-            { name: " Diane Imgabire", role: "UI&UX Designer/  Mobile Developer", image: diane },
-            { name: "Blandine MUNEZERO", role: "UI&UX Designer" },
-            { name: "Moreen IRABA", role: "UI&UX Designer", image: morin }
-          ].map((member, index) => (
-            <div key={index} className="team-card">
-              <div className="team-image-placeholder">
-                <Image
-                  src={member.image}
-                  alt={member.name}
-                  width={120}
-                  height={120}
-                  className="team-image"
-                />
-              </div>
-
-              <h3 className="team-name">{member.name}</h3>
-              <p className="team-role">{member.role}</p>
-              <p className="team-desc">
-                Passionate about empowering women and building strong community-driven programs.
-              </p>
             </div>
           ))}
         </div>

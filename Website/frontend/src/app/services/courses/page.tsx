@@ -5,7 +5,7 @@ import Image from "next/image";
 import "../../../styles/courses.css";
 import { useState, useEffect } from "react";
 import api from "@/lib/api";
-import serviceImage from "../../../../public/services.jpg"
+import serviceImage from "../../../../public/accounting.jpg"
 
 
 interface Course {
