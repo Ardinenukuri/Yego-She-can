@@ -1,91 +1,137 @@
-
 .add-course-container {
   min-height: 100vh;
   display: flex;
+  flex-direction: column; 
   justify-content: center;
   align-items: center;
+  gap: 2rem; 
   padding: 2rem;
-  margin-top: -8rem;
+  background-color: #f3f4f6; 
+  font-family: 'Segoe UI', sans-serif;
 }
+
 
 .add-course-card {
   background-color: white;
-  padding: 2rem;
-  border-radius: 1.5rem;
+  padding: 2.5rem; 
+  border-radius: 1rem; 
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
   width: 100%;
-  max-width: 500px;
+  max-width: 600px;
 }
+
 
 .add-course-title {
   text-align: center;
   font-size: 1.75rem;
-  color: #444; 
-  font-weight: bold;
+  color: #4b1c88;   font-weight: 700;
   margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 1rem;
 }
 
-.section-title {
-  text-align: center;
-  font-size: 1.25rem;
-  color: #54145c; 
-  font-weight: 600;
-  margin-bottom: 1rem;
-}
 
-.success-message {
-  text-align: center;
-  color: #97428d; 
-  font-weight: bold;
-  margin-bottom: 1rem;
-}
-
-.add-course-form,
-.mentor-invite {
+.add-course-form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem; 
 }
 
 .add-course-form label {
-  font-weight: 500;
-  color: #374151; 
+  font-weight: 600; 
+  color: #374151;
+  font-size: 0.9rem;
+  display: flex;
+  flex-direction: column; 
+  gap: 0.5rem;
 }
 
+
 .add-course-form input,
-.mentor-invite input {
-  padding: 0.75rem;
+.add-course-form select,
+.add-course-form textarea {
+  padding: 0.75rem 1rem;
   border: 1px solid #d1d5db; 
   border-radius: 0.5rem;
+  font-size: 1rem;
   outline: none;
-  transition: border 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+  box-sizing: border-box; 
+}
+
+.add-course-form textarea {
+    resize: vertical;
+    min-height: 80px;
 }
 
 .add-course-form input:focus,
-.mentor-invite input:focus {
-  border-color: #16a34a; 
-  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.2);
+.add-course-form select:focus,
+.add-course-form textarea:focus {
+  border-color: #4b1c88;
+  box-shadow: 0 0 0 3px rgba(75, 28, 136, 0.15);
 }
 
-.submit-btn,
-.invite-btn {
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+}
+
+
+.add-course-form input[type="file"] {
+    padding: 0;
+    border: none;
+    font-size: 0.9rem;
+}
+.add-course-form input[type="file"]::file-selector-button {
+    margin-right: 1rem;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    font-weight: 600;
+    background-color: #f9fafb;
+    color: #4b1c88;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.add-course-form input[type="file"]::file-selector-button:hover {
+    background-color: #f3f4f6;
+}
+
+
+.submit-btn {
   background-color: #4b1c88; 
   color: white;
-  padding: 0.75rem;
+  padding: 0.8rem;
   font-weight: 600;
+  font-size: 1rem;
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem; 
 }
 
-.submit-btn:hover,
-.invite-btn:hover {
+.submit-btn:hover {
   background-color: #7c34ab; 
 }
 
-.divider {
-  margin: 2rem 0;
-  border: none;
-  border-top: 1px solid #e5e7eb; 
+.submit-btn:disabled {
+    background-color: #a491c2;
+    cursor: not-allowed;
+}
+
+
+@media (max-width: 640px) {
+  .add-course-container {
+    padding: 1rem;
+  }
+  .add-course-card {
+    padding: 1.5rem;
+  }
+  .form-row {
+    grid-template-columns: 1fr; 
+  }
 }
