@@ -1,16 +1,18 @@
-// src/routes/programManager.routes.ts
 import { Router } from 'express';
 import { ProgramManagerController } from '../controllers/programManager.controller';
 import { protect } from '../middlewares/auth.middleware';
 import { authorize } from '../middlewares/authorize.middleware';
+import multer from 'multer';
 
+const programImageUpload = multer({ storage: multer.memoryStorage() });
 const router = Router();
 router.use(protect, authorize('program manager'));
 
-// GET /api/pm/applications - Get all pending applications
+
 router.get('/applications', ProgramManagerController.getApplications);
 
-// PUT /api/pm/applications/:id/process - Approve or decline an application
+
 router.put('/applications/:id/process', ProgramManagerController.processApplication);
+router.post('/physical-programs', programImageUpload.single('image'), ProgramManagerController.createPhysicalProgram);
 
 export default router;

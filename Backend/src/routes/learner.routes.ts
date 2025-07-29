@@ -13,4 +13,8 @@ router.post(
     protect, authorize('learner'), validateRequest(createBookingSchema),  LearnerController.bookSlot
 );
 
+router.get('/physical-programs',protect, authorize('learner'), LearnerController.getPhysicalPrograms);
+
+
+router.post('/physical-programs/enroll',protect, authorize('learner'), LearnerController.enrollInPhysicalProgram);
 export default router;
