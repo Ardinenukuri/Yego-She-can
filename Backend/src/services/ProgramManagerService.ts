@@ -1,5 +1,7 @@
+import path from 'path';
 import pool from '../config/db';
 import sendEmail from '../utils/email';
+import fs from 'fs/promises';
 
 export const ProgramManagerService = {
     
@@ -59,4 +61,30 @@ export const ProgramManagerService = {
             client.release();
         }
     },
+
+    createPhysicalProgram: async (data: any, creatorId: number, imageFile?: Express.Multer.File) => {
+        const { title, description, duration, schedule, nextSession, location, skills, requirements } = data;
+        let imageUrl: string | undefined = undefined;
+
+        if (imageFile) {
+            const uploadDir = 'uploads/programs';
+            await fs.mkdir(uploadDir, { recursive: true });
+            const filename = `program-${Date.now()}-${imageFile.originalname}`;
+            const fullPath = path.join(uploadDir, filename);
+            await fs.writeFile(fullPath, imageFile.buffer);
+            imageUrl = `/${uploadDir}/${filename}`;
+        }
+
+        const query = `
+            INSERT INTO physical_programs (title, description, duration, schedule, next_session, location, skills, requirements, image_url, created_by)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            RETURNING *;
+        `;
+        const { rows } = await pool.query(query, [
+            title, description, duration, schedule, nextSession, location, skills, requirements, imageUrl, creatorId
+        ]);
+        return rows[0];
+    },
+
+
 };

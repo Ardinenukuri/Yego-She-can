@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { AuthService } from '../services/auth.service';
 import { MentorService } from '../services/MentorService';
+import { LearnerService } from '../services/LearnerService';
 
 export const UserController = {
     getAllUsers: async (req: Request, res: Response, next: NextFunction) => {
@@ -93,6 +94,15 @@ export const UserController = {
             res.status(200).json(slots);
         } catch (error) { 
             next(error); 
+        }
+    },
+
+    getPhysicalPrograms: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const programs = await LearnerService.getPublicPhysicalPrograms();
+            res.status(200).json(programs);
+        } catch (error) {
+            next(error);
         }
     },
     

@@ -25,5 +25,21 @@ export const LearnerController = {
             const slots = await MentorService.getMentorAvailability(mentorId);
             res.status(200).json(slots);
         } catch (error) { next(error); }
-    }
+    },
+
+    getPhysicalPrograms: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const learnerId = (req as any).user.id;
+            const data = await LearnerService.getPhysicalPrograms(learnerId);
+            res.status(200).json(data);
+        } catch (error) { next(error); }
+    },
+    enrollInPhysicalProgram: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const learnerId = (req as any).user.id;
+            const { programId } = req.body;
+            const enrollment = await LearnerService.enrollInPhysicalProgram(learnerId, programId);
+            res.status(201).json({ message: 'Successfully enrolled in the program.', enrollment });
+        } catch (error) { next(error); }
+    },
 };
