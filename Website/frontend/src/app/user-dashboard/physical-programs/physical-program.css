@@ -1,4 +1,7 @@
 /* Section and layout */
+body{
+background-color: #f9f9fb;
+}
 .programs-section {
   padding: 3rem 2rem;
   max-width: 1200px;
