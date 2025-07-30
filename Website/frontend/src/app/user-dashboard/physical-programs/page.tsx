@@ -145,7 +145,7 @@ const PhysicalSession = () => {
               </div>
               {!program.comingSoon && (
                 <Link href="/auth/register" className="register-button">
-                  Register to Enroll
+                   Enroll
                 </Link>
               )}
             </div>
