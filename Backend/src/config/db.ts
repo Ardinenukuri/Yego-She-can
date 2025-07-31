@@ -2,6 +2,7 @@ import { Pool } from 'pg';
 import dotenv from 'dotenv';
 
 dotenv.config();
+const connectionString = process.env.DATABASE_URL;
 
 console.log('--- DATABASE CONNECTION DETAILS ---');
 console.log('User:', process.env.DB_USER);
@@ -15,7 +16,11 @@ const pool = new Pool({
     host: process.env.DB_HOST,
     database: process.env.DB_NAME,
     password: process.env.DB_PASSWORD,
-    port: parseInt(process.env.DB_PORT || '5432'),
+    port: parseInt(process.env.DB_PORT || '10233'),
+
+    connectionString: connectionString,
+  ssl: connectionString ? { rejectUnauthorized: false } : false,
+
 });
 
 pool.on('connect', () => {
