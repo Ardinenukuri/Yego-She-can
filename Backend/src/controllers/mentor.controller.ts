@@ -4,6 +4,7 @@
 import { Request, Response, NextFunction } from "express";
 import { MentorService } from "../services/MentorService";
 import { CourseService } from "../services/CourseService";
+import { ReportService } from "../services/ReportService";
 
 export const MentorController = {
     // ... (keep getQuizOverview)
@@ -74,6 +75,21 @@ export const MentorController = {
             const slotId = parseInt(req.params.id, 10);
             await MentorService.deleteSlot(mentorId, slotId);
             res.status(200).json({ message: 'Slot deleted successfully.' });
+        } catch (error) { next(error); }
+    },
+
+    exportDashboardPDF: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const mentorId = (req as any).user.id;
+            const mentorName = `${(req as any).user.firstName} ${(req as any).user.lastName}`;
+            
+            const pdfBuffer = await ReportService.generateMentorReportPDF(mentorId, mentorName);
+            
+
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename="mentor-report-${Date.now()}.pdf"`);
+            res.send(pdfBuffer);
+
         } catch (error) { next(error); }
     },
 };

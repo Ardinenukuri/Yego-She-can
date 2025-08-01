@@ -22,4 +22,5 @@ router.get('/availability', MentorController.getAvailability);
 router.post('/availability', MentorController.addAvailability);
 router.put('/availability/:id', MentorController.updateSlotStatus);
 router.delete('/availability/:id', MentorController.deleteSlot);
+router.get('/dashboard/export-pdf', MentorController.exportDashboardPDF);
 export default router;

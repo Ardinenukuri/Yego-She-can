@@ -14,5 +14,6 @@ router.get('/applications', ProgramManagerController.getApplications);
 
 router.put('/applications/:id/process', ProgramManagerController.processApplication);
 router.post('/physical-programs', programImageUpload.single('image'), ProgramManagerController.createPhysicalProgram);
+router.get('/dashboard/export-pdf', ProgramManagerController.exportDashboardPDF);
 
 export default router;
