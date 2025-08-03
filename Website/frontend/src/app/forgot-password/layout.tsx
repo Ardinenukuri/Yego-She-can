@@ -61,9 +61,10 @@
 //   );
 // }
 
+import DashboardNavbar from '../dashboard/components/DashboardNavbar'
+import Sidebar from '../dashboard/components/Sidebar'
 import '../styles/dashboard.css'
-import Sidebar from './components/Sidebar'
-import DashboardNavbar from './components/DashboardNavbar'
+
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
