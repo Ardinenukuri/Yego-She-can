@@ -1,0 +1,20 @@
+services:
+
+  - type: web
+    name: yego-shecan-backend 
+    runtime: node
+    region: frankfurt 
+    plan: free
+    branch: ardine
+    
+
+    rootDir: Backend
+    
+    buildCommand: "npm install && npm run build"
+    startCommand: "npm start"
+    
+
+
+    envVars:
+      - key: NODE_ENV
+        value: production
