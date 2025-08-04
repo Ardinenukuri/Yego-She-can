@@ -101,3 +101,23 @@
   color: #555;
   margin-right: 0.4rem;
 }
+
+
+.learner-img {
+  width: 40px;         
+  height: 40px;        
+  border-radius: 50%; 
+  object-fit: cover;   
+  flex-shrink: 0;
+  background-color: #6c757d; }
+
+.initials-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.1rem; 
+  font-weight: 600;
+  text-transform: uppercase;
+  line-height: 1;
+}

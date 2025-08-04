@@ -5,6 +5,7 @@ import Link from 'next/link'
 import '@/styles/mentorship.css' 
 import api from '@/lib/api'
 import toast from 'react-hot-toast'
+import Avatar from '@/components/ui/Avatar';
 
 
 interface Mentor {
@@ -14,6 +15,16 @@ interface Mentor {
     bio: string;
     image: string | null;
 }
+
+const generateColor = (name: string = ''): string => {
+  if (!name) return '#cccccc';
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const colors = ['#678978ff', '#7d6867ff', '#727c8eff', '#857766ff'];
+  return colors[Math.abs(hash) % colors.length];
+};
 
 export default function MentorshipPage() {
     const [mentors, setMentors] = useState<Mentor[]>([]);
@@ -52,11 +63,26 @@ export default function MentorshipPage() {
                 <div className="mentor-list">
                     {mentors.map((mentor) => (
                         <div key={mentor.id} className="mentor-card">
-                            <img
-                                src={mentor.image ? `${process.env.NEXT_PUBLIC_API_URL}${mentor.image}` : '/default-avatar.png'}
-                                alt={mentor.name}
-                                className="mentor-avatar"
-                            />
+                            {mentor.image ? (
+  <img
+    src={`${process.env.NEXT_PUBLIC_API_URL}${mentor.image}`}
+    alt={mentor.name}
+    className="mentor-avatar"
+  />
+) : (
+  <div
+    className="mentor-avatar initials-avatar"
+    style={{ backgroundColor: generateColor(mentor.name) }}
+  >
+    <span>
+      {mentor.name
+        .split(' ')
+        .map(n => n[0])
+        .slice(0, 2)
+        .join('')}
+    </span>
+  </div>
+)}
                             <div className="mentor-details">
                                 <h2>{mentor.name}</h2>
                                 <p><strong>Expertise:</strong> {mentor.expertise}</p>

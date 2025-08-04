@@ -53,29 +53,31 @@ export default function PhysicalProgramsPage() {
 
 
   useEffect(() => {
-    const targetDate = new Date();
-    targetDate.setDate(targetDate.getDate() + 18);
+    const eventDate = new Date('2025-08-15T09:00:00')
+    const interval = setInterval(() => {
+  const countdownDate = new Date("2025-08-15T09:00:00").getTime(); 
+const now = new Date().getTime(); 
+const difference = countdownDate - now;
 
-    const updateCountdown = () => {
-      const now = new Date().getTime();
-      const distance = targetDate.getTime() - now;
-
-      if (distance <= 0) {
-        setCountdown("The lesson has started!");
-        return;
+      if (difference <= 0) {
+        setCountdown('Program started!')
+        clearInterval(interval)
+        return
       }
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-      setCountdown(`${days}d ${hours}h ${minutes}m ${seconds}s`);
-    };
 
-    updateCountdown();
-    const interval = setInterval(updateCountdown, 1000);
-    return () => clearInterval(interval);
-  }, []);
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24))
+      const hours = Math.floor((difference / (1000 * 60 * 60)) % 24)
+      const minutes = Math.floor((difference / (1000 * 60)) % 60)
+      const seconds = Math.floor((difference / 1000) % 60)
 
+      setCountdown(
+        `${days}d ${hours}h ${minutes}m ${seconds}s until soap making physical program`
+      )
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [])
+  
   if (loading) {
     return (
         <div className="page-wrapper">

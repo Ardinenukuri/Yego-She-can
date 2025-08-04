@@ -19,6 +19,16 @@ type Mentor = {
   image: string | null
 }
 
+const generateColor = (name: string = ''): string => {
+  if (!name) return '#cccccc';
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const colors = ['#678978ff', '#7d6867ff', '#727c8eff', '#857766ff'];
+  return colors[Math.abs(hash) % colors.length];
+};
+
 export default function MentorsPage() {
 
   const [mentors, setMentors] = useState<Mentor[]>([]);
@@ -105,11 +115,27 @@ export default function MentorsPage() {
             {mentors.map((mentor) => (
               <tr key={mentor.id}>
                 <td>
-                  <img
-                    src={mentor.image ? `${process.env.NEXT_PUBLIC_API_URL}${mentor.image}` : '/default-avatar.png'}
-                    alt={mentor.name}
-                    className="mentor-img"
-                  />
+                  {mentor.image ? (
+  <img
+    src={`${process.env.NEXT_PUBLIC_API_URL}${mentor.image}`}
+    alt={mentor.name}
+    className="mentor-avatar"
+  />
+) : (
+  <div
+    className="mentor-avatar initials-avatar"
+    style={{ backgroundColor: generateColor(mentor.name) }}
+  >
+    
+<span>
+  {(mentor.name || '')
+    .split(' ')
+    .map(n => n[0])
+    .slice(0, 2)
+    .join('')}
+</span>
+  </div>
+)}
                 </td>
                 <td>{mentor.name}</td>
                 <td>
