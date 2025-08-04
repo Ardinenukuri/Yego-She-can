@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ProgramManagerService } from '../services/ProgramManagerService';
+import { ReportService } from '../services/ReportService';
 
 
 
@@ -25,6 +26,17 @@ export const ProgramManagerController = {
             const creatorId = (req as any).user.id;
             const program = await ProgramManagerService.createPhysicalProgram(req.body, creatorId, req.file);
             res.status(201).json({ message: 'Physical program created successfully.', program });
+        } catch (error) { next(error); }
+    },
+
+    exportDashboardPDF: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const pmName = `${(req as any).user.firstName} ${(req as any).user.lastName}`;
+            const pdfBuffer = await ReportService.generateAdminReportPDF(pmName);
+            
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename="platform-report-${Date.now()}.pdf"`);
+            res.send(pdfBuffer);
         } catch (error) { next(error); }
     },
 };

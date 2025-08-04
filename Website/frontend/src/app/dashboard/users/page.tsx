@@ -85,11 +85,19 @@ export default function LearnersPage() {
             {learners.map((learner) => (
               <tr key={learner.id}>
                 <td>
-                  <img
-                    src={learner.image ? `${process.env.NEXT_PUBLIC_API_URL}${learner.image}` : '/default-avatar.png'}
-                    alt={`${learner.first_name} ${learner.last_name}`}
-                    className="learner-img"
-                  />
+                  {learner.image ? (
+  <img
+    src={`${process.env.NEXT_PUBLIC_API_URL}${learner.image}`}
+    alt={`${learner.first_name || ''} ${learner.last_name || ''}`.trim()}
+    className="learner-img"
+  />
+) : (
+
+  <div className="learner-img initials-avatar">
+    <span>      {`${learner.first_name ? learner.first_name[0] : ''}${learner.last_name ? learner.last_name[0] : ''}`}
+    </span>
+  </div>
+)}
                 </td>
                 <td>{learner.first_name} {learner.last_name}</td>
                 <td><FiMail className="table-icon" /> {learner.email}</td>

@@ -4,15 +4,16 @@ import { ResourceService } from '../services/ResourceService';
 export const ResourceController = {
     uploadResource: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { courseId, description, timeline, level } = req.body;
+
+            const { courseId, description, timeline, level, videoLink } = req.body;
+            
             const mentorId = (req as any).user.id;
             const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-
 
             const result = await ResourceService.addCourseResource(
                 mentorId,
                 courseId,
-                { description, timeline, level },
+                { description, timeline, level, videoLink }, 
                 files
             );
 
