@@ -236,70 +236,74 @@ export const CourseService = {
 
     getCourseLearningData: async (courseId: number, learnerId: number) => {
 
-        const enrollmentCheck = await pool.query(
-            'SELECT * FROM enrollments WHERE course_id = $1 AND learner_id = $2',
-            [courseId, learnerId]
-        );
-        if (enrollmentCheck.rowCount === 0) {
-            throw new Error('Forbidden: You are not enrolled in this course.');
-        }
+    const enrollmentCheck = await pool.query(
+        'SELECT * FROM enrollments WHERE course_id = $1 AND learner_id = $2',
+        [courseId, learnerId]
+    );
+    if (enrollmentCheck.rowCount === 0) {
+        throw new Error('Forbidden: You are not enrolled in this course.');
+    }
+
+    const courseQuery = `
+        SELECT
+            c.id,
+            c.name AS title,
+            r.description,
+            r.id AS "resourceId",
+            r.video_link AS "videoLink"  -- <<< THE FIX IS HERE
+        FROM courses c
+        JOIN resources r ON c.id = r.course_id
+        WHERE c.id = $1
+        ORDER BY r.created_at DESC LIMIT 1;
+    `;
+    const courseResult = await pool.query(courseQuery, [courseId]);
+    if (courseResult.rowCount === 0) {
+        throw new Error('Course content not found.');
+    }
+    const courseData = courseResult.rows[0];
 
 
-        const courseQuery = `
-            SELECT 
-                c.id, c.name as title, r.description, r.id as "resourceId"
-            FROM courses c
-            JOIN resources r ON c.id = r.course_id
-            WHERE c.id = $1
-            ORDER BY r.created_at DESC LIMIT 1;
-        `;
-        const courseResult = await pool.query(courseQuery, [courseId]);
-        if (courseResult.rowCount === 0) throw new Error('Course content not found.');
-        const courseData = courseResult.rows[0];
+    const chaptersQuery = `
+        SELECT
+            ch.id,
+            ch.title,
+            ch.content,
+            q.id as "quizId",
+            EXISTS (
+                SELECT 1 FROM user_chapter_progress ucp
+                WHERE ucp.chapter_id = ch.id AND ucp.learner_id = $1
+            ) as "isCompleted",
+            EXISTS (
+                SELECT 1 FROM quiz_attempts qa
+                WHERE qa.quiz_id = q.id AND qa.learner_id = $1 AND qa.passed = TRUE
+            ) as "quizPassed"
+        FROM chapters ch
+        LEFT JOIN quizzes q ON ch.id = q.chapter_id
+        WHERE ch.resource_id = $2
+        ORDER BY ch.chapter_number ASC;
+    `;
+    const chaptersResult = await pool.query(chaptersQuery, [learnerId, courseData.resourceId]);
 
 
-        const chaptersQuery = `
-    SELECT
-        ch.id,
-        ch.title,
-        ch.content,
-        q.id as "quizId",
-        -- A chapter is completed ONLY if it has been manually marked as done.
-        EXISTS (
-            SELECT 1 FROM user_chapter_progress ucp
-            WHERE ucp.chapter_id = ch.id AND ucp.learner_id = $1
-        ) as "isCompleted",
-        -- We also check if the quiz specifically has been passed.
-        EXISTS (
-            SELECT 1 FROM quiz_attempts qa
-            WHERE qa.quiz_id = q.id AND qa.learner_id = $1 AND qa.passed = TRUE
-        ) as "quizPassed"
-    FROM chapters ch
-    LEFT JOIN quizzes q ON ch.id = q.chapter_id
-    WHERE ch.resource_id = $2
-    ORDER BY ch.chapter_number ASC;
-`;
-const chaptersResult = await pool.query(chaptersQuery, [learnerId, courseData.resourceId]);
-        
+    const finalQuizQuery = `
+        SELECT 
+            q.id as "quizId",
+            EXISTS (
+                SELECT 1 FROM quiz_attempts qa
+                WHERE qa.quiz_id = q.id AND qa.learner_id = $1 AND qa.passed = TRUE
+            ) as "isCompleted"
+        FROM quizzes q
+        WHERE q.resource_id = $2 AND q.is_final = TRUE;
+    `;
 
-        const finalQuizQuery = `
-            SELECT 
-                q.id as "quizId",
-                EXISTS (
-                    SELECT 1 FROM quiz_attempts qa
-                    WHERE qa.quiz_id = q.id AND qa.learner_id = $1 AND qa.passed = TRUE
-                ) as "isCompleted"
-            FROM quizzes q
-            WHERE q.resource_id = $1 AND q.is_final = TRUE;
-        `;
-        const finalQuizResult = await pool.query(finalQuizQuery, [courseData.resourceId]);
+    const finalQuizResult = await pool.query(finalQuizQuery, [learnerId, courseData.resourceId]);
 
-        return {
-            ...courseData,
-            chapters: chaptersResult.rows,
-            finalQuiz: finalQuizResult.rows[0] || null,
-        };
-    },
+    return {
+        ...courseData,
+        chapters: chaptersResult.rows,
+        finalQuiz: finalQuizResult.rows[0] || null,
+    };
+},
 
     toggleChapterCompletion: async (learnerId: number, chapterId: number) => {
         
