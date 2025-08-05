@@ -4,6 +4,7 @@ import puppeteer from 'puppeteer';
 import fs from 'fs';
 import path from 'path';
 import { Response } from 'express';
+import { EmailService } from './EmailService';
 
 
 interface CertificateRecord {
@@ -42,6 +43,7 @@ export const issueCertificate = async (
         [learnerId, courseId]
     );
 
+
     if ((existingCert.rowCount ?? 0) > 0) {
         throw new Error('Certificate already issued for this learner and course.');
     }
@@ -54,10 +56,40 @@ export const issueCertificate = async (
         RETURNING id;
     `;
     const newCertificateResult = await pool.query(insertQuery, [learnerId, courseId, issuedDate]);
-    
-    return newCertificateResult.rows[0];
-};
+    const newCertificate = newCertificateResult.rows[0];
 
+    try {
+        const notificationDataQuery = `
+            SELECT 
+                u.email,
+                u.first_name,
+                u.last_name,
+                c.name as "courseName"
+            FROM users u, courses c
+            WHERE u.id = $1 AND c.id = $2;
+        `;
+        const notificationDataResult = await pool.query(notificationDataQuery, [learnerId, courseId]);
+        
+
+        if ((notificationDataResult?.rowCount ?? 0) > 0) {
+            const data = notificationDataResult.rows[0];
+
+            const learnerFullName = `${data.first_name || ''} ${data.last_name || ''}`.trim();
+            
+            await EmailService.sendCertificateNotification(
+                data.email,
+                learnerFullName,
+                data.courseName
+            );
+        } else {
+            console.error(`[Certificate Service] Could not find user or course data for email notification. LearnerId: ${learnerId}, CourseId: ${courseId}`);
+        }
+    } catch (emailError) {
+        console.error(`[Certificate Service] An error occurred while trying to send the certificate email notification:`, emailError);
+    }
+    
+    return newCertificate;
+};
 
 export const getMyCertificates = async (learnerId: number): Promise<MyCertificate[]> => {
     const query = `

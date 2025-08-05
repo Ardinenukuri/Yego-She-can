@@ -15,7 +15,7 @@ import {
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
 
-
+// Interface for the full program details displayed in the list
 interface Program {
   id: number;
   title: string;
@@ -29,60 +29,86 @@ interface Program {
   requirements: string[];
 }
 
+// Interface for the specific data needed for the countdown timer
+interface NextProgram {
+  title: string;
+  next_session: string; // This will be an ISO date string from the DB
+}
+
 export default function PhysicalProgramsPage() {
   const [programs, setPrograms] = useState<Program[]>([]);
   const [loading, setLoading] = useState(true);
-  const [countdown, setCountdown] = useState("");
+  
+  // State for the next program's data and the countdown display string
+  const [nextProgram, setNextProgram] = useState<NextProgram | null>(null);
+  const [countdown, setCountdown] = useState<string>("");
 
-
+  // Fetch all necessary data when the component mounts
   useEffect(() => {
-    const fetchPublicPrograms = async () => {
+    const fetchInitialData = async () => {
         try {
             setLoading(true);
-            const response = await api.get('/api/public/physical-programs');
-            setPrograms(response.data);
+            // Use Promise.all to fetch data concurrently for better performance
+            const [programsResponse, nextProgramResponse] = await Promise.all([
+                api.get('/api/public/physical-programs'),
+                api.get('/api/public/next-physical-program') 
+            ]);
+            setPrograms(programsResponse.data);
+            setNextProgram(nextProgramResponse.data); // This will be the program object or null
         } catch (error) {
-            console.error("Failed to load physical programs:", error);
-            toast.error("Could not load physical programs.");
+            console.error("Failed to load page data:", error);
+            toast.error("Could not load program information.");
         } finally {
             setLoading(false);
         }
     };
-    fetchPublicPrograms();
+    fetchInitialData();
   }, []);
 
-
+  // Effect to handle the countdown logic, dependent on the fetched nextProgram
   useEffect(() => {
-    const eventDate = new Date('2025-08-15T09:00:00')
-    const interval = setInterval(() => {
-  const countdownDate = new Date("2025-08-15T09:00:00").getTime(); 
-const now = new Date().getTime(); 
-const difference = countdownDate - now;
+    // If there is no upcoming program, set a message and stop.
+    if (!nextProgram) {
+      setCountdown("No upcoming workshops scheduled. Please check back soon!");
+      return;
+    }
 
+    const interval = setInterval(() => {
+      const countdownDate = new Date(nextProgram.next_session).getTime();
+      const now = new Date().getTime();
+      const difference = countdownDate - now;
+
+      // If the countdown is over
       if (difference <= 0) {
-        setCountdown('Program started!')
-        clearInterval(interval)
-        return
+        setCountdown(`The ${nextProgram.title} workshop has started!`);
+        clearInterval(interval);
+        return;
       }
 
-      const days = Math.floor(difference / (1000 * 60 * 60 * 24))
-      const hours = Math.floor((difference / (1000 * 60 * 60)) % 24)
-      const minutes = Math.floor((difference / (1000 * 60)) % 60)
-      const seconds = Math.floor((difference / 1000) % 60)
+      // Calculate time parts
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
+      // Set the dynamic countdown string
       setCountdown(
-        `${days}d ${hours}h ${minutes}m ${seconds}s until soap making physical program`
-      )
-    }, 1000)
+        `${days}d ${hours}h ${minutes}m ${seconds}s until our ${nextProgram.title} program`
+      );
+    }, 1000);
 
-    return () => clearInterval(interval)
-  }, [])
-  
+    // Cleanup function to clear the interval when the component unmounts or nextProgram changes
+    return () => clearInterval(interval);
+
+  }, [nextProgram]); // This effect will re-run if the nextProgram data ever changes
+
+
   if (loading) {
     return (
         <div className="page-wrapper">
             <div className="pageWrapper">
                 <section className="heroSection">
+                    {/* Minimal hero during load */}
                 </section>
                 <div className="loading-state">Loading Programs...</div>
             </div>
@@ -163,7 +189,7 @@ const difference = countdownDate - now;
                   <p>{program.description}</p>
                   <div className="programMeta">
                     <span><Clock className="metaIcon" /> {program.duration}</span>
-                    <span><Calendar className="metaIcon" /> {program.next_session}</span>
+                    <span><Calendar className="metaIcon" /> {new Date(program.next_session).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                     <span><MapPin className="metaIcon" /> {program.location}</span>
                   </div>
                   <div className="skillsSection">

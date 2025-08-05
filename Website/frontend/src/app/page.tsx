@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
+import api from '@/lib/api' 
 
 import {
   FaChalkboardTeacher,
@@ -15,38 +16,68 @@ import { FiAward, FiUsers, FiTarget } from 'react-icons/fi'
 import heroImage from '../../public/homepag.jpg'
 import './home.css'
 
+
+interface NextProgram {
+  title: string;
+  next_session: string; 
+}
+
 export default function Home() {
+  const [countdown, setCountdown] = useState('')
+  const [nextProgram, setNextProgram] = useState<NextProgram | null>(null)
+  const [isLoadingCountdown, setIsLoadingCountdown] = useState(true)
+
   useEffect(() => {
     AOS.init({ duration: 1000 })
   }, [])
 
-  const [countdown, setCountdown] = useState('')
-
+  
   useEffect(() => {
-    const eventDate = new Date('2025-08-15T09:00:00')
+    const fetchNextProgram = async () => {
+      try {
+        setIsLoadingCountdown(true)
+        const response = await api.get('/api/public/next-physical-program')
+        setNextProgram(response.data)
+      } catch (error) {
+        console.error("Failed to fetch next program for countdown:", error)
+        setNextProgram(null)
+      } finally {
+        setIsLoadingCountdown(false)
+      }
+    }
+    fetchNextProgram()
+  }, [])
+
+  
+  useEffect(() => {
+    if (!nextProgram) {
+      setCountdown('Check out our physical programs for upcoming dates!')
+      return
+    }
+
     const interval = setInterval(() => {
-  const countdownDate = new Date("2025-08-15T09:00:00").getTime(); 
-const now = new Date().getTime(); 
-const difference = countdownDate - now;
+      const countdownDate = new Date(nextProgram.next_session).getTime()
+      const now = new Date().getTime()
+      const difference = countdownDate - now
 
       if (difference <= 0) {
-        setCountdown('Program started!')
+        setCountdown(`Our ${nextProgram.title} program has started!`)
         clearInterval(interval)
         return
       }
 
       const days = Math.floor(difference / (1000 * 60 * 60 * 24))
-      const hours = Math.floor((difference / (1000 * 60 * 60)) % 24)
-      const minutes = Math.floor((difference / (1000 * 60)) % 60)
-      const seconds = Math.floor((difference / 1000) % 60)
+      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60))
+      const seconds = Math.floor((difference % (1000 * 60)) / 1000)
 
       setCountdown(
-        `${days}d ${hours}h ${minutes}m ${seconds}s until soap making physical program`
+        `${days}d ${hours}h ${minutes}m ${seconds}s until our ${nextProgram.title} program`
       )
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [])
+  }, [nextProgram]) 
 
   const values = [
     {
@@ -87,9 +118,12 @@ const difference = countdownDate - now;
             <p>
               Yego SheCan uplifts underserved women through business training, mentorship, and access to digital markets.
             </p>
-            <div className="countdown-timer">
-              <strong>{countdown}</strong>
-            </div>
+            {/* Conditional Countdown Timer */}
+            {!isLoadingCountdown && nextProgram && (
+              <div className="countdown-timer">
+                <strong>{countdown}</strong>
+              </div>
+            )}
             <div className="hero-buttons">
               <Link href="/mentorship">
                 <button className="btn-primary">Find a Mentor</button>
@@ -224,23 +258,29 @@ const difference = countdownDate - now;
         </div>
       </section>
 
-      {/* CTA */}
+
       <section className="cta-section" data-aos="fade-up">
         <h2>Join Our Community Today</h2>
         <p>
           Whether you're just starting out or growing your business, Yego SheCan is here to support you every step of the way.
         </p>
-        <Link href="/register">
+        <Link href="/auth/register">
           <button className="btn-primary" style={{ marginTop: '2rem' }}>
             Get Started
           </button>
         </Link>
-         <div className="countdown-timers ">
-              <strong>{countdown}</strong><br />
-              <button className="btn-primary" style={{ marginTop: '2rem' }}>
-            Enroll Now
-          </button>
-            </div>
+
+        {!isLoadingCountdown && nextProgram && (
+          <div className="countdown-timers">
+            <strong>{countdown}</strong>
+            <br />
+            <Link href="/services/physical">
+              <button className="btn-primary" style={{ marginTop: '1rem' }}>
+                Enroll Now
+              </button>
+            </Link>
+          </div>
+        )}
       </section>
     </div>
   )
