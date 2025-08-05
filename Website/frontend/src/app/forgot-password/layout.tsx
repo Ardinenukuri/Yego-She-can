@@ -61,9 +61,10 @@
 //   );
 // }
 
+import { Sidebar } from 'lucide-react'
+import DashboardNavbar from '../dashboard/components/DashboardNavbar'
 import '../styles/dashboard.css'
-import Sidebar from './components/Sidebar'
-import DashboardNavbar from './components/DashboardNavbar'
+
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
