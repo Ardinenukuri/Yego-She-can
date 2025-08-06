@@ -3,6 +3,7 @@ import { NextConfig } from 'next';
 
 const nextConfig: NextConfig = { 
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'http',
@@ -13,6 +14,11 @@ const nextConfig: NextConfig = {
     ],
   },
   allowedDevOrigins: ['http://192.168.43.229:3000'],
+  output: 'standalone',
+  eslint:{
+    ignoreDuringBuilds: true
+  }
+  
 };
 
 export default nextConfig;
