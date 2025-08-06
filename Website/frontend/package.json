@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@flydotio/dockerfile": "^0.7.10",
     "@tailwindcss/postcss": "^4",
     "@types/aos": "^3.0.7",
     "@types/node": "^20",
