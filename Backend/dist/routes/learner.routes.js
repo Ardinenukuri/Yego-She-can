@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const learner_controller_1 = require("../controllers/learner.controller");
+const auth_middleware_1 = require("../middlewares/auth.middleware");
+const authorize_middleware_1 = require("../middlewares/authorize.middleware");
+const validateRequest_1 = require("../middlewares/validateRequest");
+const auth_schema_1 = require("../schemas/auth.schema");
+const express_1 = require("express");
+const router = (0, express_1.Router)();
+router.get('/mentors/:mentorId/availability', learner_controller_1.LearnerController.getMentorAvailability);
+router.post('/book-session', auth_middleware_1.protect, (0, authorize_middleware_1.authorize)('learner'), (0, validateRequest_1.validateRequest)(auth_schema_1.createBookingSchema), learner_controller_1.LearnerController.bookSlot);
+router.get('/physical-programs', auth_middleware_1.protect, (0, authorize_middleware_1.authorize)('learner'), learner_controller_1.LearnerController.getPhysicalPrograms);
+router.post('/physical-programs/enroll', auth_middleware_1.protect, (0, authorize_middleware_1.authorize)('learner'), learner_controller_1.LearnerController.enrollInPhysicalProgram);
+exports.default = router;

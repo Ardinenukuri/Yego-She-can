@@ -1,0 +1,18 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const user_controller_1 = require("../controllers/user.controller");
+const auth_middleware_1 = require("../middlewares/auth.middleware");
+const authorize_middleware_1 = require("../middlewares/authorize.middleware");
+const validateRequest_1 = require("../middlewares/validateRequest");
+const auth_schema_1 = require("../schemas/auth.schema");
+const router = (0, express_1.Router)();
+router.get('/', auth_middleware_1.protect, (0, authorize_middleware_1.authorize)('program manager'), user_controller_1.UserController.getAllUsers);
+router.put('/:id', auth_middleware_1.protect, (0, authorize_middleware_1.authorize)('program manager'), (0, validateRequest_1.validateRequest)(auth_schema_1.updateUserStatusSchema), user_controller_1.UserController.updateUser);
+router.delete('/:id', auth_middleware_1.protect, (0, authorize_middleware_1.authorize)('program manager'), user_controller_1.UserController.deleteUser);
+router.get('/my-learners', auth_middleware_1.protect, (0, authorize_middleware_1.authorize)('mentor'), user_controller_1.UserController.getEnrolledLearners);
+router.get('/mentors', auth_middleware_1.protect, (0, authorize_middleware_1.authorize)('program manager'), user_controller_1.UserController.getAllMentors);
+router.get('/learners', user_controller_1.UserController.getAllLearners);
+router.get('/mentor', user_controller_1.UserController.getPublicMentors);
+router.get('/eligible-mentors', user_controller_1.UserController.searchEligibleMentors);
+exports.default = router;

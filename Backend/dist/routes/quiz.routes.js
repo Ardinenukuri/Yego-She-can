@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const quiz_controller_1 = require("../controllers/quiz.controller");
+const auth_middleware_1 = require("../middlewares/auth.middleware");
+const authorize_middleware_1 = require("../middlewares/authorize.middleware");
+const validateRequest_1 = require("../middlewares/validateRequest");
+const auth_schema_1 = require("../schemas/auth.schema");
+const router = (0, express_1.Router)();
+router.post('/chapter', auth_middleware_1.protect, (0, authorize_middleware_1.authorize)('mentor'), (0, validateRequest_1.validateRequest)(auth_schema_1.generateChapterQuizSchema), quiz_controller_1.QuizController.generateChapterQuiz);
+router.post('/final', auth_middleware_1.protect, (0, authorize_middleware_1.authorize)('mentor'), (0, validateRequest_1.validateRequest)(auth_schema_1.generateFinalQuizSchema), quiz_controller_1.QuizController.generateFinalQuiz);
+router.get('/:id', auth_middleware_1.protect, (0, authorize_middleware_1.authorize)('learner'), quiz_controller_1.QuizController.getQuiz);
+router.post('/:id/submit', auth_middleware_1.protect, (0, authorize_middleware_1.authorize)('learner'), (0, validateRequest_1.validateRequest)(auth_schema_1.submitQuizSchema), quiz_controller_1.QuizController.submitQuiz);
+exports.default = router;

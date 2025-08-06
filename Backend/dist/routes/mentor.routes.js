@@ -1,0 +1,25 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+// src/routes/mentor.routes.ts
+const express_1 = require("express");
+const course_controller_1 = require("../controllers/course.controller");
+const auth_middleware_1 = require("../middlewares/auth.middleware");
+const authorize_middleware_1 = require("../middlewares/authorize.middleware");
+const quiz_controller_1 = require("../controllers/quiz.controller");
+const mentor_controller_1 = require("../controllers/mentor.controller");
+const validateRequest_1 = require("../middlewares/validateRequest");
+const auth_schema_1 = require("../schemas/auth.schema");
+const router = (0, express_1.Router)();
+router.use(auth_middleware_1.protect, (0, authorize_middleware_1.authorize)('mentor'));
+router.get('/courses', course_controller_1.CourseController.getCoursesForMentor);
+router.get('/quizzes/overview', quiz_controller_1.QuizController.getQuizOverview);
+router.get('/courses/:id/chapters', course_controller_1.CourseController.getChaptersForCourse);
+router.get('/dashboard', mentor_controller_1.MentorController.getDashboardData);
+router.post('/message-learner', (0, validateRequest_1.validateRequest)(auth_schema_1.messageLearnerSchema), mentor_controller_1.MentorController.messageLearner);
+router.get('/courses/:courseId/details', mentor_controller_1.MentorController.getCourseDetails);
+router.get('/availability', mentor_controller_1.MentorController.getAvailability);
+router.post('/availability', mentor_controller_1.MentorController.addAvailability);
+router.put('/availability/:id', mentor_controller_1.MentorController.updateSlotStatus);
+router.delete('/availability/:id', mentor_controller_1.MentorController.deleteSlot);
+router.get('/dashboard/export-pdf', mentor_controller_1.MentorController.exportDashboardPDF);
+exports.default = router;
