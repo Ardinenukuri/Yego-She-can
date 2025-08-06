@@ -7,7 +7,7 @@ const connectionString = process.env.DATABASE_URL;
 console.log('--- DATABASE CONNECTION DETAILS ---');
 console.log('User:', process.env.DB_USER);
 console.log('Host:', process.env.DB_HOST);
-console.log('Database:', process.env.DB_name);
+console.log('Database:', process.env.DB_NAME);
 console.log('Port:', process.env.DB_PORT);
 console.log('---------------------------------');
 
