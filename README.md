@@ -1,8 +1,8 @@
-# Yego She Can - Female Entrepreneurship Learning Platform
+## Yego She Can - Female Entrepreneurship Learning Platform
 
 Yego She Can is an online platform designed to empower women by offering educational courses on entrepreneurship, physical training programs, and a marketplace for soap and coffee products. The platform also includes a mentorship feature to guide learners through their entrepreneurial journey.
 
-## Table of Contents
+### Table of Contents
 - Overview
 
 - Features
@@ -19,9 +19,7 @@ Yego She Can is dedicated to helping women, particularly those aged 30+, develop
 - Online Courses: Courses on accounting, sales, marketing, and design thinking.
 
 - Physical Training: In-person courses on soap making and coffee production.
-
-- E-commerce: A marketplace for purchasing soap and coffee products (optional MVP feature).
-
+  
 - Mentorship: Personalized, one-on-one mentorship with experienced entrepreneurs.
 
 ### Features
@@ -37,8 +35,6 @@ Yego She Can is dedicated to helping women, particularly those aged 30+, develop
 2. Physical Programs
 - Soap & Coffee Making: In-person training available for soap and coffee production.
 
-- E-commerce: A platform to purchase soap and coffee products (optional MVP feature).
-
 3. Role-Based Dashboards
 - Learners: Track progress, view courses, and interact with mentors.
 
@@ -47,61 +43,59 @@ Yego She Can is dedicated to helping women, particularly those aged 30+, develop
 - Program Managers: Admins who oversee users, courses, mentors, and physical classes.
 
 ### Technology Stack
-Frontend: Next.js, CSS
+- - Frontend: Next.js, CSS
 
-Backend: Node.js, Express.js
+- - Backend: Node.js, Express.js
 
-Database: PostgreSQL
+- - Database: PostgreSQL
 
 User Roles
 1. Learner
-Enroll in online courses and complete assignments.
+- Enroll in online courses and complete assignments.
 
-Earn certificates upon course completion.
+- Earn certificates upon course completion.
 
-Schedule mentorship sessions for personalized support.
+- Schedule mentorship sessions for personalized support.
 
-Engage with course content and updates.
+- Engage with course content and updates.
 
 2. Mentor
-Create and manage courses.
+- Create and manage courses.
 
-Set availability for one-on-one mentoring sessions.
+- Set availability for one-on-one mentoring sessions.
 
-Provide feedback, grade assignments, and guide learners.
+- Provide feedback, grade assignments, and guide learners.
 
 3. Program Manager (Admin)
-Manage users, courses, and mentors.
+- Manage users, courses, and mentors.
 
-Approve or reject applications for physical programs.
+- Approve or reject applications for physical programs.
 
-Manage e-commerce products (optional MVP feature).
-
-Oversee platform operations and ensure smooth user experience.
+- Oversee platform operations and ensure smooth user experience.
 
 Dashboard Overview
 1. Learner Dashboard
-View completed, ongoing, and enrolled courses.
+- View completed, ongoing, and enrolled courses.
 
-Download earned certificates.
+- Download earned certificates.
 
-Manage personal information and settings.
+- Manage personal information and settings.
 
-Interact with notifications, announcements, and updates.
+- Interact with notifications, announcements, and updates.
 
 2. Mentor Dashboard
-View assigned courses and enrolled students.
+- View assigned courses and enrolled students.
 
-Create and manage course content and assignments.
+- Create and manage course content and assignments.
 
-Set and manage availability for mentoring sessions.
+- Set and manage availability for mentoring sessions.
 
-Track student progress and provide feedback.
+- Track student progress and provide feedback.
 
 3. Program Manager Dashboard
-View and manage all courses, mentors, and users.
+- View and manage all courses, mentors, and users.
 
-Add, remove, and assign mentors to courses.
+- Add, remove, and assign mentors to courses.
 
 Manage learner applications for physical training courses.
 
