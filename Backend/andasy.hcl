@@ -6,9 +6,11 @@ app_name = "yegobackend"
 
 app {
 
-  env = {}
+  env = {
+    HOST = "::"
+  }
 
-  port = 3000
+  port = 5000
 
   compute {
     cpu      = 1
