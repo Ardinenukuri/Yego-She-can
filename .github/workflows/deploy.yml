@@ -2,7 +2,7 @@ name: Deployment to Andasy
 on:
   push:
     branches:
-      - main
+      - ardine
 jobs:
   deploy:
     name: Deploy App
