@@ -22,7 +22,7 @@ RUN apt-get update -qq && \
 
 # Install node modules
 COPY package-lock.json package.json ./
-RUN npm ci --include=dev
+RUN npm ci --include=dev && npm install --no-save --platform=linuxmusl --arch=x64 lightningcss
 
 # Copy application code
 COPY . .
