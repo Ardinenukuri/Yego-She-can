@@ -20,7 +20,7 @@ RUN apt-get update -qq && \
 # Install node modules
 ENV NODE_ENV="development"
 COPY package-lock.json package.json ./
-RUN  npm install
+RUN  npm install && npm install --no-save --platform=linuxmusl --arch=x64 lightningcss
 
 # Copy application code
 COPY . .
