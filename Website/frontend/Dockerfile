@@ -1,35 +1,47 @@
-# Use a standard, stable Node.js base image
-FROM node:20-alpine AS builder
+# syntax = docker/dockerfile:1
 
-# Set the working directory in the container
+# Adjust NODE_VERSION as desired
+ARG NODE_VERSION=22
+FROM node:${NODE_VERSION}-slim AS base
+
+LABEL andasy_launch_runtime="Next.js"
+
+# Next.js app lives here
 WORKDIR /app
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
 
-# Install dependencies FRESH inside the Linux container.
-# This will download the correct Linux-compatible binaries.
-RUN npm install
+# Throw-away build stage to reduce size of final image
+FROM base AS build
 
-# Now, copy the rest of your application source code
+# Install packages needed to build node modules
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y build-essential node-gyp pkg-config python-is-python3
+
+# Install node modules
+ENV NODE_ENV="development"
+COPY package-lock.json package.json ./
+RUN  npm install && npm install --no-save --platform=linuxmusl --arch=x64 lightningcss
+
+# Copy application code
 COPY . .
 
-# Run the build command using the fresh Linux modules
+ENV NODE_ENV="production"
+# Build application
 RUN npm run build
 
+# Remove development dependencies
+RUN npm prune --omit=dev
 
-# --- Production Stage ---
-# Create a smaller, final image for running the app
-FROM node:20-alpine AS runner
-WORKDIR /app
 
-# Copy only the necessary artifacts from the builder stage
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
+# Final stage for app image
+FROM base
 
+# Copy built application
+COPY --from=build /app /app
+
+# Entrypoint sets up the container.
+ENTRYPOINT [ "/app/docker-entrypoint.js" ]
+
+# Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-
-# The command to start the Next.js production server
-CMD ["npm", "start"]
+CMD [ "npm", "run", "start" ]
