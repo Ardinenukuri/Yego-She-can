@@ -16,9 +16,9 @@ jobs:
           # Set access token
             ANDASY_ACCESS_TOKEN: ${{ secrets.ANDASY }}
 
-        - uses: quarksgroup/andasy-action@main
-          with:
-            project_path: Website/frontend
-          env:
-          # Set access token
-            ANDASY_ACCESS_TOKEN: ${{ secrets.ANDASY }}
+        # - uses: quarksgroup/andasy-action@main
+        #   with:
+        #     project_path: Website/frontend
+        #   env:
+        #   # Set access token
+        #     ANDASY_ACCESS_TOKEN: ${{ secrets.ANDASY }}
