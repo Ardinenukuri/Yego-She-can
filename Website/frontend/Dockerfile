@@ -1,37 +1,47 @@
-# Use a more standard Node.js base image. Alpine is great for size.
-FROM node:20-alpine AS base
+# syntax = docker/dockerfile:1
 
+# Adjust NODE_VERSION as desired
+ARG NODE_VERSION=22
+FROM node:${NODE_VERSION}-slim AS base
+
+LABEL andasy_launch_runtime="Next.js"
+
+# Next.js app lives here
 WORKDIR /app
 
-# --- Dependencies ---
-# Copy package files and install dependencies. This layer is cached effectively.
-COPY package.json package-lock.json ./
-RUN npm install
 
-# --- Build ---
-# Copy the rest of the source code
+# Throw-away build stage to reduce size of final image
+FROM base AS build
+
+# Install packages needed to build node modules
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y build-essential node-gyp pkg-config python-is-python3
+
+# Install node modules
+ENV NODE_ENV="development"
+COPY package-lock.json package.json ./
+RUN  npm install && npm install --no-save --platform=linuxmusl --arch=x64 lightningcss
+
+# Copy application code
 COPY . .
-# Build the Next.js application
+
+ENV NODE_ENV="production"
+# Build application
 RUN npm run build
 
-# --- Production ---
-# This creates a minimal final image with only what's needed to run.
-FROM node:20-alpine AS runner
+# Remove development dependencies
+RUN npm prune --omit=dev
 
-WORKDIR /app
 
-# Copy production dependencies from the 'base' stage
-COPY --from=base /app/node_modules ./node_modules
-# Copy built application from the 'base' stage
-COPY --from=base /app/.next ./.next
-COPY --from=base /app/public ./public
-COPY --from=base /app/package.json ./package.json
+# Final stage for app image
+FROM base
 
-# You don't seem to need this entrypoint for a standard Next.js app.
-# If you do, you can copy it here:
-# COPY --from=base /app/docker-entrypoint.js ./docker-entrypoint.js
-# ENTRYPOINT [ "/app/docker-entrypoint.js" ]
+# Copy built application
+COPY --from=build /app /app
 
+# Entrypoint sets up the container.
+ENTRYPOINT [ "/app/docker-entrypoint.js" ]
+
+# Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-
-CMD ["npm", "start"]
+CMD [ "npm", "run", "start" ]

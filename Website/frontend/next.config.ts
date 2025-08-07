@@ -22,6 +22,15 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   
+  webpack: (config, { isServer }) => {
+    config.ignoreWarnings = [
+        ...(config.ignoreWarnings || []),
+        /Failed to load native binding/,
+    ];
+
+    return config;
+  },
+  
 };
 
 export default nextConfig;
