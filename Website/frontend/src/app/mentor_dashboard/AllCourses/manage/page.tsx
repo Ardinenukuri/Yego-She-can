@@ -5,6 +5,18 @@ import { useRouter } from 'next/navigation'
 import { FiUploadCloud, FiCheckCircle } from 'react-icons/fi'
 import './manage.css' // Assuming this CSS file is in the same directory or accessible
 
+type LessonPreview = {
+  title: string
+  duration: string
+}
+
+interface ManagePageProps {
+  params: { moduleId: string }
+}
+
+export default function ManagePage({ params }: ManagePageProps) {
+  const moduleId = params.moduleId
+
   const [file, setFile] = useState<File | null>(null)
   const [uploading, setUploading] = useState(false)
   const [previewLessons, setPreviewLessons] = useState<LessonPreview[]>([])
@@ -40,7 +52,6 @@ import './manage.css' // Assuming this CSS file is in the same directory or acce
 
   const handleConfirm = () => {
     alert('Lessons saved!')
-    // Using the moduleId prop for navigation
     router.push(`/mentor/modules/${moduleId}`)
   }
 
