@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, ChangeEvent, FormEvent } from 'react';
-import './add.css'; 
+import './add.css';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
 
-// Interface for the new Physical Program form
 interface PhysicalProgramForm {
     title: string;
     description: string;
@@ -14,8 +14,8 @@ interface PhysicalProgramForm {
     schedule: string;
     nextSession: string;
     location: string;
-    skills: string; // Will be a comma-separated string from the input
-    requirements: string; // Will be a comma-separated string
+    skills: string;
+    requirements: string;
     image: File | null;
 }
 
@@ -23,8 +23,7 @@ export default function AddCoursePage() {
   const [courseTitle, setCourseTitle] = useState('');
   const [isAddingCourse, setIsAddingCourse] = useState(false);
   const router = useRouter();
-  
-  // --- NEW: State for the Physical Program Form ---
+
   const [physicalProgramForm, setPhysicalProgramForm] = useState<PhysicalProgramForm>({
     title: '',
     description: '',
@@ -42,22 +41,22 @@ export default function AddCoursePage() {
     e.preventDefault();
     setIsAddingCourse(true);
     const toastId = toast.loading('Adding new online course...');
-    
+
     try {
       await api.post('/api/courses', { name: courseTitle });
       toast.success('Online course added successfully!', { id: toastId });
       setCourseTitle('');
-    } catch (error) {
-      // Corrected the 'any' type and safely accessed the nested error message.
-      const errorMessage = (error as { response?: { data?: { errors?: { message: string }[] } } })
-                            ?.response?.data?.errors?.[0]?.message || 'Failed to add course.';
+    } catch (error: unknown) {
+      let errorMessage = 'Failed to add course.';
+      if (axios.isAxiosError(error)) {
+        errorMessage = error.response?.data?.errors?.[0]?.message || error.response?.data?.message || errorMessage;
+      }
       toast.error(errorMessage, { id: toastId });
     } finally {
       setIsAddingCourse(false);
     }
   };
 
-  // --- NEW: Handlers for the Physical Program Form ---
   const handleProgramFormChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setPhysicalProgramForm({ ...physicalProgramForm, [e.target.name]: e.target.value });
   };
@@ -94,10 +93,11 @@ export default function AddCoursePage() {
       });
       toast.success('Physical program added successfully!', { id: toastId });
       router.push('/dashboard/courses');
-    } catch (error) {
-      // Corrected the 'any' type and safely accessed the nested error message.
-      const errorMessage = (error as { response?: { data?: { message?: string } } })
-                            ?.response?.data?.message || 'Failed to add physical program.';
+    } catch (error: unknown) {
+      let errorMessage = 'Failed to add physical program.';
+      if (axios.isAxiosError(error) && error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
       toast.error(errorMessage, { id: toastId });
     } finally {
       setIsAddingProgram(false);
@@ -106,7 +106,6 @@ export default function AddCoursePage() {
 
   return (
     <div className="add-course-container">
-      {/* --- ADD ONLINE COURSE CARD --- */}
       <div className="add-course-card">
         <h1 className="add-course-title">Add New Online Course</h1>
         <form onSubmit={handleCourseSubmit} className="add-course-form">
@@ -125,16 +124,15 @@ export default function AddCoursePage() {
         </form>
       </div>
 
-      {/* --- NEW: ADD PHYSICAL PROGRAM CARD --- */}
       <div className="add-course-card">
         <h1 className="add-course-title">Add New Physical Program</h1>
         <form onSubmit={handleProgramSubmit} className="add-course-form">
           <label>Program Title</label>
           <input name="title" value={physicalProgramForm.title} onChange={handleProgramFormChange} required placeholder="e.g. Soap Making Workshop" disabled={isAddingProgram} />
-          
+
           <label>Description</label>
           <textarea name="description" value={physicalProgramForm.description} onChange={handleProgramFormChange} required placeholder="A brief summary of the program" disabled={isAddingProgram}></textarea>
-          
+
           <div className="form-row">
             <label>Duration<input name="duration" value={physicalProgramForm.duration} onChange={handleProgramFormChange} required placeholder="e.g., 2 Days" disabled={isAddingProgram} /></label>
             <label>Schedule<input name="schedule" value={physicalProgramForm.schedule} onChange={handleProgramFormChange} required placeholder="e.g., Weekends" disabled={isAddingProgram} /></label>
@@ -147,10 +145,10 @@ export default function AddCoursePage() {
 
           <label>Skills (comma-separated)</label>
           <input name="skills" value={physicalProgramForm.skills} onChange={handleProgramFormChange} required placeholder="e.g., Cold process, Scenting, Branding" disabled={isAddingProgram} />
-          
+
           <label>Requirements (comma-separated)</label>
           <input name="requirements" value={physicalProgramForm.requirements} onChange={handleProgramFormChange} required placeholder="e.g., 18+ years old, Commitment" disabled={isAddingProgram} />
-          
+
           <label>Program Image *</label>
           <input type="file" name="image" onChange={handleProgramFileChange} required accept="image/*" disabled={isAddingProgram} />
 
