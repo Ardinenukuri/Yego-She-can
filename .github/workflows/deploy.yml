@@ -2,7 +2,7 @@ name: Deployment to Andasy
 on:
   push:
     branches:
-      - main
+      - ardine
 jobs:
   deploy:
     name: Deploy App
@@ -10,6 +10,15 @@ jobs:
     steps:
         - uses: actions/checkout@v2
         - uses: quarksgroup/andasy-action@main
+          with:
+            project_path: Backend
           env:
           # Set access token
-            ANDASY_ACCESS_TOKEN: ${{ andasy }}
+            ANDASY_ACCESS_TOKEN: ${{ secrets.ANDASY }}
+
+        # - uses: quarksgroup/andasy-action@main
+        #   with:
+        #     project_path: Website/frontend
+        #   env:
+        #   # Set access token
+        #     ANDASY_ACCESS_TOKEN: ${{ secrets.ANDASY }}

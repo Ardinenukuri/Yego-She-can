@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const user_controller_1 = require("../controllers/user.controller");
+const PhysicalProgramController_1 = require("../controllers/PhysicalProgramController");
+const router = (0, express_1.Router)();
+router.get('/mentors', user_controller_1.UserController.getPublicMentors);
+router.get('/mentors/:mentorId/availability', user_controller_1.UserController.getMentorAvailability);
+router.get('/physical-programs', user_controller_1.UserController.getPhysicalPrograms);
+router.get('/next-physical-program', PhysicalProgramController_1.PhysicalProgramController.getUpcomingProgram);
+exports.default = router;
