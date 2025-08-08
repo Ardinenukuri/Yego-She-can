@@ -24,8 +24,11 @@ export default function LoginPage() {
       const response = await api.post('/api/auth/login', formData);
       toast.success('Login successful!');
       login(response.data.token, response.data.user);
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Login failed');
+    } catch (error) {
+      // We cast the unknown error to a potential shape to safely access nested properties.
+      const errorMessage = (error as { response?: { data?: { message?: string } } })
+                            ?.response?.data?.message || 'Login failed';
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

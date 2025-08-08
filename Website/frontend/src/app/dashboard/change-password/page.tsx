@@ -40,10 +40,19 @@ export default function ChangePasswordPage() {
       
       router.push('/dashboard/settings');
 
-    } catch (error: any) {
+    } catch (error) {
+      // Corrected the 'any' type and safely accessed potential error message shapes.
+      const typedError = error as { 
+        response?: { 
+          data?: { 
+            message?: string; 
+            errors?: { message: string }[] 
+          } 
+        } 
+      };
       const errorMessage =
-        error.response?.data?.errors?.[0]?.message ||
-        error.response?.data?.message ||
+        typedError.response?.data?.errors?.[0]?.message ||
+        typedError.response?.data?.message ||
         'An unknown error occurred.';
 
       toast.error(errorMessage);

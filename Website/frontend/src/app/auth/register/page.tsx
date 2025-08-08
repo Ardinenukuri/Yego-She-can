@@ -1,27 +1,29 @@
 "use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import toast from 'react-hot-toast';
-import api from '@/lib/api';
-import Link from 'next/link';
-import '@/app/register/register.css'; 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import api from "@/lib/api";
+import Link from "next/link";
+import "@/app/register/register.css";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    gender: 'Female',
-    age: '',
+    firstName: "",
+    lastName: "",
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    gender: "Female",
+    age: "",
   });
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -33,15 +35,31 @@ export default function RegisterPage() {
     }
     setLoading(true);
     try {
-      await api.post('/api/auth/register', {
+      await api.post("/api/auth/register", {
         ...formData,
-        age: parseInt(formData.age), 
+        age: parseInt(formData.age),
       });
-      toast.success('Registration successful! Please check your email to verify.');
-      router.push('/auth/login');
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.errors?.[0]?.message || 'Registration failed';
-      toast.error(errorMessage);
+      toast.success(
+        "Registration successful! Please check your email to verify."
+      );
+      router.push("/auth/login");
+    } catch (error: unknown) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "response" in error &&
+        Array.isArray(
+          (error as { response?: { data?: { errors?: Array<{ message?: string }> } } }).response?.data?.errors
+        )
+      ) {
+        const errorsArray =
+          (error as {
+            response?: { data?: { errors?: Array<{ message?: string }> } };
+          }).response?.data?.errors;
+        toast.error(errorsArray?.[0]?.message || "Registration failed");
+      } else {
+        toast.error("Registration failed");
+      }
     } finally {
       setLoading(false);
     }
@@ -55,55 +73,133 @@ export default function RegisterPage() {
 
         <div className="register-name-fields">
           <div className="register-input-group">
-            <label htmlFor="firstName" className="register-label">First Name</label>
-            <input id="firstName" name="firstName" type="text" className="register-input" required value={formData.firstName} onChange={handleChange} />
+            <label htmlFor="firstName" className="register-label">
+              First Name
+            </label>
+            <input
+              id="firstName"
+              name="firstName"
+              type="text"
+              className="register-input"
+              required
+              value={formData.firstName}
+              onChange={handleChange}
+            />
           </div>
           <div className="register-input-group">
-            <label htmlFor="lastName" className="register-label">Last Name</label>
-            <input id="lastName" name="lastName" type="text" className="register-input" required value={formData.lastName} onChange={handleChange} />
+            <label htmlFor="lastName" className="register-label">
+              Last Name
+            </label>
+            <input
+              id="lastName"
+              name="lastName"
+              type="text"
+              className="register-input"
+              required
+              value={formData.lastName}
+              onChange={handleChange}
+            />
           </div>
         </div>
-        
+
         <div className="register-input-group">
-            <label htmlFor="username" className="register-label">Username</label>
-            <input id="username" name="username" type="text" className="register-input" required value={formData.username} onChange={handleChange} />
+          <label htmlFor="username" className="register-label">
+            Username
+          </label>
+          <input
+            id="username"
+            name="username"
+            type="text"
+            className="register-input"
+            required
+            value={formData.username}
+            onChange={handleChange}
+          />
         </div>
 
         <div className="register-input-group">
-            <label htmlFor="email" className="register-label">Email Address</label>
-            <input id="email" name="email" type="email" className="register-input" required value={formData.email} onChange={handleChange} />
+          <label htmlFor="email" className="register-label">
+            Email Address
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            className="register-input"
+            required
+            value={formData.email}
+            onChange={handleChange}
+          />
         </div>
 
         <div className="register-input-group">
-            <label htmlFor="password" className="register-label">Password</label>
-            <input id="password" name="password" type="password" className="register-input" required value={formData.password} onChange={handleChange} />
+          <label htmlFor="password" className="register-label">
+            Password
+          </label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            className="register-input"
+            required
+            value={formData.password}
+            onChange={handleChange}
+          />
         </div>
 
         <div className="register-input-group">
-            <label htmlFor="confirmPassword" className="register-label">Confirm Password</label>
-            <input id="confirmPassword" name="confirmPassword" type="password" className="register-input" required value={formData.confirmPassword} onChange={handleChange} />
+          <label htmlFor="confirmPassword" className="register-label">
+            Confirm Password
+          </label>
+          <input
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            className="register-input"
+            required
+            value={formData.confirmPassword}
+            onChange={handleChange}
+          />
         </div>
-        
+
         <div className="register-name-fields">
-            <div className="register-input-group">
-                <label htmlFor="age" className="register-label">Age</label>
-                <input id="age" name="age" type="number" className="register-input" required value={formData.age} onChange={handleChange} />
-            </div>
-            <div className="register-input-group">
-                <label htmlFor="gender" className="register-label">Gender</label>
-                <select id="gender" name="gender" value={formData.gender} onChange={handleChange} className="register-input">
-                    <option value="Female">Female</option>
-                    <option value="Male">Male</option>
-                </select>
-            </div>
+          <div className="register-input-group">
+            <label htmlFor="age" className="register-label">
+              Age
+            </label>
+            <input
+              id="age"
+              name="age"
+              type="number"
+              className="register-input"
+              required
+              value={formData.age}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="register-input-group">
+            <label htmlFor="gender" className="register-label">
+              Gender
+            </label>
+            <select
+              id="gender"
+              name="gender"
+              value={formData.gender}
+              onChange={handleChange}
+              className="register-input"
+            >
+              <option value="Female">Female</option>
+              <option value="Male">Male</option>
+            </select>
+          </div>
         </div>
 
         <button type="submit" className="register-button" disabled={loading}>
-          {loading ? 'Registering...' : 'Register'}
+          {loading ? "Registering..." : "Register"}
         </button>
 
         <p className="register-footer">
-          Already have an account?{' '}
+          Already have an account?{" "}
           <Link href="/login" className="register-link">
             Login
           </Link>

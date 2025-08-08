@@ -17,19 +17,7 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   // eslint:{
   //   ignoreDuringBuilds: true
-  // },
-  // typescript: {
-  //   ignoreBuildErrors: true,
-  // },
-  
-  // webpack: (config, { isServer }) => {
-  //   config.ignoreWarnings = [
-  //       ...(config.ignoreWarnings || []),
-  //       /Failed to load native binding/,
-  //   ];
 
-  //   return config;
-  // },
   
 };
 

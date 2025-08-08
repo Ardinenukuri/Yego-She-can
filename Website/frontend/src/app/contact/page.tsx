@@ -41,8 +41,10 @@ const Contact = () => {
         message: '',
       });
 
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.errors?.[0]?.message || 'Failed to send message. Please try again.';
+    } catch (error) {
+      // Corrected the 'any' type and safely accessed the nested error message.
+      const errorMessage = (error as { response?: { data?: { errors?: { message: string }[] } } })
+                            ?.response?.data?.errors?.[0]?.message || 'Failed to send message. Please try again.';
       toast.error(errorMessage, { id: toastId });
     } finally {
       setLoading(false);
@@ -53,14 +55,16 @@ const Contact = () => {
     <section className="contact-section-wrapper">
       <div className="contact-header">
         <h2>Get in <span className="highlight">Touch</span></h2>
-        <p>Have questions about our programs? Need support? Want to partner with us? We're here to help and would love to hear from you.</p>
+        {/* Corrected the unescaped apostrophe */}
+        <p>Have questions about our programs? Need support? Want to partner with us? We&apos;re here to help and would love to hear from you.</p>
       </div>
 
       <div className="contact-content">
         {/* Form Section */}
         <div className="contact-form-card">
           <h3><MessageCircle className="icon" /> Send us a Message</h3>
-          <p className="form-subtext">Fill out the form below and we'll get back to you within 24 hours</p>
+          {/* Corrected the unescaped apostrophe */}
+          <p className="form-subtext">Fill out the form below and we&apos;ll get back to you within 24 hours</p>
 
           <form onSubmit={handleSubmit} className="contact-form">
             <div className="form-row">

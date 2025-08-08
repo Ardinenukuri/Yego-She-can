@@ -5,33 +5,29 @@ import { useRouter } from 'next/navigation'
 import { FiUploadCloud, FiCheckCircle } from 'react-icons/fi'
 import './manage.css' // Assuming this CSS file is in the same directory or accessible
 
-// Type definition for this component's props
-interface CreateLessonsClientPageProps {
-  moduleId: string
-}
-
-// This component receives `moduleId` as a direct prop from its parent server component
-export default function CreateLessonsClientPage({ moduleId }: CreateLessonsClientPageProps) {
   const [file, setFile] = useState<File | null>(null)
   const [uploading, setUploading] = useState(false)
-  const [previewLessons, setPreviewLessons] = useState<{ title: string; duration: string }[]>([])
+  const [previewLessons, setPreviewLessons] = useState<LessonPreview[]>([])
   const router = useRouter()
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const uploadedFile = e.target.files?.[0]
-    setFile(uploadedFile || null)
+    const uploadedFile = e.target.files?.[0] || null
+    setFile(uploadedFile)
     setPreviewLessons([])
   }
 
-  const handleUpload = async (e: React.FormEvent) => {
+  const handleUpload = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (!file) return alert('Please select a file to upload.')
+    if (!file) {
+      alert('Please select a file to upload.')
+      return
+    }
     setUploading(true)
 
     // Simulate file processing
     setTimeout(() => {
       const baseName = file.name.split('.')[0]
-      const fakeLessons = [
+      const fakeLessons: LessonPreview[] = [
         { title: `${baseName} - Introduction`, duration: '15 min' },
         { title: `${baseName} - Core Concepts`, duration: '30 min' },
         { title: `${baseName} - Case Study`, duration: '20 min' },
