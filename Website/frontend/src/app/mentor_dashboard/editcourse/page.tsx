@@ -1,10 +1,11 @@
 'use client';
 
-import './editlesson.css'; 
+import './editlesson.css';
 import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
 
 interface MentorCourse {
   id: number;
@@ -21,7 +22,7 @@ export default function UploadCourseResourcePage() {
   const [videoLink, setVideoLink] = useState('');
   const [resourceFile, setResourceFile] = useState<FileState>(null);
   const [courseImage, setCourseImage] = useState<FileState>(null);
-  
+
   const [mentorCourses, setMentorCourses] = useState<MentorCourse[]>([]);
   const [isLoadingCourses, setIsLoadingCourses] = useState(true);
 
@@ -56,7 +57,7 @@ export default function UploadCourseResourcePage() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    
+
     if (!resourceFile || !courseImage) {
         toast.error("Both a resource file and a course image are required.");
         return;
@@ -69,7 +70,7 @@ export default function UploadCourseResourcePage() {
     formData.append('courseId', courseId);
     formData.append('description', description);
     formData.append('timeline', timeline);
-    formData.append('level', level.toLowerCase()); 
+    formData.append('level', level.toLowerCase());
     formData.append('videoLink', videoLink);
     formData.append('resourceFile', resourceFile);
     formData.append('courseImage', courseImage);
@@ -83,9 +84,12 @@ export default function UploadCourseResourcePage() {
 
       toast.success('Course resource uploaded successfully!', { id: toastId });
       router.push('/AllCourses');
-      
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Upload failed. Please check your inputs.';
+
+    } catch (error: unknown) {
+      let errorMessage = 'Upload failed. Please check your inputs.';
+      if (axios.isAxiosError(error) && error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
       toast.error(errorMessage, { id: toastId });
     } finally {
       setIsUploading(false);
@@ -96,16 +100,16 @@ export default function UploadCourseResourcePage() {
     <div className="upload-resource-container">
       <h1>Upload Course Resource</h1>
       <p className="page-subtitle">Fill out the details to add a new set of materials to one of your assigned courses.</p>
-      
+
       <form className="upload-resource-form" onSubmit={handleSubmit}>
         <label>
           Course Title *
         </label>
-        <select 
-            name="courseId" 
-            value={courseId} 
-            onChange={(e) => setCourseId(e.target.value)} 
-            required 
+        <select
+            name="courseId"
+            value={courseId}
+            onChange={(e) => setCourseId(e.target.value)}
+            required
             disabled={isLoadingCourses || isUploading}
         >
             <option value="" disabled>
@@ -121,35 +125,35 @@ export default function UploadCourseResourcePage() {
         <label>
           Description *
         </label>
-        <textarea 
-            name="description" 
-            value={description} 
-            onChange={(e) => setDescription(e.target.value)} 
-            required 
-            disabled={isUploading} 
+        <textarea
+            name="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+            disabled={isUploading}
         />
 
         <label>
           Timeline *
         </label>
-        <input 
-            type="text" 
-            name="timeline" 
-            value={timeline} 
-            onChange={(e) => setTimeline(e.target.value)} 
-            required 
+        <input
+            type="text"
+            name="timeline"
+            value={timeline}
+            onChange={(e) => setTimeline(e.target.value)}
+            required
             placeholder="e.g., 4 Weeks"
-            disabled={isUploading} 
+            disabled={isUploading}
         />
 
         <label>
           Level *
         </label>
-        <select 
-            name="level" 
-            value={level} 
-            onChange={(e) => setLevel(e.target.value)} 
-            required 
+        <select
+            name="level"
+            value={level}
+            onChange={(e) => setLevel(e.target.value)}
+            required
             disabled={isUploading}
         >
             <option value="" disabled>Select level</option>
@@ -158,7 +162,6 @@ export default function UploadCourseResourcePage() {
             <option value="Advanced">Advanced</option>
         </select>
 
-        {/* NEW: Video Link Input Field (Optional) */}
         <label>
           Video Link (Optional)
         </label>
@@ -174,25 +177,25 @@ export default function UploadCourseResourcePage() {
         <label>
           Resource File (PDF, DOCX) *
         </label>
-        <input 
-            type="file" 
-            name="resourceFile" 
-            onChange={handleFileChange} 
+        <input
+            type="file"
+            name="resourceFile"
+            onChange={handleFileChange}
             required
             accept=".pdf,.doc,.docx"
-            disabled={isUploading} 
+            disabled={isUploading}
         />
 
         <label>
           Course Image *
         </label>
-        <input 
-            type="file" 
-            name="courseImage" 
-            onChange={handleFileChange} 
+        <input
+            type="file"
+            name="courseImage"
+            onChange={handleFileChange}
             required
             accept="image/*"
-            disabled={isUploading} 
+            disabled={isUploading}
         />
 
         <button type="submit" disabled={isUploading}>

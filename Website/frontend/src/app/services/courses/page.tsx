@@ -24,7 +24,6 @@ export default function CoursesPage() {
   const [allCourses, setAllCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filter, setFilter] = useState("All");
   const [sortOrder, setSortOrder] = useState("asc");
   const [currentPage, setCurrentPage] = useState(1);
   const coursesPerPage = 3;
@@ -52,7 +51,6 @@ export default function CoursesPage() {
       return course.title.toLowerCase().includes(searchQuery.toLowerCase());
     })
     .sort((a, b) => {
-      // A more robust sort for durations like "4 weeks"
       const aWeeks = parseInt(a.duration.split(' ')[0]) || 0;
       const bWeeks = parseInt(b.duration.split(' ')[0]) || 0;
       return sortOrder === "asc" ? aWeeks - bWeeks : bWeeks - aWeeks;
@@ -93,7 +91,6 @@ export default function CoursesPage() {
         </div>
       </section>
 
-      {/* Course List Section */}
       <section id="courses" className="courses">
         <h2>Courses</h2>
 
@@ -104,7 +101,6 @@ export default function CoursesPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          {/* Category filter is removed for now */}
           <select value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
             <option value="asc">Duration: Short to Long</option>
             <option value="desc">Duration: Long to Short</option>
@@ -118,7 +114,7 @@ export default function CoursesPage() {
             <div className="courses-grid">
               {currentCourses.map((course) => (
                 <div key={course.id} className="course-card fade-in">
-                  <img src={`${process.env.NEXT_PUBLIC_API_URL}${course.image}`} alt={course.title} className="course-image" />
+                  <Image src={`${process.env.NEXT_PUBLIC_API_URL}${course.image}`} alt={course.title} className="course-image" width={360} height={200} style={{ objectFit: 'cover' }} />
                   <div className="course-info">
                     <h3>{course.title}</h3>
                     <p>{course.description}</p>

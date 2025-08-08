@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import QuizPreview from '../QuizPreview/page'
 import api from '@/lib/api'
 import toast from 'react-hot-toast'
+import axios from 'axios'
 
 // Type Definitions
 interface Course { id: number; title: string; }
@@ -22,7 +23,7 @@ export default function AddQuizForm() {
   const [selectedCourseId, setSelectedCourseId] = useState<string>('');
   const [selectedChapterId, setSelectedChapterId] = useState<string>('');
   const [quizScope, setQuizScope] = useState<'chapter' | 'final' | ''>('');
-  
+
   // State for the generated quiz
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
 
@@ -32,7 +33,7 @@ export default function AddQuizForm() {
       try {
         const response = await api.get('/api/mentor/courses');
         setCourses(response.data);
-      } catch (error) {
+      } catch {
         toast.error("Could not load your assigned courses.");
       } finally {
         setIsLoadingCourses(false);
@@ -50,7 +51,7 @@ export default function AddQuizForm() {
         try {
           const response = await api.get(`/api/mentor/courses/${selectedCourseId}/chapters`);
           setChapters(response.data);
-        } catch (error) {
+        } catch {
           toast.error("Could not load chapters for this course.");
         } finally {
           setIsLoadingChapters(false);
@@ -58,7 +59,7 @@ export default function AddQuizForm() {
       };
       fetchChapters();
     } else {
-      setChapters([]); // Clear chapters if scope is not chapter-based
+      setChapters([]);
     }
   }, [selectedCourseId, quizScope]);
 
@@ -76,22 +77,23 @@ export default function AddQuizForm() {
       toast.error("Please complete your selection.");
       return;
     }
-    
+
     setIsGenerating(true);
     const toastId = toast.loading("Generating AI quiz... this may take a moment.");
     try {
       const response = await api.post(endpoint, payload);
       setQuestions(response.data.quiz.questions);
       toast.success("Quiz questions generated successfully!", { id: toastId });
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || "Failed to generate quiz.";
+    } catch (error: unknown) {
+      let errorMessage = "Failed to generate quiz.";
+      if (axios.isAxiosError(error) && error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
       toast.error(errorMessage, { id: toastId });
     } finally {
       setIsGenerating(false);
     }
   };
-
-  const selectedCourse = courses.find(c => c.id === parseInt(selectedCourseId));
 
   return (
     <div className="quiz-card">
@@ -101,7 +103,6 @@ export default function AddQuizForm() {
         <label>Choose a Course:</label>
         <select value={selectedCourseId} onChange={e => {
           setSelectedCourseId(e.target.value);
-          // Reset downstream selections
           setSelectedChapterId('');
           setQuizScope('');
           setQuestions([]);
@@ -152,7 +153,6 @@ export default function AddQuizForm() {
       {questions.length > 0 && (
         <>
           <QuizPreview questions={questions} />
-          {/* Save functionality is already part of generation, so no separate save button is needed */}
         </>
       )}
     </div>

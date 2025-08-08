@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
 import Link from 'next/link';
+import axios from 'axios';
 import '@/app/register/register.css';
 
 export default function RegisterPage() {
@@ -39,8 +40,11 @@ export default function RegisterPage() {
       });
       toast.success('Registration successful! Please check your email to verify.');
       router.push('/login');
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.errors?.[0]?.message || 'Registration failed';
+    } catch (error: unknown) {
+      let errorMessage = 'Registration failed';
+      if (axios.isAxiosError(error)) {
+        errorMessage = error.response?.data?.errors?.[0]?.message || error.response?.data?.message || errorMessage;
+      }
       toast.error(errorMessage);
     } finally {
       setLoading(false);
@@ -53,7 +57,6 @@ export default function RegisterPage() {
         <h2 className="register-title">Create Account</h2>
         <p className="register-subtitle">Join the Yego SheCan community</p>
 
-        {/* First and Last Name */}
         <div className="register-row">
           <div className="register-input-group">
             <label htmlFor="firstName" className="register-label">First Name</label>
@@ -65,7 +68,6 @@ export default function RegisterPage() {
           </div>
         </div>
 
-        {/* Username + Email */}
         <div className="register-row">
           <div className="register-input-group">
             <label htmlFor="username" className="register-label">Username</label>
@@ -77,7 +79,6 @@ export default function RegisterPage() {
           </div>
         </div>
 
-        {/* Password + Confirm Password */}
         <div className="register-row">
           <div className="register-input-group">
             <label htmlFor="password" className="register-label">Password</label>
@@ -89,7 +90,6 @@ export default function RegisterPage() {
           </div>
         </div>
 
-        {/* Age + Gender */}
         <div className="register-row">
           <div className="register-input-group">
             <label htmlFor="age" className="register-label">Age</label>

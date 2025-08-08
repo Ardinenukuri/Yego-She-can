@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import '@/styles/mentorship.css' 
+import Image from 'next/image'
+import '@/styles/mentorship.css'
 import api from '@/lib/api'
 import toast from 'react-hot-toast'
-import Avatar from '@/components/ui/Avatar';
 
 
 interface Mentor {
@@ -30,7 +30,7 @@ export default function MentorshipPage() {
     const [mentors, setMentors] = useState<Mentor[]>([]);
     const [loading, setLoading] = useState(true);
 
-    
+
     useEffect(() => {
         const fetchMentors = async () => {
             try {
@@ -64,31 +64,33 @@ export default function MentorshipPage() {
                     {mentors.map((mentor) => (
                         <div key={mentor.id} className="mentor-card">
                             {mentor.image ? (
-  <img
-    src={`${process.env.NEXT_PUBLIC_API_URL}${mentor.image}`}
-    alt={mentor.name}
-    className="mentor-avatar"
-  />
-) : (
-  <div
-    className="mentor-avatar initials-avatar"
-    style={{ backgroundColor: generateColor(mentor.name) }}
-  >
-    <span>
-      {mentor.name
-        .split(' ')
-        .map(n => n[0])
-        .slice(0, 2)
-        .join('')}
-    </span>
-  </div>
-)}
+                                <Image
+                                  src={`${process.env.NEXT_PUBLIC_API_URL}${mentor.image}`}
+                                  alt={mentor.name}
+                                  className="mentor-avatar"
+                                  width={100}
+                                  height={100}
+                                />
+                              ) : (
+                                <div
+                                  className="mentor-avatar initials-avatar"
+                                  style={{ backgroundColor: generateColor(mentor.name) }}
+                                >
+                                  <span>
+                                    {mentor.name
+                                      .split(' ')
+                                      .map(n => n[0])
+                                      .slice(0, 2)
+                                      .join('')}
+                                  </span>
+                                </div>
+                              )}
                             <div className="mentor-details">
                                 <h2>{mentor.name}</h2>
                                 <p><strong>Expertise:</strong> {mentor.expertise}</p>
                                 <p>{mentor.bio || "This mentor has not provided a bio yet."}</p>
-                                <Link 
-                                    href={`/user-dashboard/mentorship/${mentor.id}/availability`} 
+                                <Link
+                                    href={`/user-dashboard/mentorship/${mentor.id}/availability`}
                                     className="mentor-button"
                                 >
                                     View Availability

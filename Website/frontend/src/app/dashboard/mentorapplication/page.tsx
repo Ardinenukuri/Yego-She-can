@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import api from '@/lib/api'
 import toast from 'react-hot-toast'
+import axios from 'axios'
 import './mentorapplication.css'
 
 interface Application {
@@ -24,7 +25,7 @@ const MentorApplicationPage = () => {
     try {
       const response = await api.get('/api/pm/applications')
       setApplications(response.data)
-    } catch (error) {
+    } catch {
       toast.error('Could not load mentor applications.')
     } finally {
       setLoading(false)
@@ -57,8 +58,11 @@ const MentorApplicationPage = () => {
         id: toastId,
       })
       setApplications(prev => prev.filter(app => app.id !== applicationId))
-    } catch (error: any) {
-      const message = error.response?.data?.message || 'Failed to process application.'
+    } catch (error: unknown) {
+      let message = 'Failed to process application.'
+      if (axios.isAxiosError(error) && error.response?.data?.message) {
+        message = error.response.data.message;
+      }
       toast.error(message, { id: toastId })
     }
   }
@@ -93,7 +97,7 @@ const MentorApplicationPage = () => {
                 <strong>Expertise:</strong> {app.expertise}
               </p>
               <p className="session-message">
-                <strong>Motivation:</strong> "{app.message}"
+                <strong>Motivation:</strong> &quot;{app.message}&quot;
               </p>
               <div className="action-buttons">
                 <a

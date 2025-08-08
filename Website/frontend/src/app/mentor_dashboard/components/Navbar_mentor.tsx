@@ -4,7 +4,6 @@ import { useAuth } from '@/contexts/AuthContext'
 import Image from 'next/image'
 import { FaUserCircle } from 'react-icons/fa'
 import   '../../dashboard/components/dashboardNavbar.css'
-import Navbar from '@/components/Navbar'
 
 const Navbar_mentor = () => {
 
@@ -42,7 +41,7 @@ const Navbar_mentor = () => {
             alt="User profile picture"
             width={36}
             height={36}
-            className="user-avatar" 
+            className="user-avatar"
           />
         ) : (
 

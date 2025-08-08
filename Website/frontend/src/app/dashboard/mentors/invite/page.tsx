@@ -1,11 +1,12 @@
 'use client'
 
 import { useState, FormEvent, ChangeEvent, useEffect } from 'react'
-import '../mentors.css' 
+import '../mentors.css'
 import { FiSend } from 'react-icons/fi'
 import api from '@/lib/api'
 import toast from 'react-hot-toast'
 import useDebounce from '@/hooks/useDebounce'
+import axios from 'axios'
 
 
 interface Course {
@@ -27,12 +28,12 @@ export default function InviteMentorPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingCourses, setIsLoadingCourses] = useState(true);
 
-  
+
   const [suggestions, setSuggestions] = useState<UserSuggestion[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const debouncedSearchTerm = useDebounce(email, 300);
 
-  
+
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -55,7 +56,7 @@ export default function InviteMentorPage() {
         try {
           const response = await api.get(`/api/users/eligible-mentors?q=${debouncedSearchTerm}`);
           setSuggestions(response.data);
-          setShowSuggestions(true); 
+          setShowSuggestions(true);
         } catch (error) {
           console.error("Failed to fetch mentor suggestions:", error);
         }
@@ -63,14 +64,14 @@ export default function InviteMentorPage() {
       fetchSuggestions();
     } else {
       setSuggestions([]);
-      setShowSuggestions(false); 
+      setShowSuggestions(false);
     }
   }, [debouncedSearchTerm]);
 
-  
+
   const handleSuggestionClick = (selectedEmail: string) => {
     setEmail(selectedEmail);
-    setShowSuggestions(false); 
+    setShowSuggestions(false);
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -89,8 +90,11 @@ export default function InviteMentorPage() {
       toast.success(`Invite sent successfully to ${email}`, { id: toastId });
       setEmail('');
       setSelectedCourseId('');
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Failed to send invitation.';
+    } catch (error: unknown) {
+      let errorMessage = 'Failed to send invitation.';
+      if (axios.isAxiosError(error) && error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
       toast.error(errorMessage, { id: toastId });
     } finally {
       setIsLoading(false);
@@ -120,10 +124,10 @@ export default function InviteMentorPage() {
             ))}
           </select>
         </label>
-        
+
         <div className="email-input-container">
           <label>
-            Mentor's Email Address or Name:
+            Mentor&apos;s Email Address or Name:
             <input
               type="text"
               value={email}
@@ -141,7 +145,7 @@ export default function InviteMentorPage() {
               autoComplete="off"
             />
           </label>
-          
+
           {showSuggestions && suggestions.length > 0 && (
             <ul className="suggestions-list">
               {suggestions.map(user => (
