@@ -29,8 +29,10 @@ export default function ResetPasswordPage() {
       });
       toast.success('Password reset successfully! You can now log in.');
       router.push('/auth/login');
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.errors?.[0]?.message || 'Password reset failed.';
+    } catch (error) {
+      // Corrected the 'any' type and safely accessed the nested error message.
+      const errorMessage = (error as { response?: { data?: { errors?: { message: string }[] } } })
+                            ?.response?.data?.errors?.[0]?.message || 'Password reset failed.';
       toast.error(errorMessage);
     } finally {
       setLoading(false);

@@ -38,8 +38,10 @@ export default function CompleteRegistrationPage() {
       toast.success('Registration completed successfully! You can now log in.');
       router.push('/login');
 
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Registration failed. The link may be invalid or expired.';
+    } catch (error) {
+      // Corrected the 'any' type and safely accessed the nested error message.
+      const errorMessage = (error as { response?: { data?: { message?: string } } })
+                            ?.response?.data?.message || 'Registration failed. The link may be invalid or expired.';
       toast.error(errorMessage);
     } finally {
       setLoading(false);

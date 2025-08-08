@@ -34,8 +34,9 @@ const Sidebar = () => {
                 <Link href="/dashboard/mentors" className={isActive('/dashboard/mentors') ? 'nav-item active' : 'nav-item'}>
                     <FaUserFriends /> Mentors
                 </Link>
+                {/* Corrected the unescaped apostrophe */}
                 <Link href="/dashboard/mentorapplication" className={isActive('/dashboard/mentorapplication') ? 'nav-item active' : 'nav-item'}>
-                    <FaClipboardList  /> Mentor's Application
+                    <FaClipboardList  /> Mentor&apos;s Application
                 </Link>
                 <Link href="/dashboard/users" className={isActive('/dashboard/users') ? 'nav-item active' : 'nav-item'}>
                     <FaUserFriends /> Learners

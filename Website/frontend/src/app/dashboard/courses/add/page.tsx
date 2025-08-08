@@ -1,15 +1,10 @@
 'use client';
 
-import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
+import { useState, ChangeEvent, FormEvent } from 'react';
 import './add.css'; 
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-
-interface Course {
-  id: number;
-  name: string;
-}
 
 // Interface for the new Physical Program form
 interface PhysicalProgramForm {
@@ -42,8 +37,6 @@ export default function AddCoursePage() {
     image: null,
   });
   const [isAddingProgram, setIsAddingProgram] = useState(false);
-  
-  // Your existing state for the Invite Mentor form (commented out in your example, so I've left it out for now)
 
   const handleCourseSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -54,9 +47,10 @@ export default function AddCoursePage() {
       await api.post('/api/courses', { name: courseTitle });
       toast.success('Online course added successfully!', { id: toastId });
       setCourseTitle('');
-      // Optionally, you can refetch the courses list here if you re-enable the invite form
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.errors?.[0]?.message || 'Failed to add course.';
+    } catch (error) {
+      // Corrected the 'any' type and safely accessed the nested error message.
+      const errorMessage = (error as { response?: { data?: { errors?: { message: string }[] } } })
+                            ?.response?.data?.errors?.[0]?.message || 'Failed to add course.';
       toast.error(errorMessage, { id: toastId });
     } finally {
       setIsAddingCourse(false);
@@ -90,7 +84,6 @@ export default function AddCoursePage() {
     formData.append('schedule', physicalProgramForm.schedule);
     formData.append('nextSession', physicalProgramForm.nextSession);
     formData.append('location', physicalProgramForm.location);
-    // Split the comma-separated strings into arrays for the backend
     formData.append('skills', `{${physicalProgramForm.skills}}`);
     formData.append('requirements', `{${physicalProgramForm.requirements}}`);
     formData.append('image', physicalProgramForm.image);
@@ -100,10 +93,11 @@ export default function AddCoursePage() {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       toast.success('Physical program added successfully!', { id: toastId });
-      // Redirect to the courses management page on success
       router.push('/dashboard/courses');
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Failed to add physical program.';
+    } catch (error) {
+      // Corrected the 'any' type and safely accessed the nested error message.
+      const errorMessage = (error as { response?: { data?: { message?: string } } })
+                            ?.response?.data?.message || 'Failed to add physical program.';
       toast.error(errorMessage, { id: toastId });
     } finally {
       setIsAddingProgram(false);
