@@ -16,6 +16,7 @@ import publicRoutes from './routes/public.routes';
 import learnerRoutes from './routes/learner.routes';
 import bookingRoutes from './routes/booking.routes';
 import programManagerRoutes from './routes/programManager.routes';
+import PhysicalProgramRoutes from './routes/physicalProgramRoutes'
 
 
 
@@ -47,6 +48,8 @@ app.use('/api/public', publicRoutes);
 app.use('/api/learner', learnerRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/pm', programManagerRoutes);
+app.use('api/', PhysicalProgramRoutes)
+
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);

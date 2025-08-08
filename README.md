@@ -20,6 +20,8 @@ Yego She Can is dedicated to helping women, particularly those aged 30+, develop
 
 - Physical Training: In-person courses on soap making and coffee production.
 
+- E-commerce: A marketplace for purchasing soap and coffee products (optional MVP feature).
+
 - Mentorship: Personalized, one-on-one mentorship with experienced entrepreneurs.
 
 ### Features
@@ -34,8 +36,6 @@ Yego She Can is dedicated to helping women, particularly those aged 30+, develop
 
 2. Physical Programs
 - Soap & Coffee Making: In-person training available for soap and coffee production.
-
-- E-commerce: A platform to purchase soap and coffee products (optional MVP feature).
 
 3. Role-Based Dashboards
 - Learners: Track progress, view courses, and interact with mentors.
