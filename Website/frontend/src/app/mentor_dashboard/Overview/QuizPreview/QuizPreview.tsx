@@ -7,17 +7,13 @@ interface QuizQuestion {
   correct_answer: string;
 }
 
-type Props = {
-  // The 'questions' prop could be undefined when the parent is still loading
+// Define the props for this component
+interface QuizPreviewProps {
   questions: QuizQuestion[] | undefined;
 }
 
-export default function QuizPreview({ questions }: Props) {
-  // ==================================================================
-  //                        *** THE FIX ***
-  // Add a check here. If questions is undefined, null, or an empty array,
-  // return a message instead of trying to map over it.
-  // ==================================================================
+// This is now a standard, reusable component, not a page.
+export default function QuizPreview({ questions }: QuizPreviewProps) {
   if (!questions || questions.length === 0) {
     return (
       <div className="quiz-preview">
@@ -27,7 +23,6 @@ export default function QuizPreview({ questions }: Props) {
     );
   }
 
-  // If the code reaches this point, we know 'questions' is a valid array.
   return (
     <div className="quiz-preview">
       <h2 className="preview-title">Generated Quiz Preview</h2>
@@ -38,7 +33,6 @@ export default function QuizPreview({ questions }: Props) {
           <div key={index} className="preview-question-card">
             <p className="preview-question-text"><strong>{index + 1}.</strong> {q.question}</p>
             <ul className="preview-options-list">
-              {/* Also a good idea to add optional chaining here just in case an option list could be empty */}
               {q.options?.map((option, optIndex) => (
                 <li 
                   key={optIndex} 

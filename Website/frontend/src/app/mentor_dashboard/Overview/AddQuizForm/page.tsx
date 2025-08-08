@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import QuizPreview from '../QuizPreview/page'
+import QuizPreview from '../QuizPreview/QuizPreview'
 import api from '@/lib/api'
 import toast from 'react-hot-toast'
 import axios from 'axios'

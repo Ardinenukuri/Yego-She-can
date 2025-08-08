@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import logo from "/public/yego-shecan-logo.png";
-import "./certificate.css";
+import "../styles/certificate.css";
 
 interface CertificateProps {
   learnerName: string;
