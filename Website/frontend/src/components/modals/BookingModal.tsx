@@ -4,6 +4,7 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
 import './BookingModal.css';
+import axios from 'axios';
 
 
 interface Slot {
@@ -42,8 +43,11 @@ export default function BookingModal({ slot, mentor, onClose, onBookingSuccess }
       toast.success(response.data.message, { id: toastId, duration: 5000 });
       onBookingSuccess(slot.id);
       onClose();
-    } catch (error: any) {
-      const message = error.response?.data?.message || "Failed to book session.";
+    } catch (error: unknown) {
+      let message = "Failed to book session.";
+      if (axios.isAxiosError(error) && error.response?.data?.message) {
+        message = error.response.data.message;
+      }
       toast.error(message, { id: toastId });
     } finally {
       setIsBooking(false);
@@ -52,7 +56,6 @@ export default function BookingModal({ slot, mentor, onClose, onBookingSuccess }
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      {/* UPDATE the className here to match the new CSS */}
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <h3>Book Session with {mentor.name}</h3>
         <p className="slot-details">

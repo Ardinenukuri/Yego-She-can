@@ -2,13 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { FiUserPlus, FiMail, FiEye, FiTrash2 } from 'react-icons/fi'
 import './mentors.css'
 import api from '@/lib/api'
 import toast from 'react-hot-toast'
-
-
-const ITEMS_PER_PAGE = 5
 
 type Mentor = {
   id: number
@@ -34,9 +32,7 @@ export default function MentorsPage() {
   const [mentors, setMentors] = useState<Mentor[]>([]);
   const [loading, setLoading] = useState(true);
 
-
   const [mentorToDelete, setMentorToDelete] = useState<Mentor | null>(null);
-
 
   const fetchMentors = async () => {
     try {
@@ -50,22 +46,18 @@ export default function MentorsPage() {
     }
   };
 
-
   useEffect(() => {
     fetchMentors();
   }, []);
-
 
   const handleDelete = async () => {
     if (!mentorToDelete) return;
 
     const toastId = toast.loading(`Removing mentor ${mentorToDelete.name}...`);
     try {
-
       await api.delete(`/api/users/${mentorToDelete.id}`);
       toast.success("Mentor removed successfully.", { id: toastId });
       
-
       setMentorToDelete(null);
       fetchMentors();
 
@@ -99,7 +91,6 @@ export default function MentorsPage() {
           </Link>
         </div>
 
-
         <table className="mentors-table">
           <thead>
             <tr>
@@ -116,26 +107,27 @@ export default function MentorsPage() {
               <tr key={mentor.id}>
                 <td>
                   {mentor.image ? (
-  <img
-    src={`${process.env.NEXT_PUBLIC_API_URL}${mentor.image}`}
-    alt={mentor.name}
-    className="mentor-avatar"
-  />
-) : (
-  <div
-    className="mentor-avatar initials-avatar"
-    style={{ backgroundColor: generateColor(mentor.name) }}
-  >
-    
-<span>
-  {(mentor.name || '')
-    .split(' ')
-    .map(n => n[0])
-    .slice(0, 2)
-    .join('')}
-</span>
-  </div>
-)}
+                    <Image
+                      src={`${process.env.NEXT_PUBLIC_API_URL}${mentor.image}`}
+                      alt={mentor.name}
+                      className="mentor-avatar"
+                      width={40}
+                      height={40}
+                    />
+                  ) : (
+                    <div
+                      className="mentor-avatar initials-avatar"
+                      style={{ backgroundColor: generateColor(mentor.name) }}
+                    >
+                      <span>
+                        {(mentor.name || '')
+                          .split(' ')
+                          .map(n => n[0])
+                          .slice(0, 2)
+                          .join('')}
+                      </span>
+                    </div>
+                  )}
                 </td>
                 <td>{mentor.name}</td>
                 <td>
@@ -163,14 +155,15 @@ export default function MentorsPage() {
           </tbody>
         </table>
 
-
         <div className="mentors-cards">
           {mentors.map((mentor) => (
             <div key={mentor.id} className="mentor-card">
-              <img
+              <Image
                 src={mentor.image ? `${process.env.NEXT_PUBLIC_API_URL}${mentor.image}` : '/default-avatar.png'}
                 alt={mentor.name}
                 className="mentor-img"
+                width={80}
+                height={80}
               />
               <div className="mentor-info">
                 <h3>{mentor.name}</h3>
@@ -193,7 +186,7 @@ export default function MentorsPage() {
         <div className="modal-overlay">
           <div className="modal-content">
             <h2>Confirm Removal</h2>
-            <p>Are you sure you want to remove the mentor "<strong>{mentorToDelete.name}</strong>"? This action is permanent.</p>
+            <p>Are you sure you want to remove the mentor &quot;<strong>{mentorToDelete.name}</strong>&quot;? This action is permanent.</p>
             <div className="modal-actions">
               <button className="modal-btn-cancel" onClick={() => setMentorToDelete(null)}>Cancel</button>
               <button className="modal-btn-confirm" onClick={handleDelete}>Yes, Remove</button>
@@ -202,6 +195,5 @@ export default function MentorsPage() {
         </div>
       )}
     </>
-
   )
 }

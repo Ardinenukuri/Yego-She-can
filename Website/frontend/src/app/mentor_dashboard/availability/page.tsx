@@ -14,7 +14,7 @@ interface Slot {
 
 const generateTimeSlots = (): string[] => {
   const slots: string[] = [];
-  let start = new Date();
+  const start = new Date();
   start.setHours(9, 0, 0, 0);
   const end = new Date(start);
   end.setHours(17, 30);
@@ -39,7 +39,7 @@ export default function AvailabilityManager() {
     try {
       const response = await api.get('/api/mentor/availability');
       setAllSlots(response.data);
-    } catch (error) {
+    } catch {
       toast.error('Could not load your availability.');
     } finally {
       setLoading(false);
@@ -62,7 +62,7 @@ export default function AvailabilityManager() {
       toast.success('Availability saved!', { id: toastId });
       fetchAvailability();
       setSelectedSlots([]);
-    } catch (error) {
+    } catch {
       toast.error('Failed to save slots.', { id: toastId });
     }
   };
@@ -73,7 +73,7 @@ export default function AvailabilityManager() {
       await api.put(`/api/mentor/availability/${id}`, { status: 'cancelled' });
       toast.success('Slot cancelled.', { id: toastId });
       fetchAvailability();
-    } catch (error) {
+    } catch {
       toast.error('Failed to cancel slot.', { id: toastId });
     }
   };
@@ -85,7 +85,7 @@ export default function AvailabilityManager() {
         await api.delete(`/api/mentor/availability/${id}`);
         toast.success('Slot deleted.', { id: toastId });
         fetchAvailability();
-      } catch (error) {
+      } catch {
         toast.error('Failed to delete slot.', { id: toastId });
       }
     }
@@ -151,4 +151,3 @@ export default function AvailabilityManager() {
     </div>
   );
 }
-

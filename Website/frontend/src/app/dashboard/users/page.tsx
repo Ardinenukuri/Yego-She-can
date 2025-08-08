@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import Image from 'next/image';
 import { FiMail, FiTrash2, FiCalendar } from 'react-icons/fi';
-import './learners.css'; 
+import './learners.css';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
 
@@ -46,8 +46,8 @@ export default function LearnersPage() {
       await api.delete(`/api/users/${learnerToDelete.id}`);
       toast.success("Learner deleted successfully.", { id: toastId });
       setLearnerToDelete(null);
-      fetchLearners(); 
-    } catch (error) {
+      fetchLearners();
+    } catch {
       toast.error("Failed to delete learner.", { id: toastId });
       setLearnerToDelete(null);
     }
@@ -86,18 +86,18 @@ export default function LearnersPage() {
               <tr key={learner.id}>
                 <td>
                   {learner.image ? (
-  <img
-    src={`${process.env.NEXT_PUBLIC_API_URL}${learner.image}`}
-    alt={`${learner.first_name || ''} ${learner.last_name || ''}`.trim()}
-    className="learner-img"
-  />
-) : (
-
-  <div className="learner-img initials-avatar">
-    <span>      {`${learner.first_name ? learner.first_name[0] : ''}${learner.last_name ? learner.last_name[0] : ''}`}
-    </span>
-  </div>
-)}
+                    <Image
+                      src={`${process.env.NEXT_PUBLIC_API_URL}${learner.image}`}
+                      alt={`${learner.first_name || ''} ${learner.last_name || ''}`.trim()}
+                      className="learner-img"
+                      width={40}
+                      height={40}
+                    />
+                  ) : (
+                    <div className="learner-img initials-avatar">
+                      <span>{`${learner.first_name ? learner.first_name[0] : ''}${learner.last_name ? learner.last_name[0] : ''}`}</span>
+                    </div>
+                  )}
                 </td>
                 <td>{learner.first_name} {learner.last_name}</td>
                 <td><FiMail className="table-icon" /> {learner.email}</td>
@@ -123,12 +123,12 @@ export default function LearnersPage() {
         </table>
       </div>
 
-      
+
       {learnerToDelete && (
         <div className="modal-overlay">
           <div className="modal-content">
             <h2>Confirm Deletion</h2>
-            <p>Are you sure you want to remove the learner "<strong>{learnerToDelete.first_name} {learnerToDelete.last_name}</strong>"? This action is permanent.</p>
+            <p>Are you sure you want to remove the learner &quot;<strong>{learnerToDelete.first_name} {learnerToDelete.last_name}</strong>&quot;? This action is permanent.</p>
             <div className="modal-actions">
               <button className="modal-btn-cancel" onClick={() => setLearnerToDelete(null)}>Cancel</button>
               <button className="modal-btn-confirm" onClick={handleDelete}>Yes, Delete</button>

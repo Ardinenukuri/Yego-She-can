@@ -1,6 +1,15 @@
-/.git
-/node_modules
-.dockerignore
+# .dockerignore
+
+# This is the most important line.
+# It prevents your local, Windows-specific modules from being uploaded.
+node_modules
+
+# Also ignore other local files and build artifacts
+.next
 .env
+.env.local
+.git
+.gitignore
 Dockerfile
 fly.toml
+*.log

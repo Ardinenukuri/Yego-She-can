@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
 import Link from 'next/link';
-import './change-password.css'; 
+import axios from 'axios';
+import './change-password.css';
 
 export default function ChangePasswordPage() {
   const [formData, setFormData] = useState({
@@ -37,15 +38,17 @@ export default function ChangePasswordPage() {
       });
 
       toast.success(response.data.message || 'Password changed successfully!');
-      
+
       router.push('/user-dashboard/learner-profile');
 
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.errors?.[0]?.message ||
-        error.response?.data?.message ||
-        'An unknown error occurred.';
-
+    } catch (error: unknown) {
+      let errorMessage = 'An unknown error occurred.';
+      if (axios.isAxiosError(error)) {
+        errorMessage =
+          error.response?.data?.errors?.[0]?.message ||
+          error.response?.data?.message ||
+          'Failed to change password.';
+      }
       toast.error(errorMessage);
     } finally {
       setLoading(false);

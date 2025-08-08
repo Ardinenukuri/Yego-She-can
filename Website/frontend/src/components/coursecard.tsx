@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { FiClock, FiBookOpen, FiBookmark } from "react-icons/fi";
 import { AiFillStar } from "react-icons/ai";
 
@@ -23,7 +24,14 @@ export default function CourseCard({ course }: { course: Course }) {
   return (
     <div className="course-card">
       <div className="course-img-wrapper">
-        <img src={course.image} alt={course.title} className="course-image" />
+        <Image
+          src={course.image}
+          alt={course.title}
+          className="course-image"
+          fill
+          style={{ objectFit: 'cover' }}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
         <button
           className="bookmark-icon"
           onClick={() => setBookmarked(!bookmarked)}
@@ -50,7 +58,7 @@ export default function CourseCard({ course }: { course: Course }) {
       </div>
 
       <div className="course-learn">
-        <strong>What you'll learn:</strong>
+        <strong>What you&apos;ll learn:</strong>
         <ul>
           {course.features.slice(0, 3).map((feature, i) => (
             <li key={i}>✅ {feature}</li>

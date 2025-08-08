@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import api from '@/lib/api';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
 import './login.css';
 
 export default function LoginPage() {
@@ -41,8 +42,11 @@ export default function LoginPage() {
         router.push('/about');
       }
 
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Login failed. Please check your credentials.';
+    } catch (error: unknown) {
+      let errorMessage = 'Login failed. Please check your credentials.';
+      if (axios.isAxiosError(error) && error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
       toast.error(errorMessage);
     } finally {
       setLoading(false);

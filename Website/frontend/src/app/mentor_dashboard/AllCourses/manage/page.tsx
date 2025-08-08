@@ -1,12 +1,17 @@
-'use client'
+'use client' // This directive is essential for using hooks like useState and useRouter
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { FiUploadCloud, FiCheckCircle } from 'react-icons/fi'
-import './manage.css'
+import './manage.css' // Assuming this CSS file is in the same directory or accessible
 
-export default function CreateLessonsPage({ params }: { params: { moduleId: string } }) {
-  const { moduleId } = params
+// Type definition for this component's props
+interface CreateLessonsClientPageProps {
+  moduleId: string
+}
+
+// This component receives `moduleId` as a direct prop from its parent server component
+export default function CreateLessonsClientPage({ moduleId }: CreateLessonsClientPageProps) {
   const [file, setFile] = useState<File | null>(null)
   const [uploading, setUploading] = useState(false)
   const [previewLessons, setPreviewLessons] = useState<{ title: string; duration: string }[]>([])
@@ -39,6 +44,7 @@ export default function CreateLessonsPage({ params }: { params: { moduleId: stri
 
   const handleConfirm = () => {
     alert('Lessons saved!')
+    // Using the moduleId prop for navigation
     router.push(`/mentor/modules/${moduleId}`)
   }
 

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
 import Link from 'next/link';
-import './forgot-password.css'; 
+import './forgot-password.css';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -17,23 +17,23 @@ export default function ForgotPasswordPage() {
     try {
       await api.post('/api/auth/forgot-password', { email });
       toast.success('If an account with that email exists, a reset link has been sent.', {
-        id: toastId, 
+        id: toastId,
       });
-    } catch (error: any) {
+    } catch {
       toast.error('An error occurred. Please try again.', {
-        id: toastId, 
+        id: toastId,
       });
     } finally {
       setLoading(false);
     }
   };
-  
+
   return (
     <div className="forgot-password-container">
       <form className="forgot-password-form" onSubmit={handleSubmit}>
         <h2 className="forgot-password-title">Forgot Your Password?</h2>
         <p className="forgot-password-subtitle">
-          No worries! Enter your email below and we'll send you a link to reset it.
+          No worries! Enter your email below and we&apos;ll send you a link to reset it.
         </p>
 
         <div className="forgot-password-input-group">

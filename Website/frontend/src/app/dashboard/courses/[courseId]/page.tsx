@@ -1,14 +1,14 @@
 "use client"
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { Search, Award } from 'lucide-react';
 import '../details.css';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
-import { AxiosError } from 'axios';
+import axios, { AxiosError } from 'axios';
 
-// --- UPDATED: Simplified Type Definitions ---
 interface Learner {
   id: number;
   name: string;
@@ -17,7 +17,7 @@ interface Learner {
   enrolled: string;
   lessonsCompleted: number;
   totalLessons: number;
-  certificateEligible: boolean; // Based on 100% chapter progress
+  certificateEligible: boolean;
 }
 
 interface CourseDetails {
@@ -34,7 +34,7 @@ export default function CourseDetailsPage() {
 
   const params = useParams();
   const courseId = params.courseId as string;
-  
+
   useEffect(() => {
     if (!courseId) {
         setLoading(false);
@@ -63,17 +63,20 @@ export default function CourseDetailsPage() {
   const handleIssueCertificate = async (learnerId: number, courseId: number) => {
     const toastId = toast.loading(`Issuing certificate for learner ${learnerId}...`);
     try {
-      await api.post('/api/certificates/issue', { 
-          learnerId, 
+      await api.post('/api/certificates/issue', {
+          learnerId,
           courseId: Number(courseId)
       });
-      
+
       toast.success(`Certificate issued successfully!`, { id: toastId });
       setIssuedLearnerIds(prevIds => [...prevIds, learnerId]);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
        console.error("Failed to issue certificate:", error);
-       const message = error.response?.data?.message || "Failed to issue certificate.";
+       let message = "Failed to issue certificate.";
+       if (axios.isAxiosError(error) && error.response?.data?.message) {
+         message = error.response.data.message;
+       }
        toast.error(message, { id: toastId });
     }
   };
@@ -88,7 +91,7 @@ export default function CourseDetailsPage() {
       </div>
     );
   }
-  
+
   if (!course) {
     return (
       <div className="details-container">
@@ -111,9 +114,9 @@ export default function CourseDetailsPage() {
         <div className="search-filter">
           <div className="search-input-wrapper">
             <Search className="search-icon" />
-            <input 
-              type="text" 
-              placeholder="Search learners..." 
+            <input
+              type="text"
+              placeholder="Search learners..."
               className="search-input"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -141,7 +144,7 @@ export default function CourseDetailsPage() {
                     <div className="student-cell">
                       <div className="student-avatar">
                         {learner.image ? (
-                           <img src={`${process.env.NEXT_PUBLIC_API_URL}${learner.image}`} alt={learner.name} />
+                           <Image src={`${process.env.NEXT_PUBLIC_API_URL}${learner.image}`} alt={learner.name} width={40} height={40} style={{ borderRadius: '50%' }}/>
                         ) : (
                            <span>{learner.name.split(' ').map(n => n[0]).join('')}</span>
                         )}
@@ -166,8 +169,8 @@ export default function CourseDetailsPage() {
                       issuedLearnerIds.includes(learner.id) ? (
                         <button className="action-btn" disabled>Issued ✓</button>
                       ) : (
-                        <button 
-                          className="action-btn issue-cert" 
+                        <button
+                          className="action-btn issue-cert"
                           onClick={() => handleIssueCertificate(learner.id, course.id)}
                         >
                           <Award className="icon-sm" /> Issue Certificate

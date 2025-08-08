@@ -6,6 +6,7 @@ import { CheckCircle } from 'lucide-react';
 import { FaUserCheck, FaCalendarAlt, FaHandsHelping } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
+import axios from 'axios';
 import './mentorship.css';
 import heroImage from '../../../public/mentorship.jpg';
 import Link from 'next/link'
@@ -87,9 +88,14 @@ const MentorshipPage = () => {
             const fileInput = document.querySelector('input[name="cv"]') as HTMLInputElement;
             if (fileInput) fileInput.value = '';
 
-        } catch (error: any) {
-            const errorMessage =
-                error.response?.data?.errors?.[0]?.message || 'Submission failed. Please try again.';
+        } catch (error: unknown) {
+            let errorMessage = 'Submission failed. Please try again.';
+            if (axios.isAxiosError(error)) {
+                errorMessage =
+                    error.response?.data?.errors?.[0]?.message ||
+                    error.response?.data?.message ||
+                    errorMessage;
+            }
             toast.error(errorMessage, { id: toastId });
         } finally {
             setLoading(false);
