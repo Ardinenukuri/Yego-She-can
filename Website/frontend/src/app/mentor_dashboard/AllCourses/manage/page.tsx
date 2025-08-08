@@ -1,14 +1,22 @@
-'use client' // This directive is essential for using hooks like useState and useRouter
+'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import { FiUploadCloud, FiCheckCircle } from 'react-icons/fi'
-import './manage.css' // Assuming this CSS file is in the same directory or accessible
+import './manage.css'
 
+interface LessonPreview {
+  title: string;
+  duration: string;
+}
+
+export default function UploadLessonPage() {
   const [file, setFile] = useState<File | null>(null)
   const [uploading, setUploading] = useState(false)
   const [previewLessons, setPreviewLessons] = useState<LessonPreview[]>([])
   const router = useRouter()
+  const params = useParams()
+  const moduleId = params.moduleId as string;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const uploadedFile = e.target.files?.[0] || null
@@ -24,7 +32,6 @@ import './manage.css' // Assuming this CSS file is in the same directory or acce
     }
     setUploading(true)
 
-    // Simulate file processing
     setTimeout(() => {
       const baseName = file.name.split('.')[0]
       const fakeLessons: LessonPreview[] = [
@@ -40,7 +47,6 @@ import './manage.css' // Assuming this CSS file is in the same directory or acce
 
   const handleConfirm = () => {
     alert('Lessons saved!')
-    // Using the moduleId prop for navigation
     router.push(`/mentor/modules/${moduleId}`)
   }
 
