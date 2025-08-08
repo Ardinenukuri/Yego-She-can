@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import Link from 'next/link';
+import Image from 'next/image';
 import { Clock, Calendar, MapPin } from 'lucide-react';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
-import "./physical-program.css"; // Ensure this CSS file exists and is styled
+import axios from 'axios';
+import "./physical-program.css";
 
-// --- Type Definitions for our data from the backend ---
 interface Program {
   id: number;
   title: string;
@@ -19,7 +19,6 @@ interface Program {
   skills: string[];
   requirements: string[];
   isEnrolled: boolean;
-
 }
 
 export default function PhysicalSession() {
@@ -27,13 +26,11 @@ export default function PhysicalSession() {
   const [isEligible, setIsEligible] = useState(false);
   const [loading, setLoading] = useState(true);
 
-
   const [search, setSearch] = useState("");
   const [sortByDate, setSortByDate] = useState(false);
   const [durationFilter, setDurationFilter] = useState("");
   const [showComingSoon, setShowComingSoon] = useState(true);
   const [showAvailable, setShowAvailable] = useState(true);
-
 
   const fetchPrograms = async () => {
     try {
@@ -52,25 +49,25 @@ export default function PhysicalSession() {
     fetchPrograms();
   }, []);
 
-
   const handleEnroll = async (programId: number) => {
     const toastId = toast.loading("Enrolling in program...");
     try {
         await api.post('/api/learner/physical-programs/enroll', { programId });
         toast.success("Successfully enrolled! We will contact you with more details.", { id: toastId });
-        
 
         setPrograms(prev => prev.map(p => p.id === programId ? { ...p, isEnrolled: true } : p));
-    } catch (error: any) {
-        const message = error.response?.data?.message || "Enrollment failed.";
+    } catch (error: unknown) {
+        let message = "Enrollment failed.";
+        if (axios.isAxiosError(error) && error.response?.data?.message) {
+            message = error.response.data.message;
+        }
         toast.error(message, { id: toastId });
     }
   };
 
-
   const filteredPrograms = useMemo(() => {
     const now = new Date();
-    
+
     return programs
       .map(program => ({
         ...program,
@@ -95,12 +92,10 @@ export default function PhysicalSession() {
     <section id="physical-sessions" className="programs-section">
       <h2>Physical Sessions</h2>
 
-
       <div className="filter-bar">
         <input type="text" placeholder="Search by title..." value={search} onChange={(e) => setSearch(e.target.value)} />
         <select value={durationFilter} onChange={(e) => setDurationFilter(e.target.value)}>
           <option value="">All Durations</option>
-
           {[...new Set(programs.map(p => p.duration))].map(d => <option key={d} value={d}>{d}</option>)}
         </select>
         <label><input type="checkbox" checked={showAvailable} onChange={() => setShowAvailable(!showAvailable)} /> Show Available</label>
@@ -110,12 +105,11 @@ export default function PhysicalSession() {
         </button>
       </div>
 
-      {/* Programs */}
       <div className="program-list">
         {filteredPrograms.length > 0 ? filteredPrograms.map((program) => (
           <div key={program.id} className={`program-card ${program.comingSoon ? "coming-soon" : ""}`}>
             <div className="image-container">
-              <img src={program.image_url ? `${process.env.NEXT_PUBLIC_API_URL}${program.image_url}` : "/placeholder-image.png"} alt={program.title} />
+              <Image src={program.image_url ? `${process.env.NEXT_PUBLIC_API_URL}${program.image_url}` : "/placeholder-image.png"} alt={program.title} width={400} height={225} style={{ objectFit: 'cover' }} />
               {program.comingSoon && <span className="coming-badge">Coming Soon</span>}
               {!program.comingSoon && <span className="badge">Free</span>}
             </div>
@@ -128,7 +122,7 @@ export default function PhysicalSession() {
                 <span><MapPin className="meta-icon" /> {program.location}</span>
               </div>
               <div className="skills-section">
-                <h4>Skills You'll Learn:</h4>
+                <h4>Skills You&apos;ll Learn:</h4>
                 <ul>{program.skills.map((skill, index) => <li key={index}>{skill}</li>)}</ul>
               </div>
               <div className="requirements-section">

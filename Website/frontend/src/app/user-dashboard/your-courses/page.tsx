@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import '@/styles/courses.css' 
+import Image from 'next/image'
+import '@/styles/courses.css'
 import api from '@/lib/api'
 import toast from 'react-hot-toast'
 
@@ -92,17 +93,20 @@ export default function YourCoursesPage() {
           <>
             <div className="courses-grid">
               {currentCourses.map((course) => {
-                const progressPercent = course.lessons > 0 
-                    ? Math.round((course.lessonsCompleted / course.lessons) * 100) 
+                const progressPercent = course.lessons > 0
+                    ? Math.round((course.lessonsCompleted / course.lessons) * 100)
                     : 0;
                 return (
                   <div key={course.id} className="course-card fade-in">
-                    <img
+                    <Image
                       src={
                         course.image ? `${process.env.NEXT_PUBLIC_API_URL}${course.image}` : '/placeholder-image.png'
                       }
                       alt={course.title}
                       className="course-image"
+                      width={360}
+                      height={200}
+                      style={{ objectFit: 'cover' }}
                     />
                     <div className="course-info">
                       <h3>{course.title}</h3>
@@ -123,7 +127,7 @@ export default function YourCoursesPage() {
                           {progressPercent}%
                         </div>
                       </div>
-                      
+
 
                       <Link href={`/user-dashboard/your-courses/${course.id}`}>
                         <button className="course-btn enrolled">Go to Course</button>

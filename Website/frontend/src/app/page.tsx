@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
-import api from '@/lib/api' 
+import api from '@/lib/api'
 
 import {
   FaChalkboardTeacher,
@@ -19,7 +19,7 @@ import './home.css'
 
 interface NextProgram {
   title: string;
-  next_session: string; 
+  next_session: string;
 }
 
 export default function Home() {
@@ -31,7 +31,7 @@ export default function Home() {
     AOS.init({ duration: 1000 })
   }, [])
 
-  
+
   useEffect(() => {
     const fetchNextProgram = async () => {
       try {
@@ -48,7 +48,7 @@ export default function Home() {
     fetchNextProgram()
   }, [])
 
-  
+
   useEffect(() => {
     if (!nextProgram) {
       setCountdown('Check out our physical programs for upcoming dates!')
@@ -77,7 +77,7 @@ export default function Home() {
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [nextProgram]) 
+  }, [nextProgram])
 
   const values = [
     {
@@ -102,7 +102,6 @@ export default function Home() {
 
   return (
     <div className="home-page">
-      {/* Hero Section */}
       <section className="hero">
         <Image
           src={heroImage}
@@ -118,7 +117,6 @@ export default function Home() {
             <p>
               Yego SheCan uplifts underserved women through business training, mentorship, and access to digital markets.
             </p>
-            {/* Conditional Countdown Timer */}
             {!isLoadingCountdown && nextProgram && (
               <div className="countdown-timer">
                 <strong>{countdown}</strong>
@@ -136,7 +134,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* What We Do */}
       <section className="about-section" data-aos="fade-up">
         <h2>What We Do</h2>
         <p>
@@ -144,7 +141,6 @@ export default function Home() {
         </p>
       </section>
 
-      {/* Services */}
       <section className="features-section" data-aos="fade-up">
         <div className="feature-card">
           <FaChalkboardTeacher className="feature-icon" />
@@ -169,7 +165,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Our Story */}
       <section className="section card-section" data-aos="fade-up">
         <div className="card-content">
           <h2>Our Story</h2>
@@ -188,7 +183,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Values */}
       <section className="section values" data-aos="fade-up">
         <h2>Our Values</h2>
         <div className="values-cards">
@@ -202,7 +196,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Our Process Timeline */}
       <section className="our-process-section" data-aos="fade-up">
         <h2 className="process-title">Our Process</h2>
         <p className="process-intro">
@@ -258,11 +251,10 @@ export default function Home() {
         </div>
       </section>
 
-
       <section className="cta-section" data-aos="fade-up">
         <h2>Join Our Community Today</h2>
         <p>
-          Whether you're just starting out or growing your business, Yego SheCan is here to support you every step of the way.
+          Whether you&apos;re just starting out or growing your business, Yego SheCan is here to support you every step of the way.
         </p>
         <Link href="/auth/register">
           <button className="btn-primary" style={{ marginTop: '2rem' }}>

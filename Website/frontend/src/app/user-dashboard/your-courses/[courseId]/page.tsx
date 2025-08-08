@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useState, useEffect, useCallback } from 'react';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import toast, { Toaster } from 'react-hot-toast';
 import api from '@/lib/api';
@@ -33,13 +33,12 @@ export default function CoursePage() {
   const [loading, setLoading] = useState(true);
 
   const params = useParams();
-  const router = useRouter();
   const courseId = params.courseId as string;
 
-  const fetchCourseData = async () => {
+  const fetchCourseData = useCallback(async () => {
     if (!courseId) return;
     try {
-      if (!course) setLoading(true);
+      setLoading(true);
       const response = await api.get(`/api/courses/learn/${courseId}`);
       setCourse(response.data);
     } catch (error) {
@@ -48,11 +47,11 @@ export default function CoursePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [courseId]);
 
   useEffect(() => {
     fetchCourseData();
-  }, [courseId]);
+  }, [fetchCourseData]);
 
   const handleMarkDone = async (chapterId: number) => {
     try {
@@ -67,7 +66,7 @@ export default function CoursePage() {
         };
       });
       toast.success(response.data.completed ? "Chapter marked as complete!" : "Chapter marked as incomplete.");
-    } catch (error) {
+    } catch {
       toast.error("Failed to update chapter status.");
     }
   };

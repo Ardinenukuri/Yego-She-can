@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import "../../../styles/PhysicalProgramsPage.css";
 import {
   Calendar,
@@ -15,7 +16,6 @@ import {
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
 
-// Interface for the full program details displayed in the list
 interface Program {
   id: number;
   title: string;
@@ -29,32 +29,28 @@ interface Program {
   requirements: string[];
 }
 
-// Interface for the specific data needed for the countdown timer
 interface NextProgram {
   title: string;
-  next_session: string; // This will be an ISO date string from the DB
+  next_session: string;
 }
 
 export default function PhysicalProgramsPage() {
   const [programs, setPrograms] = useState<Program[]>([]);
   const [loading, setLoading] = useState(true);
-  
-  // State for the next program's data and the countdown display string
+
   const [nextProgram, setNextProgram] = useState<NextProgram | null>(null);
   const [countdown, setCountdown] = useState<string>("");
 
-  // Fetch all necessary data when the component mounts
   useEffect(() => {
     const fetchInitialData = async () => {
         try {
             setLoading(true);
-            // Use Promise.all to fetch data concurrently for better performance
             const [programsResponse, nextProgramResponse] = await Promise.all([
                 api.get('/api/public/physical-programs'),
-                api.get('/api/public/next-physical-program') 
+                api.get('/api/public/next-physical-program')
             ]);
             setPrograms(programsResponse.data);
-            setNextProgram(nextProgramResponse.data); // This will be the program object or null
+            setNextProgram(nextProgramResponse.data);
         } catch (error) {
             console.error("Failed to load page data:", error);
             toast.error("Could not load program information.");
@@ -65,9 +61,7 @@ export default function PhysicalProgramsPage() {
     fetchInitialData();
   }, []);
 
-  // Effect to handle the countdown logic, dependent on the fetched nextProgram
   useEffect(() => {
-    // If there is no upcoming program, set a message and stop.
     if (!nextProgram) {
       setCountdown("No upcoming workshops scheduled. Please check back soon!");
       return;
@@ -78,29 +72,25 @@ export default function PhysicalProgramsPage() {
       const now = new Date().getTime();
       const difference = countdownDate - now;
 
-      // If the countdown is over
       if (difference <= 0) {
         setCountdown(`The ${nextProgram.title} workshop has started!`);
         clearInterval(interval);
         return;
       }
 
-      // Calculate time parts
       const days = Math.floor(difference / (1000 * 60 * 60 * 24));
       const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
-      // Set the dynamic countdown string
       setCountdown(
         `${days}d ${hours}h ${minutes}m ${seconds}s until our ${nextProgram.title} program`
       );
     }, 1000);
 
-    // Cleanup function to clear the interval when the component unmounts or nextProgram changes
     return () => clearInterval(interval);
 
-  }, [nextProgram]); // This effect will re-run if the nextProgram data ever changes
+  }, [nextProgram]);
 
 
   if (loading) {
@@ -108,7 +98,6 @@ export default function PhysicalProgramsPage() {
         <div className="page-wrapper">
             <div className="pageWrapper">
                 <section className="heroSection">
-                    {/* Minimal hero during load */}
                 </section>
                 <div className="loading-state">Loading Programs...</div>
             </div>
@@ -152,9 +141,12 @@ export default function PhysicalProgramsPage() {
           <h2>Why Choose Our Physical Programs?</h2>
           <section className="hero-details">
             <div className="hero-left">
-              <img
+              <Image
                 src="https://myayep.org/wp-content/uploads/elementor/thumbs/palms-up-hands-happy-group-multinational-african-latin-american-european-people-who-stay-together-circle-qftjwkd3vv6ucvihckmufycf6yohxufix7nbhgwtl6.jpg"
                 alt="Empowering Women Entrepreneurs"
+                width={600}
+                height={400}
+                style={{ objectFit: 'cover' }}
               />
             </div>
             <div className="hero-right">
@@ -170,7 +162,7 @@ export default function PhysicalProgramsPage() {
             <h2>Program Prerequisites</h2>
             <div className="prerequisitesGrid">
               <div><h4>Before You Apply:</h4><ul><li><CheckCircle className="checkIcon" /> Complete our online entrepreneurship courses</li><li><CheckCircle className="checkIcon" /> Pass the online course assessments</li><li><CheckCircle className="checkIcon" /> Attend a virtual orientation session</li><li><CheckCircle className="checkIcon" /> Submit a brief business plan outline</li></ul></div>
-              <div><h4>What's Included:</h4><ul><li><CheckCircle className="checkIcon" /> All materials and equipment provided</li><li><CheckCircle className="checkIcon" /> Take-home starter kit</li><li><CheckCircle className="checkIcon" /> Lunch and refreshments</li><li><CheckCircle className="checkIcon" /> Certificate of completion</li></ul></div>
+              <div><h4>What&apos;s Included:</h4><ul><li><CheckCircle className="checkIcon" /> All materials and equipment provided</li><li><CheckCircle className="checkIcon" /> Take-home starter kit</li><li><CheckCircle className="checkIcon" /> Lunch and refreshments</li><li><CheckCircle className="checkIcon" /> Certificate of completion</li></ul></div>
             </div>
           </div>
         </section>
@@ -181,7 +173,7 @@ export default function PhysicalProgramsPage() {
             {programs.map((program) => (
               <div key={program.id} className="programCard">
                 <div className="imageContainer">
-                  <img src={program.image_url ? `${process.env.NEXT_PUBLIC_API_URL}${program.image_url}` : "/placeholder-image.png"} alt={program.title} />
+                  <Image src={program.image_url ? `${process.env.NEXT_PUBLIC_API_URL}${program.image_url}` : "/placeholder-image.png"} alt={program.title} width={400} height={225} style={{ objectFit: 'cover' }}/>
                   <span className="badge">Free</span>
                 </div>
                 <div className="programDetails">
@@ -193,7 +185,7 @@ export default function PhysicalProgramsPage() {
                     <span><MapPin className="metaIcon" /> {program.location}</span>
                   </div>
                   <div className="skillsSection">
-                    <h4>Skills You'll Learn:</h4>
+                    <h4>Skills You&apos;ll Learn:</h4>
                     <ul>{program.skills.map((skill, index) => <li key={index}>{skill}</li>)}</ul>
                   </div>
                   <div className="requirementsSection">
@@ -201,7 +193,7 @@ export default function PhysicalProgramsPage() {
                     <ul>{program.requirements.map((req, index) => <li key={index}>{req}</li>)}</ul>
                   </div>
                   <Link
-                    href={`/auth/register`} 
+                    href={`/auth/register`}
                     className="registerButton"
                   >
                     Register to Enroll

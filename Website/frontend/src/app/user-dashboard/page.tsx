@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import api from "@/lib/api"; 
+import Image from 'next/image';
+import axios from 'axios';
+import api from "@/lib/api";
 import toast from "react-hot-toast";
-import "@/styles/courses.css"; 
+import "@/styles/courses.css";
 
 
 interface Course {
@@ -26,29 +28,31 @@ export default function CoursesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
   const [currentPage, setCurrentPage] = useState(1);
-  const coursesPerPage = 6; 
+  const coursesPerPage = 6;
 
   const handleEnroll = async (courseId: number) => {
     const toastId = toast.loading("Enrolling...");
     try {
         await api.post('/api/courses/enroll', { courseId });
         toast.success("Successfully enrolled!", { id: toastId });
-        
-        
-        setAllCourses(prevCourses => 
-            prevCourses.map(course => 
+
+
+        setAllCourses(prevCourses =>
+            prevCourses.map(course =>
                 course.id === courseId ? { ...course, isEnrolled: true } : course
             )
         );
 
-    } catch (error: any) {
-        const errorMessage = error.response?.data?.message || "Enrollment failed.";
+    } catch (error: unknown) {
+        let errorMessage = "Enrollment failed.";
+        if (axios.isAxiosError(error) && error.response?.data?.message) {
+          errorMessage = error.response.data.message;
+        }
         toast.error(errorMessage, { id: toastId });
     }
   };
 
 
-  
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -107,10 +111,13 @@ export default function CoursesPage() {
             <div className="courses-grid">
               {currentCourses.map((course) => (
                 <div key={course.id} className="course-card fade-in">
-                  <img
+                  <Image
                     src={course.image ? `${process.env.NEXT_PUBLIC_API_URL}${course.image}` : '/placeholder-image.png'}
                     alt={course.title}
                     className="course-image"
+                    width={360}
+                    height={200}
+                    style={{ objectFit: 'cover' }}
                   />
                   <div className="course-info">
                     <h3>{course.title}</h3>
@@ -118,8 +125,8 @@ export default function CoursesPage() {
                     <div className="course-meta">
                       <span>{course.duration}</span> | <span>{course.lessons} lessons</span> | <span>{course.level}</span>
                     </div>
-                    
-              
+
+
                     {course.isEnrolled ? (
                         <Link href={`/user-dashboard/your-courses/${course.id}`}>
                             <button className="course-btn">Continue Learning</button>

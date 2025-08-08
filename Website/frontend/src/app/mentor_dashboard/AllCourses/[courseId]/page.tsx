@@ -3,21 +3,20 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Search } from 'lucide-react';
-import '../students.css'; // Your existing CSS file
+import '../students.css';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
+import axios from 'axios';
 
-// --- Type Definitions (Updated to include progress) ---
 interface Learner {
   id: number;
   first_name: string | null;
   last_name: string | null;
   email: string;
   enrolled_at: string;
-  progress: number; // Progress is now included
+  progress: number;
 }
 
-// Derived type for easier use in the component
 interface ProcessedLearner extends Learner {
     name: string;
 }
@@ -28,7 +27,6 @@ export default function CourseStudentsPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // --- State for the Message Modal ---
   const [showModal, setShowModal] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<ProcessedLearner | null>(null);
   const [message, setMessage] = useState('');
@@ -46,7 +44,7 @@ export default function CourseStudentsPage() {
             api.get(`/api/mentor/courses/${courseId}/details`),
             api.get(`/api/users/my-learners?courseId=${courseId}`)
         ]);
-        
+
         setCourseName(courseResponse.data.name);
 
         const processedLearners = learnersResponse.data.map((learner: Learner) => ({
@@ -55,7 +53,7 @@ export default function CourseStudentsPage() {
         }));
         setLearners(processedLearners);
 
-      } catch (error) {
+      } catch {
         toast.error("Could not load enrolled learners.");
       } finally {
         setLoading(false);
@@ -89,9 +87,12 @@ export default function CourseStudentsPage() {
             message: message,
         });
         toast.success(`Message sent to ${selectedStudent.name}`, { id: toastId });
-        closeModal(); // Close modal on success
-    } catch (error: any) {
-        const errorMessage = error.response?.data?.message || "Failed to send message.";
+        closeModal();
+    } catch (error: unknown) {
+        let errorMessage = "Failed to send message.";
+        if (axios.isAxiosError(error) && error.response?.data?.message) {
+            errorMessage = error.response.data.message;
+        }
         toast.error(errorMessage, { id: toastId });
     } finally {
         setIsSending(false);
@@ -159,10 +160,8 @@ export default function CourseStudentsPage() {
             </tbody>
           </table>
         </div>
-        {/* ... empty state JSX ... */}
       </div>
 
-      {/* --- CORRECTED MODAL --- */}
       {showModal && selectedStudent && (
         <div className="modal-overlay">
           <div className="modal">
@@ -175,7 +174,6 @@ export default function CourseStudentsPage() {
               disabled={isSending}
             ></textarea>
             <div className="modal-buttons">
-              {/* These buttons now have the correct onClick handlers */}
               <button onClick={closeModal} className="cancel-btn">Cancel</button>
               <button onClick={handleSendMessage} className="send-btn" disabled={isSending}>
                 {isSending ? "Sending..." : "Send"}

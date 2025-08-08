@@ -1,18 +1,27 @@
-// src/contexts/AuthContext.tsx
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import api from '@/lib/api';
 import { useRouter } from 'next/navigation';
-import toast from 'react-hot-toast'; 
+import toast from 'react-hot-toast';
 
 
 interface User {
   id: number;
   username: string;
   email: string;
-  firstName: string; 
-  lastName: string; 
+  firstName: string;
+  lastName: string;
+  profile_picture_url?: string;
+  role: string;
+}
+
+interface ApiUserData {
+  id: number;
+  username: string;
+  email: string;
+  first_name: string;
+  last_name: string;
   profile_picture_url?: string;
   role: string;
 }
@@ -20,7 +29,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (token: string, userData: any) => void; 
+  login: (token: string, userData: ApiUserData) => void;
   logout: () => void;
 }
 
@@ -45,7 +54,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               lastName: profileData.last_name,
               profile_picture_url: profileData.profile_picture_url,
           });
-        } catch (error) {
+        } catch {
           console.error("Session expired or token is invalid");
           localStorage.removeItem('token');
           setUser(null);
@@ -56,7 +65,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     initializeAuth();
   }, []);
 
-  const login = (token: string, userData: any) => {
+  const login = (token: string, userData: ApiUserData) => {
     localStorage.setItem('token', token);
 
     setUser({
@@ -65,7 +74,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         lastName: userData.last_name,
         profile_picture_url: userData.profile_picture_url,
     });
-    
+
 
     if (userData.role === 'program manager' || userData.role === 'mentor') {
         router.push('/dashboard');

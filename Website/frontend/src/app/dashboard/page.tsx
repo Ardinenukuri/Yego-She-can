@@ -1,13 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, ReactNode } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
-  FiEdit,
   FiTrash2,
-  FiBookOpen,
   FiUsers,
-  FiLayers,
-  FiCheckCircle,
   FiFileText,
   FiBook,
   FiToggleLeft,
@@ -70,7 +66,7 @@ export default function DashboardHome() {
   const [courseToDelete, setCourseToDelete] = useState<Course | null>(null);
   const [mentorToModify, setMentorToModify] = useState<Mentor | null>(null);
   const [modificationType, setModificationType] = useState<'delete' | 'toggle' | null>(null);
-  
+
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -112,24 +108,23 @@ export default function DashboardHome() {
     const toastId = toast.loading("Generating your PDF report...");
     try {
         const response = await api.get('/api/pm/dashboard/export-pdf', {
-            responseType: 'blob', 
+            responseType: 'blob',
         });
-        
+
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a');
         link.href = url;
         const filename = `YegoSheCan-Platform-Report-${new Date().toISOString().split('T')[0]}.pdf`;
         link.setAttribute('download', filename);
-        
+
         document.body.appendChild(link);
         link.click();
-        
+
         link.parentNode?.removeChild(link);
         window.URL.revokeObjectURL(url);
-        
+
         toast.success("Report downloaded successfully!", { id: toastId });
-    } catch (error) {
-        console.error("Failed to export PDF:", error);
+    } catch {
         toast.error("Could not generate your report.", { id: toastId });
     } finally {
         setIsExporting(false);
@@ -143,7 +138,7 @@ export default function DashboardHome() {
       await api.delete(`/api/courses/${courseToDelete.id}`);
       toast.success(`Course "${courseToDelete.title}" deleted.`, { id: toastId });
       fetchData();
-    } catch (error) { toast.error("Failed to delete course.", { id: toastId }); }
+    } catch { toast.error("Failed to delete course.", { id: toastId }); }
     finally { setCourseToDelete(null); }
   };
 
@@ -161,7 +156,7 @@ export default function DashboardHome() {
         toast.success(`Mentor "${mentorToModify.name}" status updated.`, { id: toastId });
       }
       fetchData();
-    } catch (error) { toast.error(`Failed to ${modificationType} mentor.`, { id: toastId }); }
+    } catch { toast.error(`Failed to ${modificationType} mentor.`, { id: toastId }); }
     finally { setMentorToModify(null); setModificationType(null); }
   };
 
@@ -339,7 +334,7 @@ export default function DashboardHome() {
 
       {courseToDelete && (
         <div className="modal-overlay"><div className="modal">
-          <h2>Confirm Deletion</h2><p>Are you sure you want to delete the course "<strong>{courseToDelete.title}</strong>"?</p>
+          <h2>Confirm Deletion</h2><p>Are you sure you want to delete the course &quot;<strong>{courseToDelete.title}</strong>&quot;?</p>
           <div className="modal-actions"><button className="modal-button cancel" onClick={() => setCourseToDelete(null)}>Cancel</button><button className="modal-button confirm" onClick={handleConfirmCourseDelete}>Yes, Delete</button></div>
         </div></div>
       )}

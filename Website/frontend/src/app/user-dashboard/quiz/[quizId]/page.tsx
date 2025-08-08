@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
-import '@/styles/quiz.css'; 
+import '@/styles/quiz.css';
 
 
 interface QuizQuestion {
@@ -16,7 +16,7 @@ interface QuizQuestion {
 interface Quiz {
     quiz_id: number;
     questions: QuizQuestion[];
-    is_final: boolean; 
+    is_final: boolean;
 }
 
 
@@ -25,12 +25,11 @@ export default function TakeQuizPage() {
     const [loading, setLoading] = useState(true);
     const [userAnswers, setUserAnswers] = useState<Record<string, string>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
-    
+
     const params = useParams();
     const router = useRouter();
     const quizId = params.quizId as string;
 
-    // --- 2. CORRECTED DATA FETCHING ---
     useEffect(() => {
         if (!quizId) {
             setLoading(false);
@@ -73,15 +72,15 @@ export default function TakeQuizPage() {
             } else {
                 toast.error(`Quiz failed with ${result.score_percentage}%. The passing score is 80%.`, { id: toastId, duration: 6000 });
             }
-            
+
 
             setTimeout(() => {
                 router.back();
             }, 2000);
 
-        } catch (error) {
+        } catch {
             toast.error("Failed to submit quiz.", { id: toastId });
-            setIsSubmitting(false); 
+            setIsSubmitting(false);
         }
     };
 

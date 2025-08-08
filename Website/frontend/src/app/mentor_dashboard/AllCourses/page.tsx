@@ -1,15 +1,13 @@
 'use client'
 
-
 import React, { useState, useEffect } from 'react'
-import './mentorCourses.css' // Ensure you have this CSS file
-import { Plus, Eye, Edit, Trash2 } from 'lucide-react'
+import './mentorCourses.css'
+import { Eye, Edit } from 'lucide-react'
 import api from '@/lib/api'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
 
 
-// Define a type for the data we expect from the backend
 interface Course {
   id: number;
   title: string;
@@ -28,7 +26,6 @@ export default function MentorCoursesPage() {
   const [loading, setLoading] = useState(true);
 
 
-  // Fetch data from the new backend endpoint when the component mounts
   useEffect(() => {
     const fetchMentorCourses = async () => {
       try {
@@ -45,7 +42,7 @@ export default function MentorCoursesPage() {
 
 
     fetchMentorCourses();
-  }, []); // Empty array ensures this runs only once on mount
+  }, []);
 
 
   if (loading) {
@@ -64,8 +61,6 @@ export default function MentorCoursesPage() {
     <div className="courses-container">
       <div className="courses-header">
         <h2>My Courses</h2>
-        {/* You can re-enable this button when you build the "Add Course" page for mentors */}
-        {/* <button className="add-course-button"><Plus className="icon-sm" /> Add New Course</button> */}
       </div>
 
 
@@ -101,7 +96,6 @@ export default function MentorCoursesPage() {
                       <Eye className="icon-sm" />
                     </Link>
                     <button title="Edit"><Edit className="icon-sm" /></button>
-                    {/* The delete button can be added here when the logic is ready */}
                   </div>
                 </td>
               </tr>
@@ -119,4 +113,3 @@ export default function MentorCoursesPage() {
     </div>
   )
 }
-

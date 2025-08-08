@@ -11,7 +11,7 @@ type BookingStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled' | 'sche
 
 interface Booking {
   id: number;
-  menteeName: string; 
+  menteeName: string;
   date: string;
   time: string;
   status: BookingStatus;
@@ -54,9 +54,9 @@ export default function BookingPage() {
     try {
         await api.put(`/api/bookings/${bookingId}/status`, { status: newStatus });
         toast.success(`Session marked as ${newStatus}.`);
-    } catch (error) {
+    } catch {
         toast.error(`Failed to update session status.`);
-        
+
         setBookings(originalBookings);
     }
   };
@@ -150,4 +150,3 @@ export default function BookingPage() {
     </div>
   );
 };
-
