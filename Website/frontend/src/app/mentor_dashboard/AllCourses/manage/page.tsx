@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { FiUploadCloud, FiCheckCircle } from 'react-icons/fi'
-import './manage.css'
+import '../mentorCourses.css'
 
 interface LessonPreview {
   title: string;
