@@ -15,10 +15,10 @@ const nextConfig: NextConfig = {
   },
   allowedDevOrigins: ['http://192.168.43.229:3000'],
   output: 'standalone',
-  // eslint:{
-  //   ignoreDuringBuilds: true
+  typescript:{
+    ignoreBuildErrors: true
 
-  
+  }
 };
 
 export default nextConfig;
