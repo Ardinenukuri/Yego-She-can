@@ -1,22 +1,47 @@
-# syntax=docker/dockerfile:1
+# syntax = docker/dockerfile:1
 
-FROM node:18-alpine as build
+# Adjust NODE_VERSION as desired
+ARG NODE_VERSION=22
+FROM node:${NODE_VERSION}-slim AS base
+
+LABEL andasy_launch_runtime="Next.js"
+
+# Next.js app lives here
 WORKDIR /app
 
-# Copy files and install deps
-COPY package*.json ./
-RUN npm install
+
+# Throw-away build stage to reduce size of final image
+FROM base AS build
+
+# Install packages needed to build node modules
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y build-essential node-gyp pkg-config python-is-python3
+
+# Install node modules
+ENV NODE_ENV="development"
+COPY package-lock.json package.json ./
+RUN  npm install && npm install --no-save --platform=linuxmusl --arch=x64 lightningcss
+
+# Copy application code
 COPY . .
+
+ENV NODE_ENV="production"
+# Build application
 RUN npm run build
 
-# Serve build using serve
-FROM node:18-alpine as prod
-RUN npm install -g serve
-WORKDIR /app
-COPY --from=build /app/dist ./dist
+# Remove development dependencies
+RUN npm prune --omit=dev
 
-# Use environment PORT or fallback to 3000
-ENV PORT=3000
+
+# Final stage for app image
+FROM base
+
+# Copy built application
+COPY --from=build /app /app
+
+# Entrypoint sets up the container.
+ENTRYPOINT [ "/app/docker-entrypoint.js" ]
+
+# Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-
-CMD ["sh", "-c", "serve -s dist -l $PORT"]
+CMD [ "npm", "run", "start" ]
