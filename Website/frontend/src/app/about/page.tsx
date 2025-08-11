@@ -2,6 +2,12 @@
 
 import Image from 'next/image'
 import aboutImg from '../../../public/homep.jpg'
+import ardineImg from '../../../public/ardine.jpg'
+import dianeImg from '../../../public/diane.jpg'
+import morinImg from '../../../public/morin.jpg'
+import afuaImg from '../../../public/afua.jpg'
+import yegoImg from '../../../public/yego-shecan-logo.png'
+
 import { useEffect } from 'react'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
@@ -198,6 +204,36 @@ export default function About() {
           ))}
         </div>
       </section>
+       <section className="team-section" data-aos="fade-up">
+  <h2 className="team-title">Our Team</h2>
+  <div className="team-grid">
+    {[
+
+      { name: "Yeetah", role: "Founder & CEO", image: yegoImg }, 
+      { name: "Ardine Martine NUKURI", role: "Backend Developer", image: ardineImg },
+      { name: "Afua HAMISSI", role: "UI/UX Designer / Mobile Developer", image: afuaImg },
+      { name: "Diane Imgabire", role: "UI/UX Designer / Mobile Developer", image: dianeImg },
+      { name: "Blandine MUNEZERO", role: "UI/UX Designer", image: yegoImg }, 
+      { name: "Moreen IRABA", role: "UI/UX Designer", image: morinImg }
+    ].map((member, index) => (
+      <div key={index} className="team-card">
+        <div className="team-image-placeholder">
+          <Image
+            src={member.image}
+            alt={`Photo of ${member.name}`}
+            className="team-image" 
+            fill
+          />
+        </div>
+        <h3 className="team-name">{member.name}</h3>
+        <p className="team-role">{member.role}</p>
+        <p className="team-desc">
+          Passionate about empowering women and building strong community-driven programs.
+        </p>
+      </div>
+    ))}
+  </div>
+</section>
     </div>
   )
 }
