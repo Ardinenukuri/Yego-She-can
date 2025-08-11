@@ -578,8 +578,8 @@
 
 
 .mentor-avatar {
-  width: 100px;       
-  height: 100px;       
+  width: 50px;       
+  height: 50px;       
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
@@ -591,7 +591,7 @@
   display: flex;
   align-items: center;   
   justify-content: center;
-  font-size: 3rem;      
+  font-size: 1.5rem;      
   font-weight: 500;       
   color: white;
   text-transform: uppercase;
