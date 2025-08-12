@@ -61,8 +61,13 @@
 //   );
 // }
 
+<<<<<<< HEAD
 import { Sidebar } from 'lucide-react'
 import DashboardNavbar from '../dashboard/components/DashboardNavbar'
+=======
+import DashboardNavbar from '../dashboard/components/DashboardNavbar'
+import Sidebar from '../dashboard/components/Sidebar'
+>>>>>>> 641ce5d80a48408d3b2b76c2b6cce6b078275423
 import '../styles/dashboard.css'
 
 
