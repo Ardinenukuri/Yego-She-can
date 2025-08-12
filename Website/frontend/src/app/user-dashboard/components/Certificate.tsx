@@ -7,14 +7,12 @@ import "./certificate.css";
 interface CertificateProps {
   learnerName: string;
   courseName: string;
-  finalScore: number;
   issuedDate: string;
 }
 
 export default function Certificate({
   learnerName,
   courseName,
-  finalScore,
   issuedDate,
 }: CertificateProps) {
   return (

@@ -1,10 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import './courses.css'; 
+import Image from 'next/image'; // <-- 1. IMPORT IMAGE
+import './courses.css';
 import { FiClock, FiBookOpen, FiAward, FiTrash2 } from 'react-icons/fi';
 import { useState, useEffect } from 'react';
-import api from '@/lib/api'; 
+import api from '@/lib/api';
 import toast from 'react-hot-toast';
 
 interface Course {
@@ -21,11 +22,8 @@ interface Course {
 }
 
 export default function CoursesPage() {
-
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
-  
-
   const [courseToDelete, setCourseToDelete] = useState<Course | null>(null);
 
   const fetchAdminCourses = async () => {
@@ -36,42 +34,33 @@ export default function CoursesPage() {
       console.error("Failed to fetch courses for admin:", error);
       toast.error("Could not load course data. Please try again.");
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
-
 
   useEffect(() => {
     fetchAdminCourses();
   }, []);
 
-
   const handleDeleteCourse = async () => {
-    if (!courseToDelete) return; 
+    if (!courseToDelete) return;
 
     const toastId = toast.loading('Deleting course...');
     try {
-
       await api.delete(`/api/courses/${courseToDelete.id}`);
-      
       toast.success(`Course "${courseToDelete.title}" deleted successfully.`, { id: toastId });
-      
-
       setCourseToDelete(null);
-
       setTimeout(() => fetchAdminCourses(), 200);
-      
     } catch (error) {
       console.error("Failed to delete course:", error);
       toast.error("Failed to delete the course.", { id: toastId });
-      setCourseToDelete(null); 
+      setCourseToDelete(null);
     }
   };
 
   const openDeleteModal = (course: Course) => {
     setCourseToDelete(course);
   };
-
 
   const closeDeleteModal = () => {
     setCourseToDelete(null);
@@ -94,9 +83,7 @@ export default function CoursesPage() {
         <div className="admin-header">
           <h1>Manage Courses</h1>
           <Link href="/dashboard/courses/add">
-            <button className="add-course-button">
-              + Add Course
-            </button>
+            <button className="add-course-button">+ Add Course</button>
           </Link>
         </div>
 
@@ -118,10 +105,14 @@ export default function CoursesPage() {
             {courses.map((course) => (
               <tr key={course.id}>
                 <td>
-                  <img
+                  {/* <-- 2. USE THE NEXT/IMAGE COMPONENT --> */}
+                  <Image
                     src={course.image ? `${process.env.NEXT_PUBLIC_API_URL}${course.image}` : "/placeholder-image.png"}
                     alt={course.title}
                     className="course-img"
+                    width={50}
+                    height={50}
+                    style={{ objectFit: 'cover' }}
                   />
                 </td>
                 <td>{course.title}</td>
@@ -138,14 +129,12 @@ export default function CoursesPage() {
                 </td>
                 <td className="actions-cell">
                   <Link href={`/dashboard/courses/${course.id}`}>
-                    <button className="view-btn">
-                       View Details
-                    </button>
+                    <button className="view-btn">View Details</button>
                   </Link>
-                  <button 
-                    className="delete-btn" 
+                  <button
+                    className="delete-btn"
                     title="Delete Course"
-                    onClick={() => openDeleteModal(course)} 
+                    onClick={() => openDeleteModal(course)}
                   >
                     <FiTrash2 />
                   </button>
@@ -156,22 +145,22 @@ export default function CoursesPage() {
         </table>
       </div>
 
-
       {courseToDelete && (
         <div className="modal-overlay">
           <div className="modal-content">
             <h2>Confirm Deletion</h2>
-            <p>Are you sure you want to permanently delete the course "<strong>{courseToDelete.title}</strong>"? This action cannot be undone.</p>
+            {/* <-- 3. USE &quot; INSTEAD OF " --> */}
+            <p>Are you sure you want to permanently delete the course &quot;<strong>{courseToDelete.title}</strong>&quot;? This action cannot be undone.</p>
             <div className="modal-actions">
-              <button 
+              <button
                 className="modal-btn-cancel"
-                onClick={closeDeleteModal} 
+                onClick={closeDeleteModal}
               >
                 Cancel
               </button>
-              <button 
+              <button
                 className="modal-btn-confirm"
-                onClick={handleDeleteCourse} 
+                onClick={handleDeleteCourse}
               >
                 Yes, Delete
               </button>
