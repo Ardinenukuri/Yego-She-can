@@ -23,10 +23,16 @@ import PhysicalProgramRoutes from './routes/physicalProgramRoutes'
 const app = express();
 
 
+const allowedOrigins = [
+    'http://localhost:3000',
+    'https://underserved-women-i7yu.vercel.app'
+];
+
 const corsOptions = {
-    origin: 'http://localhost:3000', 
-    optionsSuccessStatus: 200 
+    origin: allowedOrigins,
+    optionsSuccessStatus: 200
 };
+
 app.use(cors(corsOptions));
 
 app.use(express.json()); 

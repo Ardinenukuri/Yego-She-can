@@ -52,7 +52,7 @@ export const AuthService = {
 
         await sendEmail({
             to: user.email,
-            subject: 'Email Verification - Inventory System',
+            subject: 'Email Verification - Yego SheCan',
             text: `Please verify your email by visiting this URL: ${verifyURL}`,
             html: message,
         });
