@@ -25,7 +25,8 @@ const app = express();
 
 const allowedOrigins = [
     'http://localhost:3000',
-    'https://underserved-women-i7yu.vercel.app'
+    'https://underserved-women-i7yu.vercel.app',
+    'https://yego-she-can-hi69.vercel.app/'
 ];
 
 const corsOptions = {
